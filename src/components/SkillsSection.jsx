@@ -1,14 +1,28 @@
-import StackIcon from "tech-stack-icons";
 import { skillGroups } from "../data/skills";
 
 const skills = skillGroups.flatMap((group) => group.items);
 const firstRow = skills.filter((_, index) => index % 2 === 0);
 const secondRow = skills.filter((_, index) => index % 2 === 1);
+const iconFiles = {
+  "c++": "cpp",
+};
+
+function iconPath(icon) {
+  return `/tech-icons/${iconFiles[icon] ?? icon}.svg`;
+}
 
 function SkillIcon({ label, icon, isClone = false }) {
   return (
     <div className="stack-icon-item" title={label} aria-hidden={isClone ? "true" : undefined}>
-      <StackIcon name={icon} variant="light" className="stack-icon" />
+      <img
+        className="stack-icon"
+        src={iconPath(icon)}
+        alt=""
+        width="34"
+        height="34"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }

@@ -1,21 +1,21 @@
 import RawHtml from "./RawHtml";
 
-const waveDots = Array.from({ length: 92 }, (_, index) => {
-  const x = 16 + index * 8.2;
+const waveDots = Array.from({ length: 46 }, (_, index) => {
+  const x = 18 + index * 16.4;
   const y = 210 + Math.sin(index * 0.22) * 38 + Math.sin(index * 0.061) * 18;
-  const size = 1.2 + (index % 7) * 0.18;
-  const delay = (index % 18) * -0.16;
-  const color = index < 30 ? "amber" : index < 62 ? "cyan" : "violet";
+  const size = 1.45 + (index % 5) * 0.18;
+  const delay = (index % 12) * -0.18;
+  const color = index < 15 ? "amber" : index < 31 ? "cyan" : "violet";
   return `<circle class="wave-dot ${color}" cx="${x.toFixed(1)}" cy="${y.toFixed(
     1
   )}" r="${size.toFixed(2)}" style="--d:${delay}s"></circle>`;
 }).join("");
 
-const farDots = Array.from({ length: 70 }, (_, index) => {
-  const x = 20 + index * 10.6;
+const farDots = Array.from({ length: 34 }, (_, index) => {
+  const x = 22 + index * 22.2;
   const y = 96 + Math.sin(index * 0.34) * 28 + Math.cos(index * 0.13) * 16;
-  const size = 0.8 + (index % 5) * 0.17;
-  const delay = (index % 16) * -0.19;
+  const size = 1 + (index % 4) * 0.16;
+  const delay = (index % 10) * -0.22;
   const color = index % 3 === 0 ? "violet" : index % 3 === 1 ? "cyan" : "amber";
   return `<circle class="far-dot ${color}" cx="${x.toFixed(1)}" cy="${y.toFixed(
     1
@@ -46,6 +46,10 @@ const html = `<!-- HERO -->
         Get in touch
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg>
       </a>
+      <a class="btn btn-resume" href="/resume/Muhammad-Muneeb-Resume.pdf" target="_blank" rel="noreferrer">
+        View resume
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5"></path><path d="M12 11v6"></path><path d="m9 14 3 3 3-3"></path></svg>
+      </a>
     </div>
     <div class="hero-stats">
       <div><div class="s-val"><span class="grad">5+</span></div><div class="s-lbl">Roles shipped</div></div>
@@ -71,14 +75,6 @@ const html = `<!-- HERO -->
             <stop offset="64%" stop-color="#9f7bff" stop-opacity=".18" />
             <stop offset="100%" stop-color="#05060a" stop-opacity=".08" />
           </radialGradient>
-          <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.35 0 0 0 0 0.86 0 0 0 0 1 0 0 0 .85 0" />
-            <feMerge>
-              <feMergeNode />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
         <g class="particle-field far">${farDots}</g>
@@ -101,7 +97,6 @@ const html = `<!-- HERO -->
           <circle class="glass-bubble b2" cx="440" cy="205" r="32" />
           <circle class="glass-bubble b3" cx="354" cy="312" r="23" />
           <circle class="glass-bubble b4" cx="478" cy="324" r="16" />
-          <circle class="glass-bubble b5" cx="278" cy="330" r="13" />
         </g>
       </svg>
     </div>
