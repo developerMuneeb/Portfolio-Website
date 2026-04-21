@@ -20,7 +20,9 @@ export function usePortfolioEffects() {
       document.getElementById(id)
     );
     const links = [...document.querySelectorAll(".nav-links a")];
-    const onScroll = () => {
+    let scrollRaf = 0;
+    const updateScrollState = () => {
+      scrollRaf = 0;
       if (nav) nav.classList.toggle("scrolled", window.scrollY > 20);
       let active = null;
       const y = window.scrollY + 140;
@@ -31,7 +33,11 @@ export function usePortfolioEffects() {
         link.classList.toggle("active", link.getAttribute("href") === `#${active}`)
       );
     };
-    onScroll();
+    const onScroll = () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(updateScrollState);
+    };
+    updateScrollState();
     window.addEventListener("scroll", onScroll, { passive: true });
 
     const glow = document.getElementById("cursorGlow");
@@ -71,7 +77,11 @@ export function usePortfolioEffects() {
         const section = document.querySelector(id);
         if (!section) return;
         event.preventDefault();
-        window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({
+          top: section.offsetTop - 60,
+          behavior: reducedMotion ? "auto" : "smooth",
+        });
       };
       anchor.addEventListener("click", handler);
       return [anchor, handler];
@@ -80,6 +90,7 @@ export function usePortfolioEffects() {
     return () => {
       observer.disconnect();
       window.removeEventListener("scroll", onScroll);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
       if (moveHandler) window.removeEventListener("mousemove", moveHandler);
       if (rafId) cancelAnimationFrame(rafId);
       anchorHandlers.forEach(([anchor, handler]) => anchor.removeEventListener("click", handler));
