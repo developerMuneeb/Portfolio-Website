@@ -34,16 +34,18 @@ const voiceCrmDiagram = `
           <polygon class="node-top" points="0,20 84,0 132,26 48,48" fill="oklch(0.82 0.14 210 / .2)" stroke="oklch(0.82 0.14 210)"></polygon>
           <polygon class="node-face" points="48,48 132,26 132,92 48,114" fill="rgba(255,255,255,.052)" stroke="rgba(255,255,255,.16)"></polygon>
           <polygon class="node-side" points="0,20 48,48 48,114 0,80" fill="rgba(255,255,255,.025)" stroke="rgba(255,255,255,.12)"></polygon>
-          <text x="66" y="46" text-anchor="middle" fill="oklch(0.82 0.14 210)">FREIGHT VOICE AI</text>
-          <text x="66" y="66" text-anchor="middle" fill="#e7ebf3" font-family="Space Grotesk" font-size="13">Intent + Fit</text>
-          <text x="66" y="84" text-anchor="middle" fill="#8a93a8">ship? lane? timing?</text>
+          <rect class="diagram-label-plate" x="27" y="44" width="82" height="48" rx="7"></rect>
+          <text x="68" y="59" text-anchor="middle" fill="oklch(0.82 0.14 210)" font-size="8">FREIGHT CALL</text>
+          <text x="68" y="75" text-anchor="middle" fill="#e7ebf3" font-family="Space Grotesk" font-size="12">Intent + Fit</text>
+          <text x="68" y="88" text-anchor="middle" fill="#8a93a8" font-size="8">lane + timing</text>
         </g>
 
         <g class="voice-node" transform="translate(386,120)" data-option="booked" role="button" tabindex="0" aria-label="Show booked state">
           <rect class="node-panel" width="104" height="82" rx="13" fill="rgba(255,255,255,.035)" stroke="rgba(255,255,255,.18)" filter="url(#voiceDepth)"></rect>
-          <text x="52" y="25" text-anchor="middle" fill="oklch(0.78 0.14 155)">GHL WORKFLOW</text>
-          <text x="52" y="47" text-anchor="middle" fill="#e7ebf3" font-family="Space Grotesk" font-size="13">Qualify + Email</text>
-          <text x="52" y="65" text-anchor="middle" fill="#8a93a8">client inbox</text>
+          <rect class="diagram-label-plate" x="10" y="14" width="84" height="54" rx="8"></rect>
+          <text x="52" y="29" text-anchor="middle" fill="oklch(0.78 0.14 155)" font-size="8">GHL FLOW</text>
+          <text x="52" y="47" text-anchor="middle" fill="#e7ebf3" font-family="Space Grotesk" font-size="12">Qualify + Mail</text>
+          <text x="52" y="62" text-anchor="middle" fill="#8a93a8" font-size="8">client inbox</text>
         </g>
       </g>
 
@@ -58,10 +60,10 @@ const voiceCrmDiagram = `
 
       <g transform="translate(36,286)" font-family="JetBrains Mono" font-size="9">
         <rect class="voice-state-panel" width="528" height="92" rx="12" fill="rgba(255,255,255,.025)" stroke="rgba(255,255,255,.12)"></rect>
-        <text x="14" y="20" fill="#5c6478">LIVE_CALL_STATE</text>
+        <text x="14" y="20" fill="#5c6478">CALL_STATE</text>
         <text x="14" y="42" fill="oklch(0.82 0.14 210)" data-dynamic="voice-title">Qualified freight details captured</text>
-        <text x="14" y="60" fill="#e7ebf3" data-dynamic="voice-line">Weight, load size, pickup country and delivery destination are structured for handoff.</text>
-        <text x="14" y="78" fill="#8a93a8" data-dynamic="voice-meta">Action: update_ghl -> format_lead -> email_client</text>
+        <text x="14" y="60" fill="#e7ebf3" data-dynamic="voice-line">Weight, load size and lane details are ready for handoff.</text>
+        <text x="14" y="78" fill="#8a93a8" data-dynamic="voice-meta">Action: collect freight data -> email client</text>
         <g class="voice-action-chip" data-option="won" role="button" tabindex="0" transform="translate(382,13)"><rect width="54" height="24" rx="7"></rect><text x="27" y="16" text-anchor="middle">Won</text></g>
         <g class="voice-action-chip" data-option="follow" role="button" tabindex="0" transform="translate(446,13)"><rect width="68" height="24" rx="7"></rect><text x="34" y="16" text-anchor="middle">Follow-up</text></g>
       </g>
@@ -69,62 +71,97 @@ const voiceCrmDiagram = `
   </div>`;
 
 const analyzerDiagram = `
-  <div class="interactive-diagram analyzer-diagram" data-state="overview">
-    <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" aria-label="Interactive business analyzer workflow">
+  <div class="interactive-diagram analyzer-diagram structured-analyzer" data-state="overview">
+    <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" aria-label="Interactive AI business analyzer workflow">
       <defs>
         <linearGradient id="analyzerGrad" x1="0" x2="1"><stop offset="0" stop-color="oklch(0.82 0.14 210)"></stop><stop offset="1" stop-color="oklch(0.72 0.18 290)"></stop></linearGradient>
+        <filter id="analyzerDepth" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#000" flood-opacity=".28"></feDropShadow></filter>
       </defs>
-      <g font-family="JetBrains Mono" font-size="10">
-        <rect x="22" y="22" width="556" height="40" rx="11" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.16)"></rect>
-        <circle cx="42" cy="42" r="7" fill="none" stroke="oklch(0.82 0.14 210)" stroke-width="1.5"></circle>
-        <text x="62" y="46" fill="#e7ebf3">https://acme-robotics.com</text>
-        <g class="analyzer-control" data-option="overview" role="button" tabindex="0" transform="translate(480,30)">
-          <rect class="control-box" width="82" height="24" rx="7" fill="url(#analyzerGrad)"></rect>
-          <text x="41" y="16" text-anchor="middle" fill="#05060a" font-weight="700">ANALYZE</text>
+      <g opacity=".3">
+        <path d="M42 220 L286 136 L556 220 L318 306 Z" fill="oklch(0.82 0.14 210 / .055)" stroke="rgba(255,255,255,.1)"></path>
+      </g>
+
+      <g font-family="JetBrains Mono" font-size="9">
+        <rect class="analyzer-url" x="34" y="28" width="532" height="38" rx="11"></rect>
+        <circle cx="52" cy="47" r="6" fill="none" stroke="oklch(0.82 0.14 210)" stroke-width="1.5"></circle>
+        <text x="70" y="51" fill="#e7ebf3">https://acme-robotics.com</text>
+        <g class="analyzer-control" data-option="overview" role="button" tabindex="0" transform="translate(458,34)">
+          <rect class="control-box" width="92" height="26" rx="8"></rect>
+          <text class="analyzer-button-label" x="46" y="17" text-anchor="middle">ANALYZE</text>
         </g>
       </g>
 
-      <g class="analyzer-gauge" transform="translate(150,185)">
-        <circle r="74" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="10"></circle>
-        <circle class="gauge-ring" r="74" fill="none" stroke="url(#analyzerGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="130" transform="rotate(-90)"></circle>
-        <text y="-8" text-anchor="middle" font-family="Space Grotesk" font-size="34" fill="#e7ebf3" data-dynamic="score">72</text>
-        <text y="14" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#8a93a8">AI SCORE / 100</text>
-        <text y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="oklch(0.82 0.14 210)" data-dynamic="status">brand audit ready</text>
+      <g class="analyzer-rails" fill="none" stroke="url(#analyzerGrad)" stroke-linecap="round">
+        <path d="M108 140 H172"></path>
+        <path d="M278 140 H342"></path>
+        <path d="M448 140 H500"></path>
+        <path d="M222 180 V220"></path>
+        <path d="M392 180 V220"></path>
+        <path d="M108 284 H500"></path>
+      </g>
+      <g class="moving-packets">
+        <circle r="3" fill="oklch(0.82 0.14 210)"><animateMotion dur="4.8s" repeatCount="indefinite" path="M108 140 H500"></animateMotion></circle>
+        <circle r="3" fill="oklch(0.72 0.18 290)"><animateMotion dur="4.8s" begin="1.2s" repeatCount="indefinite" path="M108 284 H500"></animateMotion></circle>
       </g>
 
-      <g transform="translate(280,94)" font-family="JetBrains Mono" font-size="10">
-        <g class="analyzer-card" data-option="seo" role="button" tabindex="0" transform="translate(0,0)">
-          <rect width="280" height="58" rx="10"></rect>
-          <text x="14" y="21" fill="#5c6478" font-size="8">SEO AUDIT</text>
-          <text x="14" y="39" fill="#e7ebf3" font-family="Space Grotesk" font-size="12" data-dynamic="seo-title">Missing meta on 14 pages</text>
-          <text x="14" y="52" fill="#8a93a8" data-dynamic="seo-sub">Fix -> +18% organic est.</text>
-          <text x="248" y="35" text-anchor="middle" fill="oklch(0.82 0.14 80)">WARN</text>
+      <g class="analyzer-score-card" transform="translate(36,96)" font-family="JetBrains Mono" font-size="9" data-option="overview" role="button" tabindex="0">
+        <rect class="analyzer-card-bg" width="130" height="94" rx="13" filter="url(#analyzerDepth)"></rect>
+        <circle class="gauge-bg" cx="36" cy="45" r="26"></circle>
+        <circle class="gauge-ring" cx="36" cy="45" r="26" fill="none" stroke="url(#analyzerGrad)" stroke-width="6" stroke-linecap="round" stroke-dasharray="164" stroke-dashoffset="46" transform="rotate(-90 36 45)"></circle>
+        <text x="36" y="49" text-anchor="middle" font-family="Space Grotesk" font-size="18" fill="#e7ebf3" data-dynamic="score">82</text>
+        <text class="label-kicker" x="72" y="32">AI SCORE</text>
+        <text class="label-copy" x="72" y="50" data-dynamic="status">analysis ready</text>
+        <text class="label-copy" x="72" y="65">100-point</text>
+        <text class="label-copy" x="72" y="78">audit</text>
+      </g>
+
+      <g font-family="JetBrains Mono" font-size="9">
+        <g class="analyzer-card" data-option="seo" role="button" tabindex="0" transform="translate(184,100)" filter="url(#analyzerDepth)">
+          <rect class="analyzer-card-bg" width="118" height="82" rx="12"></rect>
+          <text class="label-kicker" x="14" y="24">01 CRAWL</text>
+          <text class="label-title" x="14" y="48">SEO Audit</text>
+          <text class="label-copy" x="14" y="66">meta, speed, pages</text>
         </g>
-        <g class="analyzer-card" data-option="competitor" role="button" tabindex="0" transform="translate(0,74)">
-          <rect width="280" height="58" rx="10"></rect>
-          <text x="14" y="21" fill="#5c6478" font-size="8">COMPETITOR GAP</text>
-          <text x="14" y="39" fill="#e7ebf3" font-family="Space Grotesk" font-size="12">No pricing page vs. 4 rivals</text>
-          <text x="14" y="52" fill="#8a93a8">Draft copy auto-generated</text>
-          <text x="248" y="35" text-anchor="middle" fill="oklch(0.82 0.14 210)">DRAFT</text>
+        <g class="analyzer-card" data-option="competitor" role="button" tabindex="0" transform="translate(342,100)" filter="url(#analyzerDepth)">
+          <rect class="analyzer-card-bg" width="118" height="82" rx="12"></rect>
+          <text class="label-kicker" x="14" y="24">02 MARKET</text>
+          <text class="label-title" x="14" y="48">Competitors</text>
+          <text class="label-copy" x="14" y="66">offers + gaps</text>
         </g>
-        <g class="analyzer-card" data-option="video" role="button" tabindex="0" transform="translate(0,148)">
-          <rect width="280" height="58" rx="10"></rect>
-          <text x="14" y="21" fill="#5c6478" font-size="8">VIDEO GEN</text>
-          <text x="14" y="39" fill="#e7ebf3" font-family="Space Grotesk" font-size="12">30s ad - brand palette locked</text>
-          <text x="14" y="52" fill="#8a93a8">Render queued - est. 4m</text>
-          <text x="248" y="35" text-anchor="middle" fill="oklch(0.78 0.14 155)">READY</text>
+        <g class="analyzer-card" data-option="report" role="button" tabindex="0" transform="translate(480,100)" filter="url(#analyzerDepth)">
+          <rect class="analyzer-card-bg" width="82" height="82" rx="12"></rect>
+          <text class="label-kicker" x="12" y="24">03 LLM</text>
+          <text class="label-title" x="12" y="48">Report</text>
+          <text class="label-copy" x="12" y="66">ranked fixes</text>
+        </g>
+
+        <g class="analyzer-output" data-option="video" role="button" tabindex="0" transform="translate(172,220)" filter="url(#analyzerDepth)">
+          <rect class="analyzer-card-bg" width="288" height="78" rx="13"></rect>
+          <text class="label-kicker" x="16" y="24">04 CONTENT ENGINE</text>
+          <text class="label-title" x="16" y="48">Video + Ad Kit</text>
+          <text class="label-copy" x="16" y="65">script, palette and render queue</text>
+          <rect class="video-pill" x="218" y="18" width="54" height="24" rx="8"></rect>
+          <text x="245" y="34" text-anchor="middle" fill="oklch(0.78 0.14 155)" font-size="8">READY</text>
+        </g>
+        <g class="analyzer-output" data-option="overview" role="button" tabindex="0" transform="translate(36,248)" filter="url(#analyzerDepth)">
+          <rect class="analyzer-card-bg" width="106" height="50" rx="12"></rect>
+          <text class="label-kicker" x="14" y="21">INPUTS</text>
+          <text class="label-copy" x="14" y="38">URL + sitemap</text>
+        </g>
+        <g class="analyzer-output" data-option="report" role="button" tabindex="0" transform="translate(480,220)" filter="url(#analyzerDepth)">
+          <rect class="analyzer-card-bg" width="82" height="78" rx="12"></rect>
+          <text class="label-kicker" x="12" y="24">OUTPUT</text>
+          <text class="label-title" x="12" y="48">PDF Deck</text>
+          <text class="label-copy" x="12" y="65">handoff</text>
         </g>
       </g>
 
-      <g transform="translate(38,320)" font-family="JetBrains Mono" font-size="9">
-        <text fill="#5c6478" data-dynamic="preview-label">RENDER_PREVIEW.mp4</text>
-        <g transform="translate(0,13)">
-          <g class="analyzer-thumb" data-option="seo" role="button" tabindex="0"><rect width="92" height="52" rx="7"></rect><circle cx="46" cy="26" r="10" fill="oklch(0.72 0.18 290 / .5)"></circle></g>
-          <g class="analyzer-thumb" data-option="competitor" role="button" tabindex="0" transform="translate(104,0)"><rect width="92" height="52" rx="7"></rect><rect x="18" y="19" width="56" height="14" rx="3" fill="oklch(0.82 0.14 210 / .35)"></rect></g>
-          <g class="analyzer-thumb" data-option="overview" role="button" tabindex="0" transform="translate(208,0)"><rect width="92" height="52" rx="7"></rect><polygon points="38,17 62,26 38,36" fill="oklch(0.82 0.14 210)"></polygon></g>
-          <g class="analyzer-thumb" data-option="video" role="button" tabindex="0" transform="translate(312,0)"><rect width="92" height="52" rx="7"></rect><rect x="18" y="16" width="56" height="20" rx="3" fill="oklch(0.78 0.14 155 / .38)"></rect></g>
-          <g class="analyzer-thumb" data-option="report" role="button" tabindex="0" transform="translate(416,0)"><rect width="92" height="52" rx="7"></rect><path d="M24 39 L38 22 L52 30 L70 16 L82 39 Z" fill="oklch(0.82 0.14 80 / .38)"></path></g>
-        </g>
+      <g class="analyzer-insight-panel" transform="translate(36,336)" font-family="JetBrains Mono" font-size="9">
+        <rect class="analyzer-card-bg" width="526" height="42" rx="12"></rect>
+        <text class="label-kicker" x="16" y="17">SELECTED DELIVERABLE</text>
+        <text class="state-meta" x="16" y="32" data-dynamic="preview-label">FULL_AUDIT_RUN.json</text>
+        <text x="382" y="26" fill="#5c6478">Impact ranked</text>
+        <text x="472" y="26" fill="oklch(0.82 0.14 210)">+18% est.</text>
       </g>
     </svg>
   </div>`;
@@ -156,18 +193,18 @@ const confidentialWorkflowDiagram = `
         <path class="workflow-link route-callback" d="M85 304 C137 367 298 376 394 330"></path>
       </g>
       <g font-family="JetBrains Mono" font-size="10">
-        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(34,82)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 68,0 114,20 46,40"></polygon><polygon class="node-face" points="46,40 114,20 114,74 46,96"></polygon><polygon class="node-side" points="0,18 46,40 46,96 0,68"></polygon><text x="57" y="36" text-anchor="middle">SHEETS TRIGGER</text><text x="57" y="56" text-anchor="middle" font-family="Space Grotesk" font-size="12">New Lead</text><text x="57" y="73" text-anchor="middle">Sync empty</text></g>
-        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(199,58)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 68,0 114,20 46,40"></polygon><polygon class="node-face" points="46,40 114,20 114,74 46,96"></polygon><polygon class="node-side" points="0,18 46,40 46,96 0,68"></polygon><text x="57" y="36" text-anchor="middle">LEAD ID GATE</text><text x="57" y="56" text-anchor="middle" font-family="Space Grotesk" font-size="12">Filter</text><text x="57" y="73" text-anchor="middle">skip duplicates</text></g>
-        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(368,82)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 68,0 114,20 46,40"></polygon><polygon class="node-face" points="46,40 114,20 114,74 46,96"></polygon><polygon class="node-side" points="0,18 46,40 46,96 0,68"></polygon><text x="57" y="36" text-anchor="middle">PHONE DEDUPE</text><text x="57" y="56" text-anchor="middle" font-family="Space Grotesk" font-size="12">Clean Numbers</text><text x="57" y="73" text-anchor="middle">P1 / P2 / mobile</text></g>
-        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(484,117)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 58,2 96,20 38,38"></polygon><polygon class="node-face" points="38,38 96,20 96,72 38,92"></polygon><polygon class="node-side" points="0,18 38,38 38,92 0,66"></polygon><text x="48" y="35" text-anchor="middle">SYNTHFLOW</text><text x="48" y="54" text-anchor="middle" font-family="Space Grotesk" font-size="12">AI Call</text><text x="48" y="70" text-anchor="middle">REST v2</text></g>
-        <g class="workflow-node" data-option="post" role="button" tabindex="0" transform="translate(406,230)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 70,0 116,22 46,42"></polygon><polygon class="node-face" points="46,42 116,22 116,76 46,98"></polygon><polygon class="node-side" points="0,18 46,42 46,98 0,70"></polygon><text x="58" y="38" text-anchor="middle">WEBHOOK</text><text x="58" y="57" text-anchor="middle" font-family="Space Grotesk" font-size="12">Call Result</text><text x="58" y="74" text-anchor="middle">status + duration</text></g>
-        <g class="workflow-node" data-option="post" role="button" tabindex="0" transform="translate(228,218)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 70,0 116,22 46,42"></polygon><polygon class="node-face" points="46,42 116,22 116,76 46,98"></polygon><polygon class="node-side" points="0,18 46,42 46,98 0,70"></polygon><text x="58" y="38" text-anchor="middle">LOOKUP + SWITCH</text><text x="58" y="57" text-anchor="middle" font-family="Space Grotesk" font-size="12">Match Lead ID</text><text x="58" y="74" text-anchor="middle">which number?</text></g>
-        <g class="workflow-node" data-option="post" role="button" tabindex="0" transform="translate(50,242)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 70,0 116,22 46,42"></polygon><polygon class="node-face" points="46,42 116,22 116,76 46,98"></polygon><polygon class="node-side" points="0,18 46,42 46,98 0,70"></polygon><text x="58" y="38" text-anchor="middle">OUTCOME GATE</text><text x="58" y="57" text-anchor="middle" font-family="Space Grotesk" font-size="12">Decide Route</text><text x="58" y="74" text-anchor="middle">complete / retry</text></g>
+        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(34,82)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 68,0 114,20 46,40"></polygon><polygon class="node-face" points="46,40 114,20 114,74 46,96"></polygon><polygon class="node-side" points="0,18 46,40 46,96 0,68"></polygon><rect class="diagram-label-plate" x="22" y="38" width="78" height="46" rx="7"></rect><text x="61" y="52" text-anchor="middle" font-size="8">SHEETS</text><text x="61" y="68" text-anchor="middle" font-family="Space Grotesk" font-size="12">New Lead</text><text x="61" y="81" text-anchor="middle" font-size="8">sync empty</text></g>
+        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(199,58)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 68,0 114,20 46,40"></polygon><polygon class="node-face" points="46,40 114,20 114,74 46,96"></polygon><polygon class="node-side" points="0,18 46,40 46,96 0,68"></polygon><rect class="diagram-label-plate" x="22" y="38" width="78" height="46" rx="7"></rect><text x="61" y="52" text-anchor="middle" font-size="8">LEAD GATE</text><text x="61" y="68" text-anchor="middle" font-family="Space Grotesk" font-size="12">Filter</text><text x="61" y="81" text-anchor="middle" font-size="8">dedupe</text></g>
+        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(368,82)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 68,0 114,20 46,40"></polygon><polygon class="node-face" points="46,40 114,20 114,74 46,96"></polygon><polygon class="node-side" points="0,18 46,40 46,96 0,68"></polygon><rect class="diagram-label-plate" x="22" y="38" width="78" height="46" rx="7"></rect><text x="61" y="52" text-anchor="middle" font-size="8">PHONE</text><text x="61" y="68" text-anchor="middle" font-family="Space Grotesk" font-size="12">Dedupe</text><text x="61" y="81" text-anchor="middle" font-size="8">P1 / P2 / mobile</text></g>
+        <g class="workflow-node" data-option="pre" role="button" tabindex="0" transform="translate(484,117)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 58,2 96,20 38,38"></polygon><polygon class="node-face" points="38,38 96,20 96,72 38,92"></polygon><polygon class="node-side" points="0,18 38,38 38,92 0,66"></polygon><rect class="diagram-label-plate" x="16" y="36" width="68" height="42" rx="7"></rect><text x="50" y="49" text-anchor="middle" font-size="8">SYNTHFLOW</text><text x="50" y="64" text-anchor="middle" font-family="Space Grotesk" font-size="12">AI Call</text><text x="50" y="76" text-anchor="middle" font-size="8">REST v2</text></g>
+        <g class="workflow-node" data-option="post" role="button" tabindex="0" transform="translate(406,230)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 70,0 116,22 46,42"></polygon><polygon class="node-face" points="46,42 116,22 116,76 46,98"></polygon><polygon class="node-side" points="0,18 46,42 46,98 0,70"></polygon><rect class="diagram-label-plate" x="24" y="42" width="78" height="44" rx="7"></rect><text x="63" y="55" text-anchor="middle" font-size="8">WEBHOOK</text><text x="63" y="70" text-anchor="middle" font-family="Space Grotesk" font-size="12">Result</text><text x="63" y="83" text-anchor="middle" font-size="8">status + time</text></g>
+        <g class="workflow-node" data-option="post" role="button" tabindex="0" transform="translate(228,218)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 70,0 116,22 46,42"></polygon><polygon class="node-face" points="46,42 116,22 116,76 46,98"></polygon><polygon class="node-side" points="0,18 46,42 46,98 0,70"></polygon><rect class="diagram-label-plate" x="24" y="42" width="78" height="44" rx="7"></rect><text x="63" y="55" text-anchor="middle" font-size="8">LOOKUP</text><text x="63" y="70" text-anchor="middle" font-family="Space Grotesk" font-size="12">Match ID</text><text x="63" y="83" text-anchor="middle" font-size="8">which number?</text></g>
+        <g class="workflow-node" data-option="post" role="button" tabindex="0" transform="translate(50,242)" filter="url(#nodeDepth4)"><polygon class="node-top" points="0,18 70,0 116,22 46,42"></polygon><polygon class="node-face" points="46,42 116,22 116,76 46,98"></polygon><polygon class="node-side" points="0,18 46,42 46,98 0,70"></polygon><rect class="diagram-label-plate" x="24" y="42" width="78" height="44" rx="7"></rect><text x="63" y="55" text-anchor="middle" font-size="8">OUTCOME</text><text x="63" y="70" text-anchor="middle" font-family="Space Grotesk" font-size="12">Route</text><text x="63" y="83" text-anchor="middle" font-size="8">done / retry</text></g>
       </g>
       <g class="workflow-actions" font-family="JetBrains Mono" font-size="9">
-        <g data-option="retry" role="button" tabindex="0" transform="translate(236,304)"><rect class="action-chip" width="76" height="28" rx="8"></rect><text x="38" y="18" text-anchor="middle">Wait + Retry</text></g>
-        <g data-option="next" role="button" tabindex="0" transform="translate(318,294)"><rect class="action-chip" width="86" height="28" rx="8"></rect><text x="43" y="18" text-anchor="middle">Try Next #</text></g>
-        <g data-option="callback" role="button" tabindex="0" transform="translate(416,304)"><rect class="action-chip" width="92" height="28" rx="8"></rect><text x="46" y="18" text-anchor="middle">Callback Flag</text></g>
+        <g data-option="retry" role="button" tabindex="0" transform="translate(202,330)"><rect class="action-chip" width="86" height="24" rx="8"></rect><text x="43" y="16" text-anchor="middle">Wait + Retry</text></g>
+        <g data-option="next" role="button" tabindex="0" transform="translate(304,330)"><rect class="action-chip" width="86" height="24" rx="8"></rect><text x="43" y="16" text-anchor="middle">Try Next #</text></g>
+        <g data-option="callback" role="button" tabindex="0" transform="translate(406,330)"><rect class="action-chip" width="96" height="24" rx="8"></rect><text x="48" y="16" text-anchor="middle">Callback Flag</text></g>
       </g>
       <g transform="translate(42,362)" font-family="JetBrains Mono" font-size="9">
         <rect class="workflow-audit" width="516" height="38" rx="10"></rect>
@@ -177,7 +214,6 @@ const confidentialWorkflowDiagram = `
     </svg>
   </div>`;
 
-const html = "<!-- PROJECTS -->\r\n<section id=\"work\">\r\n  <div class=\"section-head reveal\">\r\n    <div>\r\n      <div class=\"section-num\">/ 04 &mdash; selected work</div>\r\n      <h2 class=\"section-title\">Things I've <span class=\"outline\">shipped</span></h2>\r\n    </div>\r\n    <p class=\"section-desc\">Three production systems that span voice AI, lead-gen automation and generative business intelligence.</p>\r\n  </div>\r\n\r\n  <div class=\"projects\">\r\n\r\n    <!-- P01: Voice Agent -->\r\n    <div class=\"project reveal\">\r\n      <div>\r\n        <div class=\"p-head\"><span class=\"num\">P/01</span><span>Voice AI &middot; CRM Automation</span><span class=\"bar\"></span></div>\r\n        <h3 class=\"p-title\">AI Voice Agent<br>for end-to-end customer calls</h3>\r\n        <p class=\"p-desc\">A conversational voice agent that handles natural-language phone calls from prospects and hands the rest of the funnel off to a CRM &mdash; lead qualification, pipeline moves and appointment booking happen without a human dialer.</p>\r\n        <ul class=\"p-bullets\">\r\n          <li><b>Synthflow</b> powers the real-time voice model &mdash; barge-in, turn-taking, natural prosody.</li>\r\n          <li><b>GoHighLevel</b> runs the post-call automation: tags, stages, calendar booking, SMS follow-ups.</li>\r\n          <li>Full loop from cold phone ring to booked demo, zero SDR keystrokes.</li>\r\n        </ul>\r\n        <div class=\"p-stack\"><span>Synthflow</span><span>GoHighLevel</span><span>OpenAI</span><span>Webhooks</span><span>Twilio</span></div>\r\n      </div>\r\n      <div class=\"p-diagram\">\r\n        <!-- SVG: call -> voice agent -> CRM pipeline -->\r\n        <svg viewBox=\"0 0 600 420\" xmlns=\"http://www.w3.org/2000/svg\">\r\n          <defs>\r\n            <linearGradient id=\"g1\" x1=\"0\" x2=\"1\">\r\n              <stop offset=\"0\" stop-color=\"oklch(0.82 0.14 210)\"></stop>\r\n              <stop offset=\"1\" stop-color=\"oklch(0.72 0.18 290)\"></stop>\r\n            </linearGradient>\r\n            <filter id=\"glow\"><feGaussianBlur stdDeviation=\"3\" result=\"b\"></feGaussianBlur><feMerge><feMergeNode in=\"b\"></feMergeNode><feMergeNode in=\"SourceGraphic\"></feMergeNode></feMerge></filter>\r\n          </defs>\r\n          <!-- caller -->\r\n          <g>\r\n            <rect x=\"20\" y=\"170\" width=\"100\" height=\"80\" rx=\"12\" fill=\"rgba(255,255,255,0.03)\" stroke=\"rgba(255,255,255,0.2)\"></rect>\r\n            <circle cx=\"70\" cy=\"200\" r=\"14\" fill=\"none\" stroke=\"#e7ebf3\" stroke-width=\"1.5\"></circle>\r\n            <path d=\"M52 232 q18 -16 36 0\" fill=\"none\" stroke=\"#e7ebf3\" stroke-width=\"1.5\"></path>\r\n            <text x=\"70\" y=\"265\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#8a93a8\">CALLER</text>\r\n          </g>\r\n          <!-- wave line -->\r\n          <path d=\"M120 210 Q 160 180, 200 210 T 280 210\" fill=\"none\" stroke=\"url(#g1)\" stroke-width=\"2\" filter=\"url(#glow)\"></path>\r\n          <circle cx=\"200\" cy=\"210\" r=\"3\" fill=\"oklch(0.82 0.14 210)\"><animate attributeName=\"cx\" values=\"130;280;130\" dur=\"3s\" repeatCount=\"indefinite\"></animate></circle>\r\n\r\n          <!-- synthflow orb -->\r\n          <g transform=\"translate(340,210)\">\r\n            <circle r=\"70\" fill=\"none\" stroke=\"url(#g1)\" stroke-width=\"1\" opacity=\".4\"></circle>\r\n            <circle r=\"54\" fill=\"none\" stroke=\"url(#g1)\" stroke-width=\"1\" opacity=\".6\"></circle>\r\n            <circle r=\"38\" fill=\"rgba(255,255,255,0.02)\" stroke=\"url(#g1)\" stroke-width=\"1.5\" filter=\"url(#glow)\"></circle>\r\n            <g stroke=\"url(#g1)\" stroke-width=\"1.2\" fill=\"none\" opacity=\".9\">\r\n              <path d=\"M-20 0 V-14\"></path><path d=\"M-12 0 V-22\"></path><path d=\"M-4 0 V-28\"></path><path d=\"M4 0 V-22\"></path><path d=\"M12 0 V-16\"></path><path d=\"M20 0 V-10\"></path>\r\n              <path d=\"M-20 0 V14\"></path><path d=\"M-12 0 V22\"></path><path d=\"M-4 0 V28\"></path><path d=\"M4 0 V22\"></path><path d=\"M12 0 V16\"></path><path d=\"M20 0 V10\"></path>\r\n            </g>\r\n            <text y=\"60\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"oklch(0.82 0.14 210)\">SYNTHFLOW &middot; VOICE LLM</text>\r\n          </g>\r\n\r\n          <!-- arrow -->\r\n          <path d=\"M410 210 H 470\" stroke=\"url(#g1)\" stroke-width=\"1.5\" fill=\"none\"></path>\r\n          <path d=\"M465 206 L 472 210 L 465 214\" stroke=\"url(#g1)\" stroke-width=\"1.5\" fill=\"none\"></path>\r\n\r\n          <!-- CRM pipeline -->\r\n          <g transform=\"translate(480,100)\">\r\n            <text x=\"50\" y=\"-10\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#8a93a8\">GHL &middot; PIPELINE</text>\r\n            <rect width=\"100\" height=\"32\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.2)\"></rect>\r\n            <text x=\"50\" y=\"21\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#e7ebf3\">Lead capture</text>\r\n\r\n            <rect y=\"42\" width=\"100\" height=\"32\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.2)\"></rect>\r\n            <text x=\"50\" y=\"63\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#e7ebf3\">Qualified</text>\r\n\r\n            <rect y=\"84\" width=\"100\" height=\"32\" rx=\"6\" fill=\"oklch(0.82 0.14 210 / .15)\" stroke=\"oklch(0.82 0.14 210)\"></rect>\r\n            <text x=\"50\" y=\"105\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"oklch(0.82 0.14 210)\">Booked</text>\r\n\r\n            <rect y=\"126\" width=\"100\" height=\"32\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.2)\"></rect>\r\n            <text x=\"50\" y=\"147\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#e7ebf3\">Won</text>\r\n\r\n            <rect y=\"168\" width=\"100\" height=\"32\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.2)\"></rect>\r\n            <text x=\"50\" y=\"189\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#e7ebf3\">Follow-up</text>\r\n          </g>\r\n\r\n          <!-- transcript panel -->\r\n          <g transform=\"translate(40,310)\">\r\n            <rect width=\"520\" height=\"80\" rx=\"10\" fill=\"rgba(255,255,255,0.02)\" stroke=\"rgba(255,255,255,0.12)\"></rect>\r\n            <text x=\"12\" y=\"18\" font-family=\"JetBrains Mono\" font-size=\"9\" fill=\"#5c6478\">LIVE_TRANSCRIPT.log</text>\r\n            <text x=\"12\" y=\"38\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"oklch(0.82 0.14 210)\">&#9656; agent: \"Hi, this is Aria from the clinic &mdash; is now a good time&copy;\"</text>\r\n            <text x=\"12\" y=\"54\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#e7ebf3\">&#9656; caller: \"Yeah, I wanted to book a consult for next Tuesday.\"</text>\r\n            <text x=\"12\" y=\"70\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#8a93a8\">&#9656; action_taken: calendar.create_event &rarr; GHL stage=Booked &#10003;</text>\r\n          </g>\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    <!-- P02: Job & Lead Scraper -->\r\n    <div class=\"project reverse reveal\">\r\n      <div>\r\n        <div class=\"p-head\"><span class=\"num\">P/02</span><span>Workflow Automation &middot; Lead Gen</span><span class=\"bar\"></span></div>\r\n        <h3 class=\"p-title\">Automated Job &amp; Lead Scraper<br>with enrichment + outreach</h3>\r\n        <p class=\"p-desc\">An end-to-end n8n pipeline that scrapes fresh job postings from LinkedIn, enriches company + candidate data, and fires personalized cold emails &mdash; replacing a team of researchers with a graph that runs on a cron.</p>\r\n        <ul class=\"p-bullets\">\r\n          <li><b>Apify actors</b> pull targeted job listings and company signals from LinkedIn at scale.</li>\r\n          <li><b>Clay</b> enriches rows with firmographics, tech stack and verified contact info.</li>\r\n          <li><b>Instantly</b> sends sequenced, personalized outreach &mdash; all orchestrated inside an <b>n8n</b> graph.</li>\r\n        </ul>\r\n        <div class=\"p-stack\"><span>n8n</span><span>Apify</span><span>Clay</span><span>Instantly</span><span>LinkedIn</span><span>Postgres</span></div>\r\n      </div>\r\n      <div class=\"p-diagram\">\r\n        <!-- SVG: n8n-style node graph -->\r\n        <svg viewBox=\"0 0 600 420\" xmlns=\"http://www.w3.org/2000/svg\">\r\n          <defs>\r\n            <linearGradient id=\"g2\" x1=\"0\" x2=\"1\"><stop offset=\"0\" stop-color=\"oklch(0.82 0.14 210)\"></stop><stop offset=\"1\" stop-color=\"oklch(0.72 0.18 290)\"></stop></linearGradient>\r\n          </defs>\r\n          <!-- connectors -->\r\n          <g stroke=\"url(#g2)\" stroke-width=\"1.5\" fill=\"none\" opacity=\".8\">\r\n            <path d=\"M120 90 C 180 90, 180 210, 240 210\"></path>\r\n            <path d=\"M240 210 H 360\"></path>\r\n            <path d=\"M360 210 C 420 210, 420 110, 480 110\"></path>\r\n            <path d=\"M360 210 C 420 210, 420 310, 480 310\"></path>\r\n            <path d=\"M120 330 C 180 330, 180 210, 240 210\"></path>\r\n          </g>\r\n          <!-- moving packets -->\r\n          <circle r=\"3\" fill=\"oklch(0.82 0.14 210)\"><animateMotion dur=\"3s\" repeatCount=\"indefinite\" path=\"M120 90 C 180 90, 180 210, 240 210 H 360\"></animateMotion></circle>\r\n          <circle r=\"3\" fill=\"oklch(0.72 0.18 290)\"><animateMotion dur=\"3s\" begin=\"1s\" repeatCount=\"indefinite\" path=\"M360 210 C 420 210, 420 110, 480 110\"></animateMotion></circle>\r\n\r\n          <!-- Nodes -->\r\n          <g font-family=\"JetBrains Mono\" font-size=\"10\">\r\n            <!-- trigger -->\r\n            <g transform=\"translate(40,60)\">\r\n              <rect width=\"80\" height=\"60\" rx=\"12\" fill=\"rgba(255,255,255,0.04)\" stroke=\"oklch(0.82 0.14 210)\"></rect>\r\n              <text x=\"40\" y=\"22\" text-anchor=\"middle\" fill=\"#5c6478\" font-size=\"8\">TRIGGER</text>\r\n              <text x=\"40\" y=\"40\" text-anchor=\"middle\" fill=\"#e7ebf3\">CRON</text>\r\n              <text x=\"40\" y=\"53\" text-anchor=\"middle\" fill=\"#8a93a8\" font-size=\"8\">every 6h</text>\r\n            </g>\r\n            <g transform=\"translate(40,300)\">\r\n              <rect width=\"80\" height=\"60\" rx=\"12\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.2)\"></rect>\r\n              <text x=\"40\" y=\"22\" text-anchor=\"middle\" fill=\"#5c6478\" font-size=\"8\">INPUT</text>\r\n              <text x=\"40\" y=\"40\" text-anchor=\"middle\" fill=\"#e7ebf3\">ICP list</text>\r\n              <text x=\"40\" y=\"53\" text-anchor=\"middle\" fill=\"#8a93a8\" font-size=\"8\">Sheets</text>\r\n            </g>\r\n\r\n            <!-- Apify scraper -->\r\n            <g transform=\"translate(240,180)\">\r\n              <rect x=\"-60\" y=\"0\" width=\"120\" height=\"60\" rx=\"12\" fill=\"oklch(0.82 0.14 210 / .1)\" stroke=\"oklch(0.82 0.14 210)\"></rect>\r\n              <text x=\"0\" y=\"22\" text-anchor=\"middle\" fill=\"oklch(0.82 0.14 210)\" font-size=\"8\">SCRAPE</text>\r\n              <text x=\"0\" y=\"40\" text-anchor=\"middle\" fill=\"#e7ebf3\">Apify &middot; LinkedIn</text>\r\n              <text x=\"0\" y=\"53\" text-anchor=\"middle\" fill=\"#8a93a8\" font-size=\"8\">actor.run()</text>\r\n            </g>\r\n\r\n            <!-- Clay enrich -->\r\n            <g transform=\"translate(360,180)\">\r\n              <rect x=\"-60\" y=\"0\" width=\"120\" height=\"60\" rx=\"12\" fill=\"oklch(0.72 0.18 290 / .1)\" stroke=\"oklch(0.72 0.18 290)\"></rect>\r\n              <text x=\"0\" y=\"22\" text-anchor=\"middle\" fill=\"oklch(0.72 0.18 290)\" font-size=\"8\">ENRICH</text>\r\n              <text x=\"0\" y=\"40\" text-anchor=\"middle\" fill=\"#e7ebf3\">Clay tables</text>\r\n              <text x=\"0\" y=\"53\" text-anchor=\"middle\" fill=\"#8a93a8\" font-size=\"8\">+ firmographics</text>\r\n            </g>\r\n\r\n            <!-- Instantly send -->\r\n            <g transform=\"translate(480,80)\">\r\n              <rect width=\"80\" height=\"60\" rx=\"12\" fill=\"rgba(255,255,255,0.04)\" stroke=\"oklch(0.78 0.14 155)\"></rect>\r\n              <text x=\"40\" y=\"22\" text-anchor=\"middle\" fill=\"oklch(0.78 0.14 155)\" font-size=\"8\">SEND</text>\r\n              <text x=\"40\" y=\"40\" text-anchor=\"middle\" fill=\"#e7ebf3\">Instantly</text>\r\n              <text x=\"40\" y=\"53\" text-anchor=\"middle\" fill=\"#8a93a8\" font-size=\"8\">sequence #3</text>\r\n            </g>\r\n\r\n            <!-- Postgres store -->\r\n            <g transform=\"translate(480,280)\">\r\n              <rect width=\"80\" height=\"60\" rx=\"12\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.2)\"></rect>\r\n              <text x=\"40\" y=\"22\" text-anchor=\"middle\" fill=\"#5c6478\" font-size=\"8\">STORE</text>\r\n              <text x=\"40\" y=\"40\" text-anchor=\"middle\" fill=\"#e7ebf3\">Postgres</text>\r\n              <text x=\"40\" y=\"53\" text-anchor=\"middle\" fill=\"#8a93a8\" font-size=\"8\">leads.events</text>\r\n            </g>\r\n          </g>\r\n\r\n          <!-- Stats ribbon -->\r\n          <g transform=\"translate(40,380)\">\r\n            <text font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#5c6478\">\r\n              <tspan x=\"0\">RUNS/WK &#9656; <tspan fill=\"#e7ebf3\">28</tspan></tspan>\r\n              <tspan x=\"130\">LEADS &#9656; <tspan fill=\"#e7ebf3\">3.4k</tspan></tspan>\r\n              <tspan x=\"230\">REPLIES &#9656; <tspan fill=\"oklch(0.82 0.14 210)\">11.2%</tspan></tspan>\r\n              <tspan x=\"370\">TIME SAVED &#9656; <tspan fill=\"oklch(0.78 0.14 155)\">~22 hrs</tspan></tspan>\r\n            </text>\r\n          </g>\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    <!-- P03: Business Analyzer -->\r\n    <div class=\"project reveal\">\r\n      <div>\r\n        <div class=\"p-head\"><span class=\"num\">P/03</span><span>Generative AI &middot; Business Intelligence</span><span class=\"bar\"></span></div>\r\n        <h3 class=\"p-title\">AI Business Analyzer<br>&amp; Content Generator</h3>\r\n        <p class=\"p-desc\">Point it at a company URL and it audits services, SEO and competitive positioning &mdash; then drops an AI-generated marketing video calibrated to the brand's voice and the gaps it found.</p>\r\n        <ul class=\"p-bullets\">\r\n          <li>Scrapes sitemap + page content, runs SEO &amp; competitor checks with LLM-scored ratings.</li>\r\n          <li>Produces an <b>actionable improvement report</b> ranked by revenue impact.</li>\r\n          <li>Generative <b>video module</b> spins up tailored marketing assets from the audit output.</li>\r\n        </ul>\r\n        <div class=\"p-stack\"><span>Python</span><span>OpenAI API</span><span>LangChain</span><span>Playwright</span><span>FFmpeg</span><span>GCP</span></div>\r\n      </div>\r\n      <div class=\"p-diagram\">\r\n        <!-- SVG: dashboard mock with score gauge + modules -->\r\n        <svg viewBox=\"0 0 600 420\" xmlns=\"http://www.w3.org/2000/svg\">\r\n          <defs>\r\n            <linearGradient id=\"g3\" x1=\"0\" x2=\"1\"><stop offset=\"0\" stop-color=\"oklch(0.82 0.14 210)\"></stop><stop offset=\"1\" stop-color=\"oklch(0.72 0.18 290)\"></stop></linearGradient>\r\n          </defs>\r\n          <!-- URL bar -->\r\n          <g>\r\n            <rect x=\"20\" y=\"20\" width=\"560\" height=\"36\" rx=\"10\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n            <circle cx=\"40\" cy=\"38\" r=\"6\" fill=\"none\" stroke=\"oklch(0.82 0.14 210)\" stroke-width=\"1.5\"></circle>\r\n            <text x=\"60\" y=\"42\" font-family=\"JetBrains Mono\" font-size=\"11\" fill=\"#e7ebf3\">https://acme-robotics.com</text>\r\n            <rect x=\"480\" y=\"28\" width=\"90\" height=\"20\" rx=\"6\" fill=\"url(#g3)\"></rect>\r\n            <text x=\"525\" y=\"42\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"10\" fill=\"#05060a\" font-weight=\"600\">ANALYZE</text>\r\n          </g>\r\n\r\n          <!-- Score gauge -->\r\n          <g transform=\"translate(140,180)\">\r\n            <circle r=\"70\" fill=\"none\" stroke=\"rgba(255,255,255,0.08)\" stroke-width=\"10\"></circle>\r\n            <circle r=\"70\" fill=\"none\" stroke=\"url(#g3)\" stroke-width=\"10\" stroke-linecap=\"round\" stroke-dasharray=\"440\" stroke-dashoffset=\"140\" transform=\"rotate(-90)\"></circle>\r\n            <text y=\"-6\" text-anchor=\"middle\" font-family=\"Space Grotesk\" font-size=\"34\" fill=\"#e7ebf3\" font-weight=\"500\">72</text>\r\n            <text y=\"14\" text-anchor=\"middle\" font-family=\"JetBrains Mono\" font-size=\"9\" fill=\"#8a93a8\">AI SCORE / 100</text>\r\n          </g>\r\n\r\n          <!-- Module cards -->\r\n          <g font-family=\"JetBrains Mono\" font-size=\"10\" transform=\"translate(260,80)\">\r\n            <g transform=\"translate(0,0)\">\r\n              <rect width=\"300\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.03)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n              <text x=\"14\" y=\"24\" fill=\"#5c6478\" font-size=\"9\">SEO AUDIT</text>\r\n              <text x=\"14\" y=\"42\" fill=\"#e7ebf3\" font-size=\"12\" font-family=\"Space Grotesk\">Missing meta on 14 pages</text>\r\n              <text x=\"14\" y=\"56\" fill=\"#8a93a8\">Fix &rarr; +18% organic est.</text>\r\n              <rect x=\"240\" y=\"22\" width=\"44\" height=\"20\" rx=\"4\" fill=\"oklch(0.82 0.14 80 / .2)\" stroke=\"oklch(0.82 0.14 80)\"></rect>\r\n              <text x=\"262\" y=\"36\" text-anchor=\"middle\" fill=\"oklch(0.82 0.14 80)\" font-size=\"9\">WARN</text>\r\n            </g>\r\n            <g transform=\"translate(0,78)\">\r\n              <rect width=\"300\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.03)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n              <text x=\"14\" y=\"24\" fill=\"#5c6478\" font-size=\"9\">COMPETITOR GAP</text>\r\n              <text x=\"14\" y=\"42\" fill=\"#e7ebf3\" font-size=\"12\" font-family=\"Space Grotesk\">No pricing page vs. 4 rivals</text>\r\n              <text x=\"14\" y=\"56\" fill=\"#8a93a8\">Draft copy auto-generated</text>\r\n              <rect x=\"240\" y=\"22\" width=\"44\" height=\"20\" rx=\"4\" fill=\"oklch(0.82 0.14 210 / .2)\" stroke=\"oklch(0.82 0.14 210)\"></rect>\r\n              <text x=\"262\" y=\"36\" text-anchor=\"middle\" fill=\"oklch(0.82 0.14 210)\" font-size=\"9\">DRAFT</text>\r\n            </g>\r\n            <g transform=\"translate(0,156)\">\r\n              <rect width=\"300\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.03)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n              <text x=\"14\" y=\"24\" fill=\"#5c6478\" font-size=\"9\">VIDEO GEN</text>\r\n              <text x=\"14\" y=\"42\" fill=\"#e7ebf3\" font-size=\"12\" font-family=\"Space Grotesk\">30s ad &middot; brand palette locked</text>\r\n              <text x=\"14\" y=\"56\" fill=\"#8a93a8\">Render queued &middot; est. 4m</text>\r\n              <rect x=\"240\" y=\"22\" width=\"44\" height=\"20\" rx=\"4\" fill=\"oklch(0.78 0.14 155 / .2)\" stroke=\"oklch(0.78 0.14 155)\"></rect>\r\n              <text x=\"262\" y=\"36\" text-anchor=\"middle\" fill=\"oklch(0.78 0.14 155)\" font-size=\"9\">READY</text>\r\n            </g>\r\n          </g>\r\n\r\n          <!-- video filmstrip -->\r\n          <g transform=\"translate(40,320)\">\r\n            <text font-family=\"JetBrains Mono\" font-size=\"9\" fill=\"#5c6478\">RENDER_PREVIEW.mp4</text>\r\n            <g transform=\"translate(0,10)\">\r\n              <rect x=\"0\" y=\"0\" width=\"90\" height=\"60\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n              <rect x=\"100\" y=\"0\" width=\"90\" height=\"60\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n              <rect x=\"200\" y=\"0\" width=\"90\" height=\"60\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"oklch(0.82 0.14 210)\"></rect>\r\n              <rect x=\"300\" y=\"0\" width=\"90\" height=\"60\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n              <rect x=\"400\" y=\"0\" width=\"90\" height=\"60\" rx=\"6\" fill=\"rgba(255,255,255,0.04)\" stroke=\"rgba(255,255,255,0.15)\"></rect>\r\n              <!-- play icon on middle -->\r\n              <polygon points=\"238,20 260,30 238,40\" fill=\"oklch(0.82 0.14 210)\"></polygon>\r\n              <!-- mock thumbnails: simple geometric -->\r\n              <circle cx=\"45\" cy=\"30\" r=\"10\" fill=\"oklch(0.72 0.18 290 / .4)\"></circle>\r\n              <rect x=\"115\" y=\"20\" width=\"60\" height=\"20\" rx=\"3\" fill=\"oklch(0.82 0.14 210 / .3)\"></rect>\r\n              <rect x=\"315\" y=\"15\" width=\"60\" height=\"30\" rx=\"3\" fill=\"oklch(0.78 0.14 155 / .3)\"></rect>\r\n              <path d=\"M420 45 L435 25 L450 35 L470 20 L480 45 Z\" fill=\"oklch(0.82 0.14 80 / .3)\"></path>\r\n            </g>\r\n          </g>\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n  </div>\r\n</section>";
 
 const voiceAutomationProject = `
 
@@ -346,83 +382,299 @@ const voiceAutomationProject = `
       </div>
     </div>`;
 
-const enhancedHtml = html
-  .replace(
-    "Three production systems that span voice AI, lead-gen automation and generative business intelligence.",
-    "Four confidential client and company projects spanning voice AI, workflow automation, lead generation and generative business intelligence."
-  )
-  .replace(
-    '<div class="p-head"><span class="num">P/01</span><span>Voice AI &middot; CRM Automation</span><span class="bar"></span></div>',
-    '<div class="p-head"><span class="num">P/01</span><span>Confidential Client Project &middot; Freight Voice AI</span><span class="bar"></span></div>'
-  )
-  .replace(
-    '<h3 class="p-title">AI Voice Agent<br>for end-to-end customer calls</h3>',
-    '<h3 class="p-title">Freight AI Voice Agent<br>for outbound lead qualification</h3>'
-  )
-  .replace(
-    '<p class="p-desc">A conversational voice agent that handles natural-language phone calls from prospects and hands the rest of the funnel off to a CRM &mdash; lead qualification, pipeline moves and appointment booking happen without a human dialer.</p>',
-    '<p class="p-desc">A confidential freight and logistics client project built with <b>GoHighLevel workflow automation</b> and <b>Synthflow AI</b>. The agent calls CRM leads, asks whether they need container or freight shipping, qualifies interested prospects, captures shipment details, and emails the qualified lead summary to the client inbox.</p>'
-  )
-  .replace(
-    '<li><b>Synthflow</b> powers the real-time voice model &mdash; barge-in, turn-taking, natural prosody.</li>\r\n          <li><b>GoHighLevel</b> runs the post-call automation: tags, stages, calendar booking, SMS follow-ups.</li>\r\n          <li>Full loop from cold phone ring to booked demo, zero SDR keystrokes.</li>',
-    '<li><b>Synthflow</b> runs the outbound voice call and asks freight qualification questions in a natural call flow.</li>\r\n          <li><b>GoHighLevel</b> orchestrates CRM lead intake, call routing, retry logic, status updates and handoff automation.</li>\r\n          <li>Captures weight, shipment size, pickup country/location and destination country/location, then emails qualified lead details to the client.</li>'
-  )
-  .replace(
-    '<div class="p-stack"><span>Synthflow</span><span>GoHighLevel</span><span>OpenAI</span><span>Webhooks</span><span>Twilio</span></div>',
-    '<div class="p-stack"><span>Synthflow AI</span><span>GoHighLevel</span><span>CRM Automation</span><span>Webhooks</span><span>Email Handoff</span><span>Retry Logic</span></div>'
-  )
-  .replace(
-    '<div class="p-head"><span class="num">P/02</span><span>Workflow Automation &middot; Lead Gen</span><span class="bar"></span></div>',
-    '<div class="p-head"><span class="num">P/02</span><span>Confidential Client Project &middot; Lead Generation</span><span class="bar"></span></div>'
-  )
-  .replace(
-    '<p class="p-desc">An end-to-end n8n pipeline that scrapes fresh job postings from LinkedIn, enriches company + candidate data, and fires personalized cold emails &mdash; replacing a team of researchers with a graph that runs on a cron.</p>',
-    '<p class="p-desc">A confidential client automation project: an end-to-end n8n pipeline that scrapes fresh job postings from LinkedIn, enriches company and candidate data, and launches personalized outreach while keeping client-specific sources and targeting details private.</p>'
-  )
-  .replace(
-    '<div class="p-head"><span class="num">P/03</span><span>Generative AI &middot; Business Intelligence</span><span class="bar"></span></div>',
-    '<div class="p-head"><span class="num">P/03</span><span>Confidential Company Project &middot; Business Intelligence</span><span class="bar"></span></div>'
-  )
-  .replace(
-    '<p class="p-desc">Point it at a company URL and it audits services, SEO and competitive positioning &mdash; then drops an AI-generated marketing video calibrated to the brand\'s voice and the gaps it found.</p>',
-    '<p class="p-desc">A confidential company-facing AI system that audits a business URL for services, SEO and competitive positioning, then produces an improvement report and AI-generated marketing video calibrated to the brand voice and identified growth gaps.</p>'
-  )
-  .replace("\r\n\r\n  </div>\r\n</section>", `${voiceAutomationProject}\r\n\r\n  </div>\r\n</section>`);
+const freightWorkflowDiagram = `
+  <div class="interactive-diagram voice-crm-diagram clean-workflow-diagram" data-state="booked">
+    <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" aria-label="Interactive freight outbound AI voice workflow">
+      <defs>
+        <linearGradient id="freightLine" x1="0" x2="1"><stop offset="0" stop-color="oklch(0.82 0.14 210)"></stop><stop offset="1" stop-color="oklch(0.72 0.18 290)"></stop></linearGradient>
+        <linearGradient id="freightGreen" x1="0" x2="1"><stop offset="0" stop-color="oklch(0.78 0.14 155)"></stop><stop offset="1" stop-color="oklch(0.82 0.14 210)"></stop></linearGradient>
+        <filter id="cleanDepth" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="11" flood-color="#000" flood-opacity=".3"></feDropShadow></filter>
+      </defs>
+
+      <g opacity=".34">
+        <path d="M42 236 L280 156 L556 226 L320 314 Z" fill="oklch(0.82 0.14 210 / .06)" stroke="rgba(255,255,255,.11)"></path>
+        <path d="M84 222 L360 300" stroke="rgba(255,255,255,.08)"></path>
+        <path d="M160 196 L438 272" stroke="rgba(255,255,255,.08)"></path>
+      </g>
+
+      <g class="voice-main-links clean-links" fill="none" stroke-linecap="round">
+        <path class="voice-link link-capture link-qualify link-booked link-won link-follow" d="M112 138 C148 118 170 118 206 138"></path>
+        <path class="voice-link link-qualify link-booked link-won link-follow" d="M322 138 C352 118 376 118 406 138"></path>
+        <path class="voice-link link-booked link-won link-follow" d="M502 138 C522 138 536 138 556 138"></path>
+      </g>
+
+      <g font-family="JetBrains Mono" font-size="9">
+        <g class="voice-node clean-node" transform="translate(40,86)" data-option="capture" role="button" tabindex="0" aria-label="Show lead capture state">
+          <rect class="flow-card node-panel" width="110" height="94" rx="12" filter="url(#cleanDepth)"></rect>
+          <text class="label-kicker" x="16" y="24">01 CRM</text>
+          <text class="label-title" x="16" y="48">Lead Queue</text>
+          <text class="label-copy" x="16" y="66">freight prospects</text>
+          <text class="label-copy" x="16" y="80">ready to dial</text>
+        </g>
+
+        <g class="voice-node clean-node" transform="translate(206,86)" data-option="qualify" role="button" tabindex="0" aria-label="Show qualification state">
+          <rect class="flow-card node-panel" width="130" height="94" rx="12" filter="url(#cleanDepth)"></rect>
+          <text class="label-kicker" x="16" y="24">02 SYNTHFLOW</text>
+          <text class="label-title" x="16" y="48">Outbound Call</text>
+          <text class="label-copy" x="16" y="66">interest + freight</text>
+          <text class="label-copy" x="16" y="80">requirements</text>
+        </g>
+
+        <g class="voice-node clean-node" transform="translate(406,86)" data-option="booked" role="button" tabindex="0" aria-label="Show qualified handoff state">
+          <rect class="flow-card node-panel" width="122" height="94" rx="12" filter="url(#cleanDepth)"></rect>
+          <text class="label-kicker" x="16" y="24">03 GHL FLOW</text>
+          <text class="label-title" x="16" y="48">Qualify + Mail</text>
+          <text class="label-copy" x="16" y="66">lane, weight, size</text>
+          <text class="label-copy" x="16" y="80">sent to client</text>
+        </g>
+      </g>
+
+      <g class="pipeline-panel" transform="translate(456,205)" font-family="JetBrains Mono" font-size="9">
+        <text class="label-kicker" x="0" y="-12">FREIGHT CRM</text>
+        <g class="voice-pipeline-step" data-option="capture" role="button" tabindex="0" transform="translate(0,0)"><rect class="step-box" width="96" height="28" rx="8"></rect><text x="48" y="18" text-anchor="middle">Imported</text></g>
+        <g class="voice-pipeline-step" data-option="qualify" role="button" tabindex="0" transform="translate(0,36)"><rect class="step-box" width="96" height="28" rx="8"></rect><text x="48" y="18" text-anchor="middle">Interested</text></g>
+        <g class="voice-pipeline-step" data-option="booked" role="button" tabindex="0" transform="translate(0,72)"><rect class="step-box" width="96" height="28" rx="8"></rect><text x="48" y="18" text-anchor="middle">Qualified</text></g>
+        <g class="voice-pipeline-step" data-option="won" role="button" tabindex="0" transform="translate(0,108)"><rect class="step-box" width="96" height="28" rx="8"></rect><text x="48" y="18" text-anchor="middle">Client emailed</text></g>
+        <g class="voice-pipeline-step" data-option="follow" role="button" tabindex="0" transform="translate(0,144)"><rect class="step-box" width="96" height="28" rx="8"></rect><text x="48" y="18" text-anchor="middle">Retry branch</text></g>
+      </g>
+
+      <g transform="translate(40,222)" font-family="JetBrains Mono" font-size="9">
+        <rect class="state-card voice-state-panel" width="382" height="126" rx="14"></rect>
+        <text class="label-kicker" x="18" y="26">LIVE CALL STATE</text>
+        <text class="state-title" x="18" y="52" data-dynamic="voice-title">Qualified freight details captured</text>
+        <text class="state-copy" x="18" y="75" data-dynamic="voice-line">Weight, load size and lane details are ready for handoff.</text>
+        <text class="state-meta" x="18" y="98" data-dynamic="voice-meta">Action: collect freight data -> email client</text>
+        <g class="voice-action-chip" data-option="won" role="button" tabindex="0" transform="translate(260,20)"><rect width="48" height="24" rx="8"></rect><text x="24" y="16" text-anchor="middle">Won</text></g>
+        <g class="voice-action-chip" data-option="follow" role="button" tabindex="0" transform="translate(316,20)"><rect width="54" height="24" rx="8"></rect><text x="27" y="16" text-anchor="middle">Retry</text></g>
+      </g>
+    </svg>
+  </div>`;
+
+const leadScraperDiagram = `
+  <div class="professional-workflow lead-scraper-diagram">
+    <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" aria-label="Lead generation workflow diagram">
+      <defs>
+        <linearGradient id="leadLine" x1="0" x2="1"><stop offset="0" stop-color="oklch(0.82 0.14 210)"></stop><stop offset="1" stop-color="oklch(0.72 0.18 290)"></stop></linearGradient>
+        <filter id="leadDepth" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#000" flood-opacity=".28"></feDropShadow></filter>
+      </defs>
+      <g opacity=".32">
+        <path d="M48 235 L288 146 L552 232 L316 322 Z" fill="oklch(0.82 0.14 210 / .055)" stroke="rgba(255,255,255,.1)"></path>
+      </g>
+      <g class="clean-links" fill="none" stroke="url(#leadLine)" stroke-linecap="round">
+        <path d="M132 116 C164 116 178 146 204 178"></path>
+        <path d="M132 304 C164 304 178 268 204 232"></path>
+        <path d="M304 205 L344 205"></path>
+        <path d="M444 190 C474 168 496 146 520 122"></path>
+        <path d="M444 220 C474 248 496 276 520 304"></path>
+      </g>
+      <g class="moving-packets">
+        <circle r="3" fill="oklch(0.82 0.14 210)"><animateMotion dur="4s" repeatCount="indefinite" path="M132 116 C164 116 178 146 204 178 L304 205 L344 205"></animateMotion></circle>
+        <circle r="3" fill="oklch(0.72 0.18 290)"><animateMotion dur="4s" begin="1s" repeatCount="indefinite" path="M444 190 C474 168 496 146 520 122"></animateMotion></circle>
+      </g>
+      <g font-family="JetBrains Mono" font-size="9">
+        <g class="clean-node" transform="translate(44,72)"><rect class="flow-card" width="96" height="72" rx="12" filter="url(#leadDepth)"></rect><text class="label-kicker" x="16" y="23">TRIGGER</text><text class="label-title" x="16" y="47">Cron Run</text><text class="label-copy" x="16" y="62">every 6h</text></g>
+        <g class="clean-node" transform="translate(44,276)"><rect class="flow-card" width="96" height="72" rx="12" filter="url(#leadDepth)"></rect><text class="label-kicker" x="16" y="23">INPUT</text><text class="label-title" x="16" y="47">ICP List</text><text class="label-copy" x="16" y="62">filters + roles</text></g>
+        <g class="clean-node" transform="translate(204,166)"><rect class="flow-card" width="118" height="82" rx="12" filter="url(#leadDepth)"></rect><text class="label-kicker" x="16" y="24">SCRAPE</text><text class="label-title" x="16" y="48">Apify Actor</text><text class="label-copy" x="16" y="66">LinkedIn jobs</text></g>
+        <g class="clean-node" transform="translate(344,166)"><rect class="flow-card" width="118" height="82" rx="12" filter="url(#leadDepth)"></rect><text class="label-kicker" x="16" y="24">ENRICH</text><text class="label-title" x="16" y="48">Clay Table</text><text class="label-copy" x="16" y="66">firmographics</text></g>
+        <g class="clean-node" transform="translate(488,76)"><rect class="flow-card" width="88" height="72" rx="12" filter="url(#leadDepth)"></rect><text class="label-kicker" x="14" y="23">OUTREACH</text><text class="label-title" x="14" y="47">Instantly</text><text class="label-copy" x="14" y="62">sequence</text></g>
+        <g class="clean-node" transform="translate(488,276)"><rect class="flow-card" width="88" height="72" rx="12" filter="url(#leadDepth)"></rect><text class="label-kicker" x="14" y="23">AUDIT</text><text class="label-title" x="14" y="47">Postgres</text><text class="label-copy" x="14" y="62">events</text></g>
+      </g>
+      <g class="metric-ribbon" transform="translate(48,374)" font-family="JetBrains Mono" font-size="9">
+        <text x="0" y="0">RUNS/WK <tspan>28</tspan></text>
+        <text x="126" y="0">LEADS <tspan>3.4k</tspan></text>
+        <text x="246" y="0">REPLIES <tspan>11.2%</tspan></text>
+        <text x="386" y="0">TIME SAVED <tspan>22 hrs</tspan></text>
+      </g>
+    </svg>
+  </div>`;
+
+const cleanConfidentialWorkflowDiagram = `
+  <div class="interactive-diagram workflow-3d clean-workflow-diagram" data-state="pre">
+    <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" aria-label="Interactive n8n and Synthflow workflow diagram">
+      <defs>
+        <linearGradient id="cleanWfLine" x1="0" x2="1"><stop offset="0" stop-color="oklch(0.82 0.14 210)"></stop><stop offset="1" stop-color="oklch(0.72 0.18 290)"></stop></linearGradient>
+        <linearGradient id="cleanWfGreen" x1="0" x2="1"><stop offset="0" stop-color="oklch(0.78 0.14 155)"></stop><stop offset="1" stop-color="oklch(0.82 0.14 210)"></stop></linearGradient>
+        <filter id="wfCleanDepth" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="11" flood-color="#000" flood-opacity=".3"></feDropShadow></filter>
+      </defs>
+      <g opacity=".32">
+        <path d="M40 155 L288 82 L558 156 L316 236 Z" fill="oklch(0.82 0.14 210 / .055)" stroke="rgba(255,255,255,.1)"></path>
+        <path d="M40 300 L288 228 L558 300 L316 380 Z" fill="oklch(0.72 0.18 290 / .045)" stroke="rgba(255,255,255,.09)"></path>
+      </g>
+      <g font-family="JetBrains Mono" font-size="9">
+        <text class="label-kicker" x="42" y="30">CONFIDENTIAL_CLIENT.voice_ops</text>
+        <text class="state-title" x="344" y="30" data-dynamic="workflow-caption">pre-call intake path selected</text>
+        <g class="workflow-toggle" data-option="pre" role="button" tabindex="0" transform="translate(42,48)"><rect width="112" height="24" rx="8"></rect><text x="56" y="16" text-anchor="middle">PRE-CALL</text></g>
+        <g class="workflow-toggle" data-option="post" role="button" tabindex="0" transform="translate(164,48)"><rect width="112" height="24" rx="8"></rect><text x="56" y="16" text-anchor="middle">POST-CALL</text></g>
+      </g>
+      <g class="workflow-links clean-links rail-links" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path class="workflow-link route-pre" d="M94 160 V178 H496 V160"></path>
+        <path class="workflow-link route-post" d="M496 204 V190 H94 V204"></path>
+        <path class="workflow-link route-retry" d="M228 276 V290 H223 V300"></path>
+        <path class="workflow-link route-next" d="M228 276 V290 H335 V300"></path>
+        <path class="workflow-link route-callback" d="M228 276 V290 H447 V300"></path>
+      </g>
+      <g class="workflow-rail-joints">
+        <circle cx="94" cy="178" r="3"></circle>
+        <circle cx="228" cy="178" r="3"></circle>
+        <circle cx="362" cy="178" r="3"></circle>
+        <circle cx="496" cy="178" r="3"></circle>
+        <circle cx="496" cy="190" r="3"></circle>
+        <circle cx="362" cy="190" r="3"></circle>
+        <circle cx="228" cy="190" r="3"></circle>
+        <circle cx="94" cy="190" r="3"></circle>
+      </g>
+      <g class="workflow-rail-packets">
+        <circle r="3.4" fill="oklch(0.82 0.14 210)"><animateMotion dur="4.8s" repeatCount="indefinite" path="M94 160 V178 H496 V160"></animateMotion></circle>
+        <circle r="3.4" fill="oklch(0.72 0.18 290)"><animateMotion dur="4.8s" begin="1.2s" repeatCount="indefinite" path="M496 204 V190 H94 V204"></animateMotion></circle>
+        <circle r="3.2" fill="oklch(0.78 0.14 155)"><animateMotion dur="4.4s" begin=".6s" repeatCount="indefinite" path="M228 276 V290 H447 V300"></animateMotion></circle>
+      </g>
+      <g font-family="JetBrains Mono" font-size="9">
+        <g class="workflow-node clean-node" data-option="pre" role="button" tabindex="0" transform="translate(40,88)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">01 SHEETS</text><text class="label-title" x="14" y="47">New Lead</text><text class="label-copy" x="14" y="62">empty sync row</text></g>
+        <g class="workflow-node clean-node" data-option="pre" role="button" tabindex="0" transform="translate(174,88)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">02 FILTER</text><text class="label-title" x="14" y="47">Lead Gate</text><text class="label-copy" x="14" y="62">valid ID only</text></g>
+        <g class="workflow-node clean-node" data-option="pre" role="button" tabindex="0" transform="translate(308,88)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">03 PHONE</text><text class="label-title" x="14" y="47">Dedupe</text><text class="label-copy" x="14" y="62">P1 / P2 / mobile</text></g>
+        <g class="workflow-node clean-node" data-option="pre" role="button" tabindex="0" transform="translate(442,88)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">04 VOICE</text><text class="label-title" x="14" y="47">Synthflow</text><text class="label-copy" x="14" y="62">outbound call</text></g>
+        <g class="workflow-node clean-node" data-option="post" role="button" tabindex="0" transform="translate(442,204)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">05 WEBHOOK</text><text class="label-title" x="14" y="47">Call Result</text><text class="label-copy" x="14" y="62">status + time</text></g>
+        <g class="workflow-node clean-node" data-option="post" role="button" tabindex="0" transform="translate(308,204)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">06 LOOKUP</text><text class="label-title" x="14" y="47">Match Lead</text><text class="label-copy" x="14" y="62">which number?</text></g>
+        <g class="workflow-node clean-node" data-option="post" role="button" tabindex="0" transform="translate(174,204)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">07 ROUTER</text><text class="label-title" x="14" y="47">Outcome</text><text class="label-copy" x="14" y="62">done or retry</text></g>
+        <g class="workflow-node clean-node" data-option="post" role="button" tabindex="0" transform="translate(40,204)" filter="url(#wfCleanDepth)"><rect class="flow-card" width="108" height="72" rx="12"></rect><text class="label-kicker" x="14" y="23">08 SHEETS</text><text class="label-title" x="14" y="47">Writeback</text><text class="label-copy" x="14" y="62">audit trail</text></g>
+      </g>
+      <g class="workflow-actions clean-actions" font-family="JetBrains Mono" font-size="9">
+        <g data-option="retry" role="button" tabindex="0" transform="translate(174,300)"><rect class="action-chip" width="98" height="28" rx="9"></rect><text x="49" y="18" text-anchor="middle">Wait + Retry</text></g>
+        <g data-option="next" role="button" tabindex="0" transform="translate(286,300)"><rect class="action-chip" width="98" height="28" rx="9"></rect><text x="49" y="18" text-anchor="middle">Next Number</text></g>
+        <g data-option="callback" role="button" tabindex="0" transform="translate(398,300)"><rect class="action-chip" width="98" height="28" rx="9"></rect><text x="49" y="18" text-anchor="middle">Callback</text></g>
+      </g>
+      <g transform="translate(40,350)" font-family="JetBrains Mono" font-size="9">
+        <rect class="workflow-audit state-card" width="510" height="42" rx="12"></rect>
+        <text class="label-kicker" x="16" y="17">AUDIT WRITEBACK</text>
+        <text class="state-meta" x="16" y="32" data-dynamic="workflow-audit">sync status -> selected number -> call started -> row updated</text>
+      </g>
+    </svg>
+  </div>`;
+
+const enhancedHtml = `
+<!-- PROJECTS -->
+<section id="work">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-num">/ 04 &mdash; selected work</div>
+      <h2 class="section-title">Things I've <span class="outline">shipped</span></h2>
+    </div>
+    <p class="section-desc">Confidential client and company work, presented as crisp system stories: what entered the pipeline, how the automation moved, and what the handoff produced.</p>
+  </div>
+
+  <div class="case-study-strip reveal">
+    <div class="case-study-note">
+      <span class="case-dot"></span>
+      <span>Interactive diagrams are simplified from production workflows for confidentiality.</span>
+    </div>
+    <div class="case-study-stats">
+      <span><b>4</b> AI systems</span>
+      <span><b>3</b> automation stacks</span>
+      <span><b>Live</b> workflow logic</span>
+    </div>
+  </div>
+
+  <div class="projects">
+    <div class="project reveal">
+      <div class="p-copy">
+        <div class="p-head"><span class="num">P/01</span><span>Confidential Client Project &middot; Freight Voice AI</span><span class="bar"></span></div>
+        <h3 class="p-title">Freight AI Voice Agent<br>for outbound lead qualification</h3>
+        <p class="p-desc">A confidential freight and logistics client project built with <b>GoHighLevel workflow automation</b> and <b>Synthflow AI</b>. The agent calls CRM leads, asks whether they need container or freight shipping, qualifies interested prospects, captures shipment details, and emails the qualified lead summary to the client inbox.</p>
+        <div class="p-metrics"><span><b>CRM</b> lead intake</span><span><b>Voice</b> qualification</span><span><b>Email</b> handoff</span></div>
+        <ul class="p-bullets">
+          <li><b>Synthflow</b> runs the outbound voice call and asks freight qualification questions in a natural call flow.</li>
+          <li><b>GoHighLevel</b> orchestrates CRM lead intake, call routing, retry logic, status updates and handoff automation.</li>
+          <li>Captures weight, shipment size, pickup country/location and destination country/location, then emails qualified lead details to the client.</li>
+        </ul>
+        <div class="p-stack"><span>Synthflow AI</span><span>GoHighLevel</span><span>CRM Automation</span><span>Webhooks</span><span>Email Handoff</span><span>Retry Logic</span></div>
+      </div>
+      <div class="p-diagram" data-label="Freight Voice Flow"></div>
+    </div>
+
+    <div class="project reverse reveal">
+      <div class="p-copy">
+        <div class="p-head"><span class="num">P/02</span><span>Confidential Client Project &middot; Lead Generation</span><span class="bar"></span></div>
+        <h3 class="p-title">Automated Job &amp; Lead Scraper<br>with enrichment + outreach</h3>
+        <p class="p-desc">A confidential client automation project: an end-to-end n8n pipeline that scrapes fresh job postings from LinkedIn, enriches company and candidate data, and launches personalized outreach while keeping client-specific sources and targeting details private.</p>
+        <div class="p-metrics"><span><b>Scrape</b> jobs</span><span><b>Enrich</b> contacts</span><span><b>Launch</b> outreach</span></div>
+        <ul class="p-bullets">
+          <li><b>Apify actors</b> pull targeted job listings and company signals from LinkedIn at scale.</li>
+          <li><b>Clay</b> enriches rows with firmographics, tech stack and verified contact info.</li>
+          <li><b>Instantly</b> sends sequenced, personalized outreach &mdash; all orchestrated inside an <b>n8n</b> graph.</li>
+        </ul>
+        <div class="p-stack"><span>n8n</span><span>Apify</span><span>Clay</span><span>Instantly</span><span>LinkedIn</span><span>Postgres</span></div>
+      </div>
+      <div class="p-diagram" data-label="Lead Engine"></div>
+    </div>
+
+    <div class="project reveal">
+      <div class="p-copy">
+        <div class="p-head"><span class="num">P/03</span><span>Confidential Company Project &middot; Business Intelligence</span><span class="bar"></span></div>
+        <h3 class="p-title">AI Business Analyzer<br>&amp; Content Generator</h3>
+        <p class="p-desc">A confidential company-facing AI system that audits a business URL for services, SEO and competitive positioning, then produces an improvement report and AI-generated marketing video calibrated to the brand voice and identified growth gaps.</p>
+        <div class="p-metrics"><span><b>Audit</b> website</span><span><b>Score</b> gaps</span><span><b>Generate</b> assets</span></div>
+        <ul class="p-bullets">
+          <li>Scrapes sitemap + page content, runs SEO &amp; competitor checks with LLM-scored ratings.</li>
+          <li>Produces an <b>actionable improvement report</b> ranked by revenue impact.</li>
+          <li>Generative <b>video module</b> spins up tailored marketing assets from the audit output.</li>
+        </ul>
+        <div class="p-stack"><span>Python</span><span>OpenAI API</span><span>LangChain</span><span>Playwright</span><span>FFmpeg</span><span>GCP</span></div>
+      </div>
+      <div class="p-diagram" data-label="Business Intelligence"></div>
+    </div>
+
+    <div class="project reverse reveal workflow-project">
+      <div class="p-copy">
+        <div class="p-head"><span class="num">P/04</span><span>Confidential Client Project &middot; Voice Automation</span><span class="bar"></span></div>
+        <h3 class="p-title">n8n + Synthflow Voice Agent<br>Automation Suite</h3>
+        <p class="p-desc">A production voice-agent automation built for a confidential client engagement, with identifying details intentionally omitted. The system replaced a fragile CRM workflow with two n8n flows that intake leads from Google Sheets, trigger Synthflow AI calls, and process every post-call outcome through retry, callback and audit logic.</p>
+        <div class="p-metrics"><span><b>Pre-call</b> routing</span><span><b>Webhook</b> results</span><span><b>Audit</b> writeback</span></div>
+        <ul class="p-bullets">
+          <li><b>Pre-call workflow</b> watches new sheet rows, validates lead IDs, cleans phone fields and dials the first unique available number through Synthflow.</li>
+          <li><b>Post-call workflow</b> receives Synthflow webhooks, identifies which number was contacted, then routes success, retries, callbacks and next-number escalation.</li>
+          <li><b>Operational controls</b> include per-number retry limits, callback flags, deduplication and real-time Google Sheets write-back for a clean audit trail.</li>
+        </ul>
+        <div class="p-stack"><span>n8n</span><span>Synthflow AI</span><span>Google Sheets</span><span>Webhooks</span><span>JavaScript</span><span>REST API</span></div>
+      </div>
+      <div class="p-diagram workflow-3d" data-label="Voice Ops Suite"></div>
+    </div>
+  </div>
+</section>`;
 
 const voiceStates = {
   capture: {
     title: 'Freight lead imported from CRM',
-    line: 'GHL workflow selects an outbound freight lead and sends contact context into Synthflow.',
-    meta: 'Action: CRM lead -> GHL trigger -> Synthflow outbound call',
+    line: 'GHL selects the freight lead and sends context into Synthflow.',
+    meta: 'Action: CRM lead -> outbound call',
   },
   qualify: {
     title: 'Shipping interest confirmed',
-    line: 'The agent asks whether the prospect needs container or freight shipping support.',
-    meta: 'Action: detect_yes -> qualify_intent -> continue freight script',
+    line: 'The agent confirms container or freight shipping interest.',
+    meta: 'Action: yes intent -> freight script',
   },
   booked: {
     title: 'Qualified freight details captured',
-    line: 'Weight, load size, pickup country and delivery destination are structured for handoff.',
-    meta: 'Action: collect_weight_size -> pickup_location -> destination_location',
+    line: 'Weight, load size and lane details are ready for handoff.',
+    meta: 'Action: collect freight data -> email client',
   },
   won: {
     title: 'Qualified lead emailed to client',
-    line: 'The completed freight lead summary is sent to the client inbox for sales follow-up.',
-    meta: 'Action: format_summary -> send_email -> update CRM stage',
+    line: 'The freight lead summary is sent to the client inbox.',
+    meta: 'Action: format summary -> update CRM',
   },
   follow: {
     title: 'Retry branch activated',
-    line: 'Busy lines, voicemail, failed calls, or first-call errors are routed into wait-and-redial logic.',
-    meta: 'Action: detect_call_error -> wait -> retry outbound call',
+    line: 'Busy, voicemail and failed calls move into retry logic.',
+    meta: 'Action: call error -> wait -> redial',
   },
 };
 
 const analyzerStates = {
-  overview: { score: '82', offset: '85', status: 'analysis refreshed', label: 'FULL_AUDIT_RUN.json' },
-  seo: { score: '68', offset: '150', status: 'SEO priority selected', label: 'SEO_FIX_QUEUE.md' },
-  competitor: { score: '74', offset: '122', status: 'competitor gap selected', label: 'POSITIONING_DRAFT.md' },
-  video: { score: '88', offset: '58', status: 'video render selected', label: 'RENDER_PREVIEW.mp4' },
-  report: { score: '91', offset: '40', status: 'executive report selected', label: 'IMPACT_REPORT.pdf' },
+  overview: { score: '82', offset: '30', status: 'analysis refreshed', label: 'FULL_AUDIT_RUN.json' },
+  seo: { score: '68', offset: '52', status: 'SEO priority selected', label: 'SEO_FIX_QUEUE.md' },
+  competitor: { score: '74', offset: '43', status: 'competitor gap selected', label: 'POSITIONING_DRAFT.md' },
+  video: { score: '88', offset: '20', status: 'video render selected', label: 'RENDER_PREVIEW.mp4' },
+  report: { score: '91', offset: '15', status: 'executive report selected', label: 'IMPACT_REPORT.pdf' },
 };
 
 const workflowStates = {
@@ -497,16 +749,23 @@ export default function WorkSection() {
   useEffect(() => {
     const projects = [...document.querySelectorAll('#work .project')];
     const voiceDiagram = projects[0]?.querySelector('.p-diagram');
+    const scraperDiagram = projects[1]?.querySelector('.p-diagram');
     const analyzerRoot = projects[2]?.querySelector('.p-diagram');
     const workflowDiagram = document.querySelector('.workflow-project .p-diagram');
+    let analyzerFlashTimer = 0;
 
-    if (voiceDiagram) voiceDiagram.innerHTML = voiceCrmDiagram;
+    if (voiceDiagram) voiceDiagram.innerHTML = freightWorkflowDiagram;
+    if (scraperDiagram) scraperDiagram.innerHTML = leadScraperDiagram;
     if (analyzerRoot) analyzerRoot.innerHTML = analyzerDiagram;
-    if (workflowDiagram) workflowDiagram.innerHTML = confidentialWorkflowDiagram;
+    if (workflowDiagram) workflowDiagram.innerHTML = cleanConfidentialWorkflowDiagram;
+
+    const voiceRoot = voiceDiagram?.querySelector('.voice-crm-diagram');
+    const analyzerDiagramRoot = analyzerRoot?.querySelector('.analyzer-diagram');
+    const workflowDiagramRoot = workflowDiagram?.querySelector('.workflow-3d');
 
     const cleanups = [
       bindStatefulDiagram(
-        document.querySelector('.voice-crm-diagram'),
+        voiceRoot,
         voiceStates,
         'booked',
         (root, state, data) => {
@@ -519,7 +778,7 @@ export default function WorkSection() {
         }
       ),
       bindStatefulDiagram(
-        document.querySelector('.analyzer-diagram'),
+        analyzerDiagramRoot,
         analyzerStates,
         'overview',
         (root, state, data) => {
@@ -527,12 +786,13 @@ export default function WorkSection() {
           setText(root, 'status', data.status);
           setText(root, 'preview-label', data.label);
           root.querySelector('.gauge-ring')?.setAttribute('stroke-dashoffset', data.offset);
+          if (analyzerFlashTimer) window.clearTimeout(analyzerFlashTimer);
           root.classList.add('is-processing');
-          window.setTimeout(() => root.classList.remove('is-processing'), 520);
+          analyzerFlashTimer = window.setTimeout(() => root.classList.remove('is-processing'), 520);
         }
       ),
       bindStatefulDiagram(
-        document.querySelector('.workflow-3d'),
+        workflowDiagramRoot,
         workflowStates,
         'pre',
         (root, state, data) => {
@@ -545,7 +805,10 @@ export default function WorkSection() {
       ),
     ];
 
-    return () => cleanups.forEach((cleanup) => cleanup());
+    return () => {
+      if (analyzerFlashTimer) window.clearTimeout(analyzerFlashTimer);
+      cleanups.forEach((cleanup) => cleanup());
+    };
   }, []);
 
   return <RawHtml html={enhancedHtml} />;

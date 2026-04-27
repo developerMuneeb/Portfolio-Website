@@ -12,6 +12,8 @@ legacy-index.html
 .env.*
 
 *-check.png
+*-check-*.png
+final-pass*.png
 about-identity-check.png
 hero-agentic-ai-check.png
 hero-cnn-hd-check.png

@@ -27,15 +27,14 @@ const html = `<!-- HERO -->
   <div>
     <span class="eyebrow"><span class="live"></span>AI &amp; AUTOMATION ENGINEER &middot; KARACHI, PK</span>
     <h1 class="hero-title">
-      Building <span class="outline">intelligent</span><br>
-      <span class="grad">agentic systems</span><br>
-      that ship.
+      <span class="grad">Muhammad Muneeb</span><br>
+      <span class="outline">AI systems</span><br>
+      that automate work.
     </h1>
     <p class="hero-sub">
-      I'm <b>Muhammad Muneeb</b> &mdash; an AI/ML engineer designing autonomous agents,
-      predictive models and end-to-end automation pipelines. Currently
-      <b>Associate AI Engineer at JBS Americas &amp; Europe</b>, helping agribusiness
-      teams ship AI that actually moves metrics.
+      AI/ML engineer designing autonomous agents, predictive models and end-to-end
+      automation pipelines. Currently <b>Associate AI Engineer at JBS Americas &amp; Europe</b>,
+      helping teams turn operational bottlenecks into reliable AI workflows.
     </p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="#work">
@@ -46,7 +45,7 @@ const html = `<!-- HERO -->
         Get in touch
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg>
       </a>
-      <a class="btn btn-resume" href="/resume/Muhammad-Muneeb-Resume.pdf" target="_blank" rel="noreferrer">
+      <a class="btn btn-resume" href="/resume/Muhammad-Muneeb-Resume.pdf" target="_blank" rel="noopener noreferrer">
         View resume
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5"></path><path d="M12 11v6"></path><path d="m9 14 3 3 3-3"></path></svg>
       </a>

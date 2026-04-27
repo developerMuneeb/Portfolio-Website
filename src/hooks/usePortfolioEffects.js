@@ -2,18 +2,27 @@ import { useEffect } from "react";
 
 export function usePortfolioEffects() {
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-    document.querySelectorAll(".reveal, .stagger").forEach((el) => observer.observe(el));
+    const revealNodes = [...document.querySelectorAll(".reveal, .stagger")];
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canObserve = "IntersectionObserver" in window && !prefersReducedMotion;
+    const observer = canObserve
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("in");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+        )
+      : null;
+    if (observer) {
+      revealNodes.forEach((el) => observer.observe(el));
+    } else {
+      revealNodes.forEach((el) => el.classList.add("in"));
+    }
 
     const nav = document.getElementById("nav");
     const sections = ["about", "experience", "skills", "work", "contact"].map((id) =>
@@ -77,10 +86,9 @@ export function usePortfolioEffects() {
         const section = document.querySelector(id);
         if (!section) return;
         event.preventDefault();
-        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({
           top: section.offsetTop - 60,
-          behavior: reducedMotion ? "auto" : "smooth",
+          behavior: prefersReducedMotion ? "auto" : "smooth",
         });
       };
       anchor.addEventListener("click", handler);

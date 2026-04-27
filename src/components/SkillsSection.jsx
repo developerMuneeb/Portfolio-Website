@@ -48,9 +48,9 @@ function IconTrack({ items, reverse = false, speed = 30 }) {
 export default function SkillsSection() {
   return (
     <section id="skills">
-      <div className="section-head">
+      <div className="section-head reveal">
         <div>
-          <div className="section-num">/ 03 - toolkit</div>
+          <div className="section-num">/ 03 &mdash; toolkit</div>
           <h2 className="section-title">
             Stack and <span className="outline">capabilities</span>
           </h2>
@@ -60,9 +60,14 @@ export default function SkillsSection() {
         </p>
       </div>
 
-      <div className="skills-marquee">
-        <IconTrack items={firstRow} speed={28} />
-        <IconTrack items={secondRow} reverse speed={34} />
+      <div className="skills-stage reveal">
+        <div className="skills-depth" aria-hidden="true">
+          <span className="depth-scan"></span>
+        </div>
+        <div className="skills-marquee">
+          <IconTrack items={firstRow} speed={28} />
+          <IconTrack items={secondRow} reverse speed={34} />
+        </div>
       </div>
     </section>
   );
