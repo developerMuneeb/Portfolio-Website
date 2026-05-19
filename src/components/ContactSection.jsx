@@ -1,7 +1,132 @@
-import RawHtml from './RawHtml';
-
-const html = "<!-- CONTACT -->\r\n<section id=\"contact\" class=\"contact\">\r\n  <div class=\"reveal\">\r\n    <div class=\"contact-kicker\">/ 05 &mdash; say hello</div>\r\n    <h2>Let's build AI systems<br><span class=\"outline\">that move work forward.</span><br><span class=\"grad\">Available for high-impact automation projects.</span></h2>\r\n    <a href=\"mailto:muneebgulfam5@gmail.com\" class=\"contact-email\">\r\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 6h16v12H4z\"></path><path d=\"m4 7 8 6 8-6\"></path></svg>\r\n      muneebgulfam5@gmail.com\r\n    </a>\r\n    <div class=\"contact-socials\">\r\n      <a class=\"csoc\" href=\"https://linkedin.com/in/muneeb-gulfam\" target=\"_blank\" rel=\"noopener noreferrer\">\r\n        <svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm-9 14H7V10h3Zm-1.5-8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM18 17h-3v-3.5c0-.8-.7-1.5-1.5-1.5S12 12.7 12 13.5V17H9V10h3v1.4A3.4 3.4 0 0 1 14.5 10c1.9 0 3.5 1.6 3.5 3.5Z\"></path></svg>\r\n        linkedin.com/in/muneeb-gulfam\r\n      </a>\r\n      <a class=\"csoc\" href=\"https://github.com/developerMuneeb\" target=\"_blank\" rel=\"noopener noreferrer\">\r\n        <svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.1-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.55 9.55 0 0 1 5 0c1.9-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.39.1 2.64.64.7 1.03 1.6 1.03 2.7 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z\"></path></svg>\r\n        github.com/developerMuneeb\r\n      </a>\r\n      <a class=\"csoc\" href=\"tel:+923209287215\">\r\n        <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92Z\"></path></svg>\r\n        +92 320 9287215\r\n      </a>\r\n    </div>\r\n  </div>\r\n</section>";
+const mailtoDraft =
+  "mailto:muneebgulfam5@gmail.com?subject=Portfolio%20Project%20Inquiry&body=Hi%20Muneeb,%0D%0A%0D%0AI%20want%20to%20discuss%20an%20automation%20or%20AI%20workflow.%0D%0A%0D%0AWorkflow:%20%0D%0ATools:%20%0D%0AIssue:%20%0D%0AExpected%20result:%20%0D%0A%0D%0AThanks.";
 
 export default function ContactSection() {
-  return <RawHtml html={html} />;
+  return (
+    <section id="contact" className="contact">
+      <div className="contact-shell reveal">
+        <div className="contact-main">
+          <div className="contact-kicker">/ 06 - contact</div>
+          <h2>
+            Tell me what workflow
+            <br />
+            <span className="outline">you want to automate.</span>
+          </h2>
+          <p className="contact-copy">
+            Send the process, tools, bottleneck and outcome you care about. I
+            can turn it into an AI agent, automation pipeline, dashboard or
+            integration plan.
+          </p>
+
+          <div className="contact-status" role="status">
+            <span className="contact-status-item">
+              <span className="live" aria-hidden="true"></span>
+              Available for hire
+            </span>
+            <span className="contact-status-sep" aria-hidden="true">/</span>
+            <span className="contact-status-item">Replies within 24h</span>
+            <span className="contact-status-sep" aria-hidden="true">/</span>
+            <span className="contact-status-item">Karachi &middot; GMT+5</span>
+          </div>
+
+          <a
+            href="mailto:muneebgulfam5@gmail.com"
+            className="contact-email"
+            aria-label="Send an email to muneebgulfam5@gmail.com"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M4 6h16v12H4z"></path>
+              <path d="m4 7 8 6 8-6"></path>
+            </svg>
+            muneebgulfam5@gmail.com
+          </a>
+        </div>
+
+        <aside className="contact-card" aria-label="Project inquiry">
+          <span className="contact-card-kicker">Quick query box</span>
+          <h3>Send your idea &mdash; get a clear next step</h3>
+          <p>
+            One sharp paragraph: workflow, tools, problem, expected result.
+            I&apos;ll reply with the best path forward.
+          </p>
+          <a className="message-box" href={mailtoDraft}>
+            <span>Open email draft</span>
+            <small>muneebgulfam5@gmail.com</small>
+          </a>
+
+          <div className="contact-socials">
+            <a
+              className="csoc"
+              href="https://linkedin.com/in/muneeb-gulfam"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn profile"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
+                <rect x="2" y="9" width="4" height="12" />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+            <a
+              className="csoc"
+              href="https://github.com/developerMuneeb"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub profile"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
+              <span>GitHub</span>
+            </a>
+            <a
+              className="csoc"
+              href="tel:+923209287215"
+              aria-label="Call or message on phone"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>Call</span>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
 }

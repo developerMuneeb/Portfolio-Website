@@ -16,6 +16,7 @@ const html = `<nav class="top" id="nav">
     <a href="#about" class="active">About</a>
     <a href="#experience" class="">Experience</a>
     <a href="#skills" class="">Stack</a>
+    <a href="#services" class="">Services</a>
     <a href="#work" class="">Work</a>
     <a href="#contact" class="">Contact</a>
   </div>

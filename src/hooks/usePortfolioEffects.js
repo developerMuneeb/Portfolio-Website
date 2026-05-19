@@ -25,7 +25,7 @@ export function usePortfolioEffects() {
     }
 
     const nav = document.getElementById("nav");
-    const sections = ["about", "experience", "skills", "work", "contact"].map((id) =>
+    const sections = ["about", "experience", "skills", "services", "work", "contact"].map((id) =>
       document.getElementById(id)
     );
     const links = [...document.querySelectorAll(".nav-links a")];
@@ -96,7 +96,7 @@ export function usePortfolioEffects() {
     });
 
     return () => {
-      observer.disconnect();
+      if (observer) observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       if (scrollRaf) cancelAnimationFrame(scrollRaf);
       if (moveHandler) window.removeEventListener("mousemove", moveHandler);

@@ -5,6 +5,7 @@ import MarqueeSection from "./components/MarqueeSection";
 import AboutSection from "./components/AboutSection";
 import ExperienceSection from "./components/ExperienceSection";
 import SkillsSection from "./components/SkillsSection";
+import ServicesSection from "./components/ServicesSection";
 import WorkSection from "./components/WorkSection";
 import ContactSection from "./components/ContactSection";
 import SiteFooter from "./components/SiteFooter";
@@ -22,6 +23,7 @@ export default function App() {
       <AboutSection />
       <ExperienceSection />
       <SkillsSection />
+      <ServicesSection />
       <WorkSection />
       <ContactSection />
       <SiteFooter />

@@ -1,6 +1,10 @@
 export const skillGroups = [
   {
-    title: "AI Engineering",
+    title: "AI Systems",
+    kicker: "Agent orchestration",
+    description: "Practical AI agents, prompts, model workflows, and computer vision logic for tasks that need reasoning and reliable handoffs.",
+    outcome: "Turns manual judgment-heavy work into repeatable AI-assisted decisions.",
+    proof: "Used for voice agents, business analyzers, qualification logic, and AI workflow assistants.",
     items: [
       { label: "Python", icon: "python" },
       { label: "TensorFlow", icon: "tensorflow" },
@@ -11,7 +15,11 @@ export const skillGroups = [
     ],
   },
   {
-    title: "Automation and Data",
+    title: "Automation Workflows",
+    kicker: "CRM and workflow logic",
+    description: "No-code and API-driven pipelines for lead routing, enrichment, outreach, callbacks, alerts, and reporting.",
+    outcome: "Connects separate tools into one monitored workflow with fewer manual steps.",
+    proof: "Used for CRM updates, scraper pipelines, webhook routing, email handoffs, and audit trails.",
     items: [
       { label: "n8n", icon: "n8n" },
       { label: "LangChain", icon: "langchain" },
@@ -22,13 +30,31 @@ export const skillGroups = [
     ],
   },
   {
-    title: "Cloud and Deployment",
+    title: "Cloud & Deployment",
+    kicker: "Model deployment",
+    description: "Infrastructure and deployment tooling for moving AI systems out of notebooks and into daily operations.",
+    outcome: "Makes AI tools usable, repeatable, and easier to maintain after launch.",
+    proof: "Used for containerized services, hosted automations, API-backed tools, and production handoff packages.",
     items: [
       { label: "AWS", icon: "aws" },
       { label: "Vertex AI", icon: "vertexai" },
       { label: "Docker", icon: "docker" },
       { label: "Linux", icon: "linux" },
       { label: "C++", icon: "c++" },
+    ],
+  },
+  {
+    title: "Data & Analytics",
+    kicker: "Dashboards and decisions",
+    description: "Business intelligence and predictive analytics that make operational patterns easier to act on.",
+    outcome: "Converts raw activity into dashboards, scores, reports, and decision-ready summaries.",
+    proof: "Used for KPI dashboards, scoring models, operational reports, and business analysis kits.",
+    items: [
+      { label: "Power BI" },
+      { label: "Tableau" },
+      { label: "SQL", icon: "mysql" },
+      { label: "Pandas", icon: "pandas" },
+      { label: "NumPy", icon: "numpy" },
     ],
   },
 ];
