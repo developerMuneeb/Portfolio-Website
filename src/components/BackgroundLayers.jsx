@@ -1,27 +1,17 @@
-import { lazy, Suspense, useEffect, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import AuroraCanvas from "./AuroraCanvas";
-
-// The 3D companion (three.js) loads in its own chunk AFTER first paint,
-// so it never delays the initial page load.
-const CompanionCrystal = lazy(() => import("./CompanionCrystal"));
+import StarfieldCanvas from "./StarfieldCanvas";
 
 /**
- * Background stack (bottom → top): gradient nebula (ambient light),
- * grid, section ambience washes, 3D companion crystal, noise, cursor.
+ * Background stack (bottom → top): gradient nebula, grid, section
+ * ambience washes, parallax starfield + comets, edge beams, noise,
+ * custom cursor. Everything is low-contrast or margin-bound so the
+ * content column always stays comfortably readable.
  */
 export default function BackgroundLayers() {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const yGrid = useTransform(scrollYProgress, [0, 1], [0, -70]);
-  const [showCrystal, setShowCrystal] = useState(false);
-
-  useEffect(() => {
-    const idle = window.requestIdleCallback ?? ((cb) => setTimeout(cb, 350));
-    const cancel = window.cancelIdleCallback ?? clearTimeout;
-    const id = idle(() => setShowCrystal(true));
-    return () => cancel(id);
-  }, []);
 
   return (
     <>
@@ -35,11 +25,10 @@ export default function BackgroundLayers() {
       <div className="ambience ambience-teal" aria-hidden="true"></div>
       <div className="ambience ambience-blue" aria-hidden="true"></div>
       <div className="ambience ambience-green" aria-hidden="true"></div>
-      {showCrystal ? (
-        <Suspense fallback={null}>
-          <CompanionCrystal />
-        </Suspense>
-      ) : null}
+      <StarfieldCanvas />
+      {/* Light beams framing the content margins (wide screens only) */}
+      <div className="edge-beam edge-beam-left" aria-hidden="true"></div>
+      <div className="edge-beam edge-beam-right" aria-hidden="true"></div>
       <div className="noise" aria-hidden="true"></div>
       <div className="cursor-ring" id="cursorRing" aria-hidden="true"></div>
       <div className="cursor-dot" id="cursorDot" aria-hidden="true"></div>

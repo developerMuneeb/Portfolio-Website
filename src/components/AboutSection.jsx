@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Reveal from "./motion/Reveal";
 import SectionDivider from "./motion/SectionDivider";
 
@@ -27,6 +28,10 @@ const principles = [
 ];
 
 export default function AboutSection() {
+  // Real photo (public/portrait.jpg) with themed treatment; falls back
+  // to the monogram card until the photo file exists.
+  const [hasPhoto, setHasPhoto] = useState(true);
+
   return (
     <section id="about">
       <SectionDivider />
@@ -47,15 +52,35 @@ export default function AboutSection() {
         <Reveal className="about-portrait" delay={0.08}>
           <span className="corner tl"></span>
           <span className="corner br"></span>
-          <div className="identity-orbit orbit-a"></div>
-          <div className="identity-orbit orbit-b"></div>
+          {hasPhoto ? (
+            <>
+              <div className="portrait-photo-wrap">
+                <span className="photo-ring" aria-hidden="true"></span>
+                <span className="photo-ring photo-ring-dash" aria-hidden="true"></span>
+                <img
+                  className="portrait-photo"
+                  src="/portrait.jpg"
+                  alt="Muhammad Muneeb — AI engineer"
+                  loading="lazy"
+                  decoding="async"
+                  onError={() => setHasPhoto(false)}
+                />
+              </div>
+              <div className="identity-sub portrait-role">AI ENGINEER</div>
+            </>
+          ) : (
+            <>
+              <div className="identity-orbit orbit-a"></div>
+              <div className="identity-orbit orbit-b"></div>
+              <div className="face">
+                <div className="monogram">MM</div>
+                <div className="identity-sub">AI ENGINEER</div>
+              </div>
+            </>
+          )}
           <div className="identity-chip chip-ai">AI</div>
           <div className="identity-chip chip-ml">ML</div>
           <div className="identity-chip chip-ops">OPS</div>
-          <div className="face">
-            <div className="monogram">MM</div>
-            <div className="identity-sub">AI ENGINEER</div>
-          </div>
           <div className="strips"></div>
           <div className="tag">ID &middot; MUHAMMAD MUNEEB &middot; KHI-01</div>
         </Reveal>

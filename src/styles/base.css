@@ -14,13 +14,13 @@
   overflow: hidden;
 }
 
-/* Flowing gradient nebula: dimmed to act as the globe's ambient light */
+/* Flowing gradient nebula — the color mood layer */
 .aurora-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.34;
+  opacity: 0.42;
 }
 
 .grid-bg {
@@ -89,23 +89,55 @@ html[data-section="contact"] .ambience-green {
   }
 }
 
-/* ---------- 3D companion crystal (three.js) ---------- */
-.companion-crystal {
+/* ---------- Parallax starfield + comets ---------- */
+.starfield {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
 }
 
-.companion-crystal canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
+/* ---------- Edge light beams (frame the content margins) ---------- */
+.edge-beam {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.14) 30%,
+    rgba(45, 212, 191, 0.18) 50%,
+    rgba(56, 189, 248, 0.14) 70%,
+    transparent 100%
+  );
+  background-size: 100% 320%;
+  animation: beam-drift 14s ease-in-out infinite alternate;
 }
 
-@media (max-width: 720px) {
-  .companion-crystal {
-    opacity: 0.6;
+.edge-beam-left {
+  left: clamp(14px, 2.4vw, 40px);
+}
+
+.edge-beam-right {
+  right: clamp(14px, 2.4vw, 40px);
+  animation-delay: -7s;
+}
+
+@keyframes beam-drift {
+  from {
+    background-position: 50% 0%;
+  }
+  to {
+    background-position: 50% 100%;
+  }
+}
+
+@media (max-width: 1180px) {
+  .edge-beam {
+    display: none;
   }
 }
 
