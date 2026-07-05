@@ -6,6 +6,7 @@ function scrollToTop() {
 const sitemap = [
   { href: "#about", label: "About" },
   { href: "#experience", label: "Experience" },
+  { href: "#credentials", label: "Credentials" },
   { href: "#skills", label: "Stack" },
   { href: "#services", label: "Services" },
   { href: "#work", label: "Work" },
@@ -52,7 +53,7 @@ const socials = [
   {
     href: "/resume/Muhammad-Muneeb-Resume.pdf",
     label: "Resume",
-    handle: "PDF · 1 page",
+    handle: "PDF - 1 page",
     external: true,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -88,7 +89,7 @@ export default function SiteFooter() {
             </span>
           </a>
           <p className="footer-brand-tagline">
-            AI &amp; Automation engineer building production systems that turn
+            AI, automation and data analytics engineer building production systems that turn
             manual workflows into measurable business outcomes.
           </p>
           <p className="footer-brand-meta">Karachi, Pakistan &middot; GMT+5</p>
@@ -130,7 +131,7 @@ export default function SiteFooter() {
                   {...(social.external
                     ? { target: "_blank", rel: "noopener noreferrer" }
                     : {})}
-                  aria-label={`${social.label} — ${social.handle}`}
+                  aria-label={`${social.label} - ${social.handle}`}
                 >
                   <span className="footer-social-icon">{social.icon}</span>
                   <span className="footer-social-text">

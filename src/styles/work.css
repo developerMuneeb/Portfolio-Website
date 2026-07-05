@@ -1,0 +1,517 @@
+/* =============================================================
+   Work / case studies — unified Electric dark theme
+   (previously the light "reference" section)
+   ============================================================= */
+.reference-work {
+  --project-card-width: 880px;
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 12% 4%, rgba(56, 189, 248, 0.08), transparent 31%),
+    radial-gradient(circle at 82% 10%, rgba(45, 212, 191, 0.07), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(255, 255, 255, 0.022));
+}
+
+.reference-work::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(#000 0 72%, transparent);
+}
+
+/* Section header (centered) */
+.reference-work .ref-work-head {
+  position: relative;
+  z-index: 2;
+  max-width: 980px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.reference-work .sn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--cyan);
+  letter-spacing: 0.16em;
+  margin-bottom: 10px;
+}
+
+.reference-work .sk {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 16px;
+}
+
+.reference-work .st {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 82px);
+  font-weight: 600;
+  line-height: 0.95;
+  color: var(--ink);
+  margin: 0 auto 18px;
+}
+
+.reference-work .it {
+  font-style: italic;
+  font-weight: 400;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--cyan);
+}
+
+.reference-work .sd {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--ink-dim);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* Confidentiality note */
+.confidentiality-note {
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  max-width: 980px;
+  margin: 0 auto 22px;
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.07), rgba(56, 189, 248, 0.04) 48%, rgba(255, 255, 255, 0.02));
+  padding: 16px 18px;
+  box-shadow: var(--inset-top);
+}
+
+.confidentiality-note::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  transform: translateX(-110%);
+  transition: transform 0.7s var(--ease-out);
+  pointer-events: none;
+}
+
+.confidentiality-note:hover::before {
+  transform: translateX(110%);
+}
+
+.confidentiality-note span {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.confidentiality-note p {
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* Proof chips */
+.work-proof {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 0 0 48px;
+}
+
+.work-proof span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  padding: 9px 12px;
+  box-shadow: var(--inset-top);
+}
+
+.work-proof b {
+  color: var(--cyan);
+  margin-right: 5px;
+}
+
+/* Project cards — vertical: dark 16:9 visual on top, info below */
+.reference-work .projects {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 40px;
+  width: 100%;
+  max-width: var(--project-card-width);
+  margin: 0 auto;
+}
+
+.reference-work .pcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014));
+  box-shadow: var(--shadow-card), var(--inset-top);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s var(--ease-out);
+  /* Skip layout/paint entirely while off-screen — big scroll-perf win */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1050px;
+}
+
+.reference-work .pcard:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-card-hover), var(--inset-top);
+}
+
+/* Rotating border beam on hover */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.reference-work .pcard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0turn 0.62turn,
+    rgba(56, 189, 248, 0.55) 0.78turn,
+    rgba(34, 211, 238, 0.95) 0.85turn,
+    rgba(45, 212, 191, 0.55) 0.92turn,
+    transparent 1turn
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.reference-work .pcard:hover::after {
+  opacity: 1;
+  animation: beam-spin 3.4s linear infinite;
+}
+
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .reference-work .pcard::after {
+    display: none;
+  }
+}
+
+/* Dark 16:9 visual frame */
+.reference-work .pvis {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: linear-gradient(150deg, #0a0e18, #05070d);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.reference-work .pvis svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scale(1);
+  transition: transform 1.1s var(--ease-out);
+}
+
+/* Slow cinematic zoom on hover */
+.reference-work .pcard:hover .pvis svg {
+  transform: scale(1.025);
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .reference-work .pcard:hover .pvis svg {
+    transform: none;
+  }
+}
+
+/* Info panel */
+.reference-work .pb {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: clamp(24px, 3vw, 38px);
+  justify-content: flex-start;
+}
+
+.reference-work .pnum {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.reference-work .pnb {
+  display: inline-flex;
+  align-items: center;
+  background: var(--grad);
+  color: #041018;
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.reference-work .pnum-meta {
+  color: var(--ink-dim);
+}
+
+.reference-work .pnum-sep {
+  color: var(--ink-soft);
+  opacity: 0.7;
+  margin: 0 4px;
+}
+
+.reference-work .pt {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  color: var(--ink);
+  margin: 0;
+}
+
+.reference-work .pt .ac {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.reference-work .pd {
+  color: var(--ink-dim);
+  font-size: 15.5px;
+  line-height: 1.72;
+  max-width: 800px;
+  margin: 0;
+}
+
+.reference-work .pd b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Result + stack row */
+.reference-work .pmeta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.reference-work .presult {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 22px;
+  background: rgba(34, 211, 238, 0.07);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 14px;
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+}
+
+.reference-work .presult-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.reference-work .presult-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(34, 211, 238, 0.28);
+}
+
+.reference-work .prv {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.reference-work .prl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 5px;
+}
+
+.reference-work .pstack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.reference-work .pstack span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink-dim);
+  border: 1px solid var(--line);
+  letter-spacing: 0.02em;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.reference-work .pstack span:hover {
+  border-color: var(--cyan);
+  color: var(--ink);
+}
+
+/* Case notes */
+.reference-work .pdetail {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-top: 4px;
+  color: var(--ink-dim);
+}
+
+.reference-work .pdetail summary {
+  cursor: pointer;
+  list-style: none;
+  width: max-content;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.reference-work .pdetail summary::-webkit-details-marker {
+  display: none;
+}
+
+.reference-work .pdetail-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.reference-work .pdetail dt {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.reference-work .pdetail dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-dim);
+}
+
+/* Green-dot production note */
+.reference-work .pnote {
+  margin-top: 6px;
+  padding: 16px 20px;
+  background: rgba(52, 211, 153, 0.05);
+  border: 1px solid rgba(52, 211, 153, 0.18);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-dim);
+  letter-spacing: 0.04em;
+}
+
+.reference-work .pnote-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.55);
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+.reference-work .pnote b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 780px) {
+  .reference-work .pcard {
+    border-radius: 22px;
+  }
+  .reference-work .pb {
+    padding: 26px 22px;
+    gap: 16px;
+  }
+  .reference-work .pmeta {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .reference-work .presult {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 18px;
+    gap: 12px;
+  }
+  .reference-work .presult-item {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .reference-work .presult-divider {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reference-work .pvis svg * {
+    animation: none !important;
+  }
+}

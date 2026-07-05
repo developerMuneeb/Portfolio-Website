@@ -1,50 +1,130 @@
-import RawHtml from "./RawHtml";
+import Reveal from "./motion/Reveal";
+import SectionDivider from "./motion/SectionDivider";
 
-const html = `<!-- ABOUT -->
-<section id="about">
-  <div class="section-head reveal">
-    <div>
-      <div class="section-num">/ 01 &mdash; profile</div>
-      <h2 class="section-title">Business-first <span class="outline">AI engineering</span></h2>
-    </div>
-    <p class="section-desc">I help teams turn repetitive work, messy data flows and slow follow-up processes into reliable AI systems clients can actually understand and use.</p>
-  </div>
+const proofStrip = [
+  { label: "LinkedIn", value: "2k+ followers" },
+  { label: "Network", value: "500+ connections" },
+  { label: "Education", value: "BSCS Computer Science" },
+  { label: "Credentials", value: "Microsoft + Google AI/data foundations" },
+];
 
-  <div class="about-grid">
-    <div class="about-portrait reveal">
-      <span class="corner tl"></span>
-      <span class="corner br"></span>
-      <div class="identity-orbit orbit-a"></div>
-      <div class="identity-orbit orbit-b"></div>
-      <div class="identity-chip chip-ai">AI</div>
-      <div class="identity-chip chip-ml">ML</div>
-      <div class="identity-chip chip-ops">OPS</div>
-      <div class="face">
-        <div class="monogram">MM</div>
-        <div class="identity-sub">AI ENGINEER</div>
-      </div>
-      <div class="strips"></div>
-      <div class="tag">ID &middot; MUHAMMAD MUNEEB &middot; KHI-01</div>
-    </div>
-    <div class="about-body reveal">
-      <p>I'm a <b>results-oriented AI/ML engineer</b> focused on practical automation: AI agents, voice workflows, predictive analytics, CRM automations and dashboards that make operational teams faster.</p>
-      <p>My background spans <b>enterprise operations</b>, <b>AI consulting</b>, <b>pharma analytics</b> and <b>applied AI training</b>. That mix shaped how I work: understand the business workflow first, then build the smallest reliable system that produces measurable value.</p>
-      <p>My sweet spot is <b>turning manual processes into production-ready AI workflows</b> with clean handoffs, clear monitoring and client-friendly documentation.</p>
-      <div class="about-principles">
-        <div><span>01</span><b>Automation Strategy</b><small>Map the real workflow before choosing tools.</small></div>
-        <div><span>02</span><b>AI Engineering</b><small>Build agents, models and integrations that survive production use.</small></div>
-        <div><span>03</span><b>Business Workflow Thinking</b><small>Explain technical systems in terms clients can act on.</small></div>
-      </div>
-      <div class="about-meta">
-        <div class="cell"><div class="lbl">Location</div><div class="val">Karachi, Pakistan</div></div>
-        <div class="cell"><div class="lbl">Status</div><div class="val" style="color:var(--green)">Employed &middot; open to select collaborations</div></div>
-        <div class="cell"><div class="lbl">Email</div><div class="val"><a href="mailto:muneebgulfam5@gmail.com">muneebgulfam5@gmail.com</a></div></div>
-        <div class="cell"><div class="lbl">GitHub</div><div class="val"><a href="https://github.com/developerMuneeb" target="_blank" rel="noopener noreferrer">@developerMuneeb</a></div></div>
-      </div>
-    </div>
-  </div>
-</section>`;
+const principles = [
+  {
+    num: "01",
+    title: "Automation Strategy",
+    note: "Map the real workflow before choosing tools.",
+  },
+  {
+    num: "02",
+    title: "AI Engineering",
+    note: "Build agents, models and integrations that survive production use.",
+  },
+  {
+    num: "03",
+    title: "Business Workflow Thinking",
+    note: "Explain technical systems in terms clients can act on.",
+  },
+];
 
 export default function AboutSection() {
-  return <RawHtml html={html} />;
+  return (
+    <section id="about">
+      <SectionDivider />
+      <Reveal className="section-head">
+        <div>
+          <div className="section-num">/ 01 &mdash; profile</div>
+          <h2 className="section-title">
+            Business-first <span className="outline">AI engineering</span>
+          </h2>
+        </div>
+        <p className="section-desc">
+          I help teams turn repetitive work, messy data flows and slow follow-up processes into
+          reliable AI systems clients can actually understand, trust and use.
+        </p>
+      </Reveal>
+
+      <div className="about-grid">
+        <Reveal className="about-portrait" delay={0.08}>
+          <span className="corner tl"></span>
+          <span className="corner br"></span>
+          <div className="identity-orbit orbit-a"></div>
+          <div className="identity-orbit orbit-b"></div>
+          <div className="identity-chip chip-ai">AI</div>
+          <div className="identity-chip chip-ml">ML</div>
+          <div className="identity-chip chip-ops">OPS</div>
+          <div className="face">
+            <div className="monogram">MM</div>
+            <div className="identity-sub">AI ENGINEER</div>
+          </div>
+          <div className="strips"></div>
+          <div className="tag">ID &middot; MUHAMMAD MUNEEB &middot; KHI-01</div>
+        </Reveal>
+
+        <Reveal className="about-body" delay={0.14}>
+          <p>
+            I&apos;m a <b>results-oriented AI engineer</b> focused on practical business
+            automation: AI agents, AI chatbots, voice AI workflows, CRM automation and predictive
+            analytics dashboards that make operational teams measurably faster.
+          </p>
+          <p>
+            My background spans <b>enterprise AI engineering</b>, <b>AI research and consulting</b>,{" "}
+            <b>pharma analytics</b>, <b>data engineering</b> and <b>applied AI training</b>. That
+            mix shaped how I work: understand the business workflow first, then build the smallest
+            reliable system that produces measurable value.
+          </p>
+          <p>
+            My sweet spot is <b>turning manual processes into production-ready AI workflows</b> and
+            full-stack AI applications &mdash; with clean handoffs, clear monitoring and
+            client-friendly documentation.
+          </p>
+
+          <div className="about-proof-strip">
+            {proofStrip.map((item) => (
+              <div key={item.label}>
+                <span>{item.label}</span>
+                <b>{item.value}</b>
+              </div>
+            ))}
+          </div>
+
+          <div className="about-principles">
+            {principles.map((principle) => (
+              <div key={principle.num}>
+                <span>{principle.num}</span>
+                <b>{principle.title}</b>
+                <small>{principle.note}</small>
+              </div>
+            ))}
+          </div>
+
+          <div className="about-meta">
+            <div className="cell">
+              <div className="lbl">Location</div>
+              <div className="val">Karachi, Pakistan</div>
+            </div>
+            <div className="cell">
+              <div className="lbl">Status</div>
+              <div className="val" style={{ color: "var(--green)" }}>
+                Employed &middot; open to select collaborations
+              </div>
+            </div>
+            <div className="cell">
+              <div className="lbl">Email</div>
+              <div className="val">
+                <a href="mailto:muneebgulfam5@gmail.com">muneebgulfam5@gmail.com</a>
+              </div>
+            </div>
+            <div className="cell">
+              <div className="lbl">GitHub</div>
+              <div className="val">
+                <a href="https://github.com/developerMuneeb" target="_blank" rel="noopener noreferrer">
+                  @developerMuneeb
+                </a>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
 }

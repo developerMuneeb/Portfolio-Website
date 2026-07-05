@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 const FREIGHT_VOICE_SVG = `<svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
   <defs>
     <radialGradient id="p1bg" cx="50%" cy="40%" r="50%">
@@ -583,17 +585,88 @@ const VOICE_SUITE_SVG = `<svg viewBox="0 0 960 540" xmlns="http://www.w3.org/200
   <text x="40" y="515" font-family="JetBrains Mono,monospace" font-size="9" fill="#3d3a35" letter-spacing=".08em">STACK  ·  n8n  ·  Synthflow AI  ·  Google Sheets  ·  Webhooks  ·  JavaScript  ·  REST API  ·  Retry Logic  ·  Deduplication</text>
 </svg>`;
 
+/* ── Electric theme recolor ─────────────────────────────────────
+   The SVGs above were authored in the legacy warm palette. Rather
+   than hand-editing hundreds of attributes, remap every color to
+   the site's Electric dark tokens at module load. */
+const PALETTE_MAP = [
+  // primary: orange → electric cyan
+  ["#ff5b1d", "#22d3ee"],
+  ["rgba(255,91,29,", "rgba(34,211,238,"],
+  // secondary: gold → blue
+  ["#e9c46a", "#3b82f6"],
+  ["rgba(233,196,106,", "rgba(59,130,246,"],
+  // success green → electric green
+  ["#82c98e", "#34d399"],
+  ["rgba(130,201,142,", "rgba(52,211,153,"],
+  // cream ink → cool ink
+  ["#f0e9d8", "#e9edf5"],
+  ["rgba(240,233,216,", "rgba(233,237,245,"],
+  ["#a39d8c", "#9aa3b8"],
+  ["#6e6757", "#6f7a95"],
+  ["#3d3a35", "#3f4966"],
+  ["#2a2720", "#2b3350"],
+  // warm blacks → navy blacks
+  ["#0d0b09", "#070a12"],
+  ["#1c1915", "#121828"],
+  ["#1e1b16", "#141b2c"],
+  // purple glow → violet
+  ["#a855f7", "#818cf8"],
+  // display font
+  ["Bricolage Grotesque,sans-serif", "Space Grotesk,sans-serif"],
+];
+
+function recolor(svg) {
+  return PALETTE_MAP.reduce((out, [from, to]) => out.split(from).join(to), svg);
+}
+
+/* SMIL <animate> loops ignore the prefers-reduced-motion media query,
+   so strip them from the markup entirely for those users. */
+function stripAnimations(svg) {
+  return svg.replace(/<animate\b[^>]*\/>/g, "").replace(/<animate\b[^>]*>[\s\S]*?<\/animate>/g, "");
+}
+
 const DIAGRAMS = {
-  "freight-voice": FREIGHT_VOICE_SVG,
-  "lead-scraper": LEAD_SCRAPER_SVG,
-  "business-analyzer": BUSINESS_ANALYZER_SVG,
-  "voice-suite": VOICE_SUITE_SVG,
+  "freight-voice": recolor(FREIGHT_VOICE_SVG),
+  "lead-scraper": recolor(LEAD_SCRAPER_SVG),
+  "business-analyzer": recolor(BUSINESS_ANALYZER_SVG),
+  "voice-suite": recolor(VOICE_SUITE_SVG),
 };
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Pauses the SVG's SMIL animation clock whenever the diagram is out of
+ * view — dozens of always-running <animate> loops are a real
+ * scroll-perf cost otherwise. The markup itself always renders.
+ */
 export default function ProjectWorkflowDiagram({ project }) {
-  const svg = DIAGRAMS[project.diagramId] || FREIGHT_VOICE_SVG;
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !("IntersectionObserver" in window)) return undefined;
+    const svg = el.querySelector("svg");
+    if (!svg || typeof svg.pauseAnimations !== "function") return undefined;
+    svg.pauseAnimations(); // start paused; unpause on first intersection
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) svg.unpauseAnimations();
+        else svg.pauseAnimations();
+      },
+      { rootMargin: "300px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  let svg = DIAGRAMS[project.diagramId] || DIAGRAMS["freight-voice"];
+  if (prefersReducedMotion()) svg = stripAnimations(svg);
+
   return (
     <div
+      ref={ref}
       className="pvis"
       role="img"
       aria-label={`${project.title} workflow diagram`}

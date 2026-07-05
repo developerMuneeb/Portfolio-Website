@@ -14,7 +14,9 @@ export default function HeroVisualization() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Cap DPR harder on small screens to keep mobile fast.
+      const dprCap = window.innerWidth < 720 ? 1.5 : 2;
+      const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
       const r = canvas.parentElement.getBoundingClientRect();
       W = r.width;
       H = r.height;
@@ -26,16 +28,16 @@ export default function HeroVisualization() {
       ctx.scale(dpr, dpr);
     }
 
-    /* ── Palette ─────────────────────────────────────────────────── */
-    const OG = "#ff5b1d";
-    const OGr = "255,91,29";
-    const GD = "#a67c1e";
-    const GDr = "166,124,30";
-    const GN = "#2d7a42";
-    const GNr = "45,122,66";
-    const INK = "#1c1917";
-    const DIM = "#78716c";
-    const SOFT = "#a8a29e";
+    /* ── Palette — Electric dark theme ───────────────────────────── */
+    const OG = "#22d3ee"; // primary accent (electric cyan)
+    const OGr = "34,211,238";
+    const GD = "#3b82f6"; // secondary accent (blue)
+    const GDr = "59,130,246";
+    const GN = "#34d399"; // status green
+    const GNr = "52,211,153";
+    const INK = "#e9edf5";
+    const DIM = "#9aa3b8";
+    const SOFT = "#6b7590";
 
     function ca(hex, a) {
       return `rgba(${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)},${a})`;
@@ -92,30 +94,28 @@ export default function HeroVisualization() {
     ];
 
     /* ── Card helper ─────────────────────────────────────────────── */
-    function card(x, y, w, h, r = 10, accentColor, accentAlpha = 0.16) {
-      ctx.shadowColor = "rgba(28,25,23,.065)";
+    function card(x, y, w, h, r = 10, accentColor, accentAlpha = 0.22) {
+      ctx.shadowColor = "rgba(0,0,0,.32)";
       ctx.shadowBlur = 14;
       ctx.shadowOffsetY = 4;
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#101625";
       ctx.beginPath();
       ctx.roundRect(x, y, w, h, r);
       ctx.fill();
       ctx.shadowBlur = 0;
       ctx.shadowOffsetY = 0;
-      if (accentColor) {
-        ctx.strokeStyle = ca(accentColor, accentAlpha);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
-        ctx.stroke();
-      }
+      ctx.strokeStyle = accentColor ? ca(accentColor, accentAlpha) : "rgba(255,255,255,.08)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, r);
+      ctx.stroke();
     }
 
     /* ── Background ──────────────────────────────────────────────── */
     function drawBg() {
-      ctx.fillStyle = "#fafaf8";
+      ctx.fillStyle = "#090b12";
       ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = "rgba(28,25,23,.038)";
+      ctx.fillStyle = "rgba(255,255,255,.055)";
       const g = 24;
       for (let x = g / 2; x < W; x += g)
         for (let y = g / 2; y < H; y += g) {
@@ -124,7 +124,7 @@ export default function HeroVisualization() {
           ctx.fill();
         }
       const gl = ctx.createLinearGradient(0, 0, 0, H * 0.25);
-      gl.addColorStop(0, `rgba(${OGr},.022)`);
+      gl.addColorStop(0, `rgba(${OGr},.05)`);
       gl.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = gl;
       ctx.fillRect(0, 0, W, H);
@@ -158,7 +158,7 @@ export default function HeroVisualization() {
       ctx.fillText("LIVE  ·  " + ts, sec.x + sec.w, mid + fs * 0.38);
       ctx.textAlign = "left";
 
-      ctx.strokeStyle = "rgba(28,25,23,.07)";
+      ctx.strokeStyle = "rgba(255,255,255,.08)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(sec.x, sec.y + sec.h);
@@ -238,7 +238,7 @@ export default function HeroVisualization() {
           drawSmallIcon(c.icon, iconX, iconY, ir * 0.55, c.color);
 
           const valFs = Math.min(22, sec.h * 0.28);
-          ctx.font = `600 ${valFs}px 'Bricolage Grotesque',sans-serif`;
+          ctx.font = `600 ${valFs}px 'Space Grotesk',sans-serif`;
           ctx.fillStyle = ca(INK, 0.85);
           ctx.textAlign = "left";
           ctx.fillText(c.val, cx + cw * 0.43, cy + sec.h * 0.52);
@@ -297,7 +297,7 @@ export default function HeroVisualization() {
         const ww = sec.w - 24;
         const wh = sec.h - hdrH - 26;
 
-        ctx.strokeStyle = "rgba(28,25,23,.05)";
+        ctx.strokeStyle = "rgba(255,255,255,.06)";
         ctx.lineWidth = 0.5;
         ctx.setLineDash([3, 4]);
         [0.25, 0.5, 0.75].forEach((p) => {
@@ -393,7 +393,7 @@ export default function HeroVisualization() {
           const rMid = ry + rPad + rInH * 0.5;
 
           if (row > 0) {
-            ctx.strokeStyle = "rgba(28,25,23,.055)";
+            ctx.strokeStyle = "rgba(255,255,255,.065)";
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(sec.x + 10, ry);
@@ -485,7 +485,7 @@ export default function HeroVisualization() {
         ctx.textAlign = "left";
         ctx.fillText("AGENT LOG", sec.x + 12, sec.y + sec.h * 0.2);
 
-        ctx.strokeStyle = "rgba(28,25,23,.055)";
+        ctx.strokeStyle = "rgba(255,255,255,.065)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(sec.x + 12, sec.y + sec.h * 0.28);
@@ -545,7 +545,7 @@ export default function HeroVisualization() {
       }
     }
 
-    function loop() {
+    function frame() {
       f++;
       update();
       ctx.clearRect(0, 0, W, H);
@@ -555,32 +555,70 @@ export default function HeroVisualization() {
       drawWave();
       drawPipeline();
       drawLog();
+    }
+
+    function loop() {
+      frame();
       raf = requestAnimationFrame(loop);
     }
 
-    const onResize = () => {
-      cancelAnimationFrame(raf);
-      resize();
+    /* Run the rAF loop only while the canvas is on screen. */
+    let ready = false;
+    let running = false;
+    let visible = true;
+
+    function start() {
+      if (!ready || running) return;
+      if (prefersReducedMotion) {
+        frame(); // single static render
+        return;
+      }
+      running = true;
       raf = requestAnimationFrame(loop);
+    }
+
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    const io =
+      "IntersectionObserver" in window
+        ? new IntersectionObserver(
+            ([entry]) => {
+              visible = entry.isIntersecting;
+              if (visible) start();
+              else stop();
+            },
+            { threshold: 0.05 }
+          )
+        : null;
+    if (io) io.observe(canvas.parentElement);
+
+    const onResize = () => {
+      stop();
+      resize();
+      if (visible) start();
+      else if (ready) frame();
     };
     window.addEventListener("resize", onResize);
 
     ST.logLines[1] = "▸  agent.mesh.init() → READY ✓";
 
+    const boot = () => {
+      ready = true;
+      resize();
+      if (visible) start();
+    };
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => {
-        resize();
-        raf = requestAnimationFrame(loop);
-      });
+      document.fonts.ready.then(boot);
     } else {
-      setTimeout(() => {
-        resize();
-        raf = requestAnimationFrame(loop);
-      }, 300);
+      setTimeout(boot, 300);
     }
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      if (io) io.disconnect();
       window.removeEventListener("resize", onResize);
     };
   }, []);

@@ -1,17 +1,25 @@
+import Reveal from "./motion/Reveal";
+import SectionDivider from "./motion/SectionDivider";
+import TiltCard from "./motion/TiltCard";
 import { skillGroups } from "../data/skills";
 
 const skills = skillGroups
   .flatMap((group) => group.items)
   .filter((item, index, items) => item.icon && items.findIndex((candidate) => candidate.label === item.label) === index);
+
 const proofPoints = [
   { value: "AI", label: "Agents" },
   { value: "n8n", label: "Workflow automation" },
   { value: "BI", label: "Analytics" },
   { value: "API", label: "Deployment" },
 ];
+
 const iconFiles = {
   "c++": "cpp",
 };
+
+const viewport = { once: true, margin: "0px 0px -8% 0px" };
+const EASE = [0.2, 0.8, 0.2, 1];
 
 function iconPath(icon) {
   return `/tech-icons/${iconFiles[icon] ?? icon}.svg`;
@@ -52,30 +60,41 @@ function TechRail({ items }) {
 export default function SkillsSection() {
   return (
     <section id="skills" className="skills-section">
-      <div className="section-head reveal">
+      <SectionDivider />
+      <Reveal className="section-head">
         <div>
-          <div className="section-num">/ 03 &mdash; toolkit</div>
+          <div className="section-num">/ 04 &mdash; toolkit</div>
           <h2 className="section-title">
             Tools I use to build <span className="outline">reliable AI systems</span>
           </h2>
         </div>
         <p className="section-desc">
-          A focused stack for building client-ready automation, AI agents, analytics, and deployment workflows.
+          A focused stack for building client-ready workflow automation, AI agents, analytics, and
+          full-stack AI applications.
         </p>
-      </div>
+      </Reveal>
 
-      <div className="skills-proof-strip reveal">
+      <Reveal className="skills-proof-strip" delay={0.06}>
         {proofPoints.map((point) => (
           <div className="skills-proof" key={point.label}>
             <strong>{point.value}</strong>
             <span>{point.label}</span>
           </div>
         ))}
-      </div>
+      </Reveal>
 
       <div className="skill-category-grid">
         {skillGroups.map((group, index) => (
-          <article className="skill-category reveal" key={group.title} style={{ "--card-index": index + 1 }}>
+          <TiltCard
+            as="article"
+            className="skill-category"
+            key={group.title}
+            maxTilt={4}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewport}
+            transition={{ duration: 0.6, delay: Math.min(index * 0.07, 0.28), ease: EASE }}
+          >
             <div className="skill-category-kicker">{group.kicker}</div>
             <div className="skill-card-index">{String(index + 1).padStart(2, "0")}</div>
             <h3>{group.title}</h3>
@@ -90,14 +109,14 @@ export default function SkillsSection() {
               ))}
             </div>
             <div className="skill-proof">{group.proof}</div>
-          </article>
+          </TiltCard>
         ))}
       </div>
 
-      <div className="skills-stage reveal">
+      <Reveal className="skills-stage" delay={0.1}>
         <div className="skills-stage-label">Core technology stack</div>
         <TechRail items={skills} />
-      </div>
+      </Reveal>
     </section>
   );
 }

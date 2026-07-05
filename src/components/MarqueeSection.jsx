@@ -1,7 +1,53 @@
-import RawHtml from './RawHtml';
+const ROW_A = [
+  "Agentic AI",
+  "Workflow Automation",
+  "AI Chatbots",
+  "LangGraph Agents",
+  "Voice AI Agents",
+  "CRM Automation",
+];
 
-const html = "<!-- MARQUEE -->\r\n<div class=\"marquee\" aria-hidden=\"true\">\r\n  <div class=\"marquee-track\">\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 01</span><span class=\"marquee-label\">Agentic AI</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 02</span><span class=\"marquee-label\">Workflow Automation</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 03</span><span class=\"marquee-label\">Computer Vision</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 04</span><span class=\"marquee-label\">LLM Engineering</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 05</span><span class=\"marquee-label\">Predictive Models</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 06</span><span class=\"marquee-label\">Voice AI</span><span class=\"dot\"></span></span>\r\n    <!-- duplicate for seamless -->\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 01</span><span class=\"marquee-label\">Agentic AI</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 02</span><span class=\"marquee-label\">Workflow Automation</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 03</span><span class=\"marquee-label\">Computer Vision</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 04</span><span class=\"marquee-label\">LLM Engineering</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 05</span><span class=\"marquee-label\">Predictive Models</span><span class=\"dot\"></span></span>\r\n    <span class=\"marquee-item\"><span class=\"mono\">/ 06</span><span class=\"marquee-label\">Voice AI</span><span class=\"dot\"></span></span>\r\n  </div>\r\n</div>";
+const ROW_B = ["n8n", "OpenAI", "LangChain", "Synthflow", "Power BI", "Python", "Docker", "PostgreSQL"];
 
+function MarqueeItem({ label, index, isClone = false }) {
+  return (
+    <span className="marquee-item" aria-hidden={isClone ? "true" : undefined}>
+      <span className="mono">/ {String(index + 1).padStart(2, "0")}</span>
+      <span className="marquee-label">{label}</span>
+      <span className="dot"></span>
+    </span>
+  );
+}
+
+function GhostItem({ label, isClone = false }) {
+  return (
+    <span className="marquee-item ghost" aria-hidden={isClone ? "true" : undefined}>
+      <span className="marquee-label">{label}</span>
+      <span className="dot"></span>
+    </span>
+  );
+}
+
+/** Dual-direction marquee: focus areas one way, tool names (outlined) the other. */
 export default function MarqueeSection() {
-  return <RawHtml html={html} />;
+  return (
+    <div className="marquee" aria-label="Focus areas and tools">
+      <div className="marquee-track">
+        {ROW_A.map((label, index) => (
+          <MarqueeItem key={label} label={label} index={index} />
+        ))}
+        {ROW_A.map((label, index) => (
+          <MarqueeItem key={`${label}-clone`} label={label} index={index} isClone />
+        ))}
+      </div>
+      <div className="marquee-track is-reverse">
+        {ROW_B.map((label) => (
+          <GhostItem key={label} label={label} />
+        ))}
+        {ROW_B.map((label) => (
+          <GhostItem key={`${label}-clone`} label={label} isClone />
+        ))}
+      </div>
+    </div>
+  );
 }

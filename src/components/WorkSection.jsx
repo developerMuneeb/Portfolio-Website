@@ -1,10 +1,20 @@
-import ProjectWorkflowDiagram from "./ProjectWorkflowDiagram";
+import { lazy, Suspense } from "react";
+import Reveal from "./motion/Reveal";
+import SectionDivider from "./motion/SectionDivider";
 import { confidentialityNote, projects } from "../data/projects";
+
+const ProjectWorkflowDiagram = lazy(() => import("./ProjectWorkflowDiagram"));
+
+function DiagramFallback() {
+  return <div className="pvis" aria-hidden="true"></div>;
+}
 
 function ProjectCaseCard({ project, index }) {
   return (
-    <article className="pcard reveal">
-      <ProjectWorkflowDiagram project={project} />
+    <Reveal as="article" className="pcard" y={32}>
+      <Suspense fallback={<DiagramFallback />}>
+        <ProjectWorkflowDiagram project={project} />
+      </Suspense>
 
       <div className="pb">
         <div className="pnum">
@@ -70,15 +80,16 @@ function ProjectCaseCard({ project, index }) {
           </span>
         </div>
       </div>
-    </article>
+    </Reveal>
   );
 }
 
 export default function WorkSection() {
   return (
     <section id="work" className="work-section reference-work">
-      <div className="ref-work-head reveal">
-        <div className="sn">05</div>
+      <SectionDivider />
+      <Reveal className="ref-work-head">
+        <div className="sn">06</div>
         <div className="sk">Selected Projects</div>
         <h2 className="st">
           Confidential <span className="it">workflow</span> case studies
@@ -87,18 +98,18 @@ export default function WorkSection() {
           Real client and company work shown as clean system stories: what entered the workflow,
           what the automation decided, and what business value came out.
         </p>
-      </div>
+      </Reveal>
 
-      <div className="confidentiality-note reveal">
+      <Reveal className="confidentiality-note" delay={0.06}>
         <span>Confidentiality notice</span>
         <p>{confidentialityNote}</p>
-      </div>
+      </Reveal>
 
-      <div className="work-proof reveal">
+      <Reveal className="work-proof" delay={0.1}>
         <span><b>4</b> detailed systems</span>
         <span><b>5-step</b> workflow stories</span>
         <span><b>100%</b> confidential-safe visuals</span>
-      </div>
+      </Reveal>
 
       <div className="projects">
         {projects.map((project, index) => (
