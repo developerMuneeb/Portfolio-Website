@@ -96,12 +96,16 @@ export function usePortfolioEffects() {
       if (!section) return;
       event.preventDefault();
       // Deferred a frame so any body scroll-lock (mobile menu) is
-      // released before scrolling.
+      // released before scrolling. Route through Lenis when active.
       requestAnimationFrame(() => {
-        window.scrollTo({
-          top: section.offsetTop - 60,
-          behavior: prefersReducedMotion ? "auto" : "smooth",
-        });
+        if (window.__lenis) {
+          window.__lenis.scrollTo(section, { offset: -60 });
+        } else {
+          window.scrollTo({
+            top: section.offsetTop - 60,
+            behavior: prefersReducedMotion ? "auto" : "smooth",
+          });
+        }
       });
     };
     document.addEventListener("click", onDocClick);

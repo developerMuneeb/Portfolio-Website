@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import HeroVisualization from "./HeroVisualization";
 import MagneticButton from "./motion/MagneticButton";
 import RotatingText from "./motion/RotatingText";
@@ -18,6 +19,38 @@ const stats = [
 export default function HeroSection() {
   const reduce = useReducedMotion();
 
+  // Cinematic exit: the hero scales down and fades as you scroll away
+  const sectionRef = useRef(null);
+  const { scrollYProgress: exitP } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const exitScale = useTransform(exitP, [0, 1], [1, 0.93]);
+  const exitOpacity = useTransform(exitP, [0, 0.85], [1, 0.2]);
+  const exitY = useTransform(exitP, [0, 1], [0, 64]);
+  const exitStyle = reduce ? undefined : { scale: exitScale, opacity: exitOpacity, y: exitY };
+
+  // Mouse parallax: chips and dashboard drift at different depths
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 55, damping: 18 });
+  const sy = useSpring(my, { stiffness: 55, damping: 18 });
+  const vizX = useTransform(sx, (v) => v * -9);
+  const vizY = useTransform(sy, (v) => v * -7);
+  const chipAX = useTransform(sx, (v) => v * 20);
+  const chipAY = useTransform(sy, (v) => v * 14);
+  const chipBX = useTransform(sx, (v) => v * -26);
+  const chipBY = useTransform(sy, (v) => v * -18);
+  const chipCX = useTransform(sx, (v) => v * 14);
+  const chipCY = useTransform(sy, (v) => v * -22);
+
+  const onPointerMove = (event) => {
+    if (reduce || !window.matchMedia("(pointer: fine)").matches) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    mx.set(((event.clientX - rect.left) / rect.width) * 2 - 1);
+    my.set(((event.clientY - rect.top) / rect.height) * 2 - 1);
+  };
+
   const rise = (delay) => ({
     initial: { opacity: 0, y: reduce ? 0 : 26 },
     animate: { opacity: 1, y: 0 },
@@ -32,9 +65,9 @@ export default function HeroSection() {
   });
 
   return (
-    <section className="hero" id="top">
+    <section className="hero" id="top" ref={sectionRef} onPointerMove={onPointerMove}>
       <div className="hero-dots" aria-hidden="true"></div>
-      <div>
+      <motion.div style={exitStyle}>
         <motion.span className="eyebrow" {...rise(0.05)}>
           <span className="live"></span>
           AI ENGINEER &middot; AUTOMATION &amp; AGENTS &middot; KARACHI, PK
@@ -119,15 +152,38 @@ export default function HeroSection() {
             </div>
           ))}
         </motion.div>
-      </div>
+      </motion.div>
 
+      {/* Outer wrapper carries the scroll-exit; inner keeps the entrance animation */}
+      <motion.div style={{ minWidth: 0, display: "grid", ...exitStyle }}>
       <motion.div
+        className="hero-viz-wrap"
         style={{ minWidth: 0, display: "grid" }}
         initial={{ opacity: 0, y: reduce ? 0 : 30, scale: reduce ? 1 : 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.9, delay: 0.3, ease: EASE }}
       >
-        <HeroVisualization />
+        <motion.div style={{ display: "grid", x: vizX, y: vizY }}>
+          <HeroVisualization />
+        </motion.div>
+
+        {/* Floating glass chips — parallax depth layer */}
+        <motion.div className="hero-chip hero-chip-a" style={{ x: chipAX, y: chipAY }} aria-hidden="true">
+          <span className="hero-chip-inner">
+            <i className="chip-dot chip-dot-green"></i>Agent deployed ✓
+          </span>
+        </motion.div>
+        <motion.div className="hero-chip hero-chip-b" style={{ x: chipBX, y: chipBY }} aria-hidden="true">
+          <span className="hero-chip-inner">
+            <i className="chip-dot chip-dot-cyan"></i>22h saved / week
+          </span>
+        </motion.div>
+        <motion.div className="hero-chip hero-chip-c" style={{ x: chipCX, y: chipCY }} aria-hidden="true">
+          <span className="hero-chip-inner">
+            <i className="chip-dot chip-dot-blue"></i>n8n flow · live
+          </span>
+        </motion.div>
+      </motion.div>
       </motion.div>
     </section>
   );

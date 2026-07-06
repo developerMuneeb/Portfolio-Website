@@ -1,3 +1,4 @@
+import GhostTitle from "./motion/GhostTitle";
 import Reveal from "./motion/Reveal";
 import SectionDivider from "./motion/SectionDivider";
 import TiltCard from "./motion/TiltCard";
@@ -89,6 +90,7 @@ export default function ServicesSection() {
   return (
     <section id="services" className="services">
       <SectionDivider />
+      <GhostTitle text="Services" direction={-1} />
       <Reveal className="section-head">
         <div>
           <div className="section-num">/ 05 &mdash; services</div>

@@ -12,8 +12,10 @@ import WorkSection from "./components/WorkSection";
 import ContactSection from "./components/ContactSection";
 import SiteFooter from "./components/SiteFooter";
 import { usePortfolioEffects } from "./hooks/usePortfolioEffects";
+import { useSmoothScroll } from "./hooks/useSmoothScroll";
 
 export default function App() {
+  useSmoothScroll();
   usePortfolioEffects();
 
   return (

@@ -1,3 +1,4 @@
+import GhostTitle from "./motion/GhostTitle";
 import Reveal from "./motion/Reveal";
 import MagneticButton from "./motion/MagneticButton";
 import SectionDivider from "./motion/SectionDivider";
@@ -9,6 +10,7 @@ export default function ContactSection() {
   return (
     <section id="contact" className="contact">
       <SectionDivider />
+      <GhostTitle text="Contact" direction={-1} />
       <div className="contact-shell">
         <Reveal className="contact-main">
           <div className="contact-kicker">/ 07 &mdash; contact</div>

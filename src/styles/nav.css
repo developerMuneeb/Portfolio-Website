@@ -302,8 +302,8 @@ nav.top.scrolled {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 14px var(--green);
+  background: var(--amber);
+  box-shadow: 0 0 14px var(--amber);
   animation: pulse 2s infinite;
   flex: 0 0 auto;
 }

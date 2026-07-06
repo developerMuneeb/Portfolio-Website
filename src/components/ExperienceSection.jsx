@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
+import GhostTitle from "./motion/GhostTitle";
 import Reveal from "./motion/Reveal";
 import SectionDivider from "./motion/SectionDivider";
 import { experience } from "../data/profile";
@@ -50,6 +51,7 @@ export default function ExperienceSection() {
   return (
     <section id="experience">
       <SectionDivider />
+      <GhostTitle text="Experience" direction={-1} />
       <Reveal className="section-head">
         <div>
           <div className="section-num">/ 02 &mdash; trajectory</div>

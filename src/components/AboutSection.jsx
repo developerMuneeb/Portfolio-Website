@@ -1,4 +1,5 @@
 import { useState } from "react";
+import GhostTitle from "./motion/GhostTitle";
 import Reveal from "./motion/Reveal";
 import SectionDivider from "./motion/SectionDivider";
 
@@ -35,6 +36,7 @@ export default function AboutSection() {
   return (
     <section id="about">
       <SectionDivider />
+      <GhostTitle text="Profile" />
       <Reveal className="section-head">
         <div>
           <div className="section-num">/ 01 &mdash; profile</div>
@@ -129,7 +131,7 @@ export default function AboutSection() {
             </div>
             <div className="cell">
               <div className="lbl">Status</div>
-              <div className="val" style={{ color: "var(--green)" }}>
+              <div className="val" style={{ color: "var(--amber)" }}>
                 Employed &middot; open to select collaborations
               </div>
             </div>

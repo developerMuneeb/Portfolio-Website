@@ -1,3 +1,5 @@
+import { BuildLine, CountLabel, GaugeFill, TypeLine, useStatusPhase } from "./motion/SceneReveal";
+
 /**
  * Bespoke "real product" scenes — one per project, each designed to
  * look like the actual application in use so a non-technical client
@@ -8,9 +10,13 @@
  *  business-analyzer → a website audit generating a score + report
  *  voice-suite       → a spreadsheet row driving a call + writeback
  *
- * All motion is looped CSS (staggered fade-ins, waveform, gauge) —
- * final keyframes are always the "complete" state so reduced-motion
- * users see the finished scene.
+ * Small ambient loops (waveform, scan ring, live/pulse dots) run always —
+ * they're cheap "this system is alive" cues. The bigger reveal moments
+ * (chat bubbles typing, rows filling in, the gauge sweeping, findings
+ * appearing) are saved for hover/tap via the `building` flag, so the
+ * card reads calm and complete at rest and "assembles itself" as a
+ * reward for engaging with it. Everything settles instantly under
+ * prefers-reduced-motion.
  */
 
 const Icon = {
@@ -28,12 +34,6 @@ const Icon = {
   check: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="m5 12 5 5 9-10" />
-    </svg>
-  ),
-  search: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m21 21-4.35-4.35" />
     </svg>
   ),
   link: (
@@ -58,7 +58,7 @@ const Icon = {
 };
 
 /* ---------- P1 · Freight AI Voice Agent: live call scene ---------- */
-function FreightScene() {
+function FreightScene({ building }) {
   return (
     <div className="scene scene-freight">
       <div className="mini-card call-card">
@@ -82,13 +82,23 @@ function FreightScene() {
 
       <div className="scene-col">
         <div className="mini-card transcript">
-          <span className="bubble ai anim-1">What are you shipping, and where is it headed?</span>
-          <span className="bubble lead anim-2">45,000 lbs, dry van — Chicago to Los Angeles.</span>
-          <span className="bubble ai anim-3">Got it. When do you need pickup?</span>
+          <BuildLine as="span" className="bubble ai" building={building} delay={0.05}>
+            <TypeLine text="What are you shipping, and where is it headed?" active={building} delay={0.2} />
+          </BuildLine>
+          <BuildLine as="span" className="bubble lead" building={building} delay={1.6}>
+            <TypeLine text="45,000 lbs, dry van — Chicago to Los Angeles." active={building} delay={1.75} />
+          </BuildLine>
+          <BuildLine as="span" className="bubble ai" building={building} delay={3.15}>
+            <TypeLine text="Got it. When do you need pickup?" active={building} delay={3.3} />
+          </BuildLine>
         </div>
         <div className="scene-row">
-          <span className="mini-tag done-tag anim-4">{Icon.check} CRM → Qualified</span>
-          <span className="mini-tag done-tag anim-5">{Icon.mail} Summary emailed to sales</span>
+          <BuildLine as="span" className="mini-tag done-tag" building={building} delay={4.3}>
+            {Icon.check} CRM → Qualified
+          </BuildLine>
+          <BuildLine as="span" className="mini-tag done-tag" building={building} delay={4.6}>
+            {Icon.mail} Summary emailed to sales
+          </BuildLine>
         </div>
       </div>
     </div>
@@ -97,13 +107,13 @@ function FreightScene() {
 
 /* ---------- P2 · Lead Scraper: lead list filling itself ---------- */
 const LEAD_ROWS = [
-  ["TechCorp Inc.", "Sarah M. · Head of Ops", "anim-1"],
-  ["Nova Logistics", "James R. · Founder", "anim-2"],
-  ["BrightHire Co.", "Alina K. · VP Sales", "anim-3"],
-  ["Vertex Retail", "Omar S. · COO", "anim-4"],
+  ["TechCorp Inc.", "Sarah M. · Head of Ops"],
+  ["Nova Logistics", "James R. · Founder"],
+  ["BrightHire Co.", "Alina K. · VP Sales"],
+  ["Vertex Retail", "Omar S. · COO"],
 ];
 
-function ScraperScene() {
+function ScraperScene({ building }) {
   return (
     <div className="scene scene-scraper">
       <div className="scan-bar">
@@ -119,60 +129,83 @@ function ScraperScene() {
           <span>Contact found</span>
           <span>Status</span>
         </div>
-        {LEAD_ROWS.map(([company, contact, anim]) => (
-          <div className={`lead-row ${anim}`} key={company}>
+        {LEAD_ROWS.map(([company, contact], i) => (
+          <BuildLine as="div" className="lead-row" building={building} delay={0.15 + i * 0.3} key={company}>
             <span>{company}</span>
             <span>{contact}</span>
             <span className="lead-status">{Icon.check} Ready</span>
-          </div>
+          </BuildLine>
         ))}
       </div>
       <div className="scene-row">
-        <span className="mini-tag stat-tag anim-4">
-          <b>3,412</b> leads this week
-        </span>
-        <span className="mini-tag done-tag anim-5">{Icon.mail} Personalized email queued → Sarah, TechCorp</span>
+        <BuildLine as="span" className="mini-tag stat-tag" building={building} delay={1.6}>
+          <b>
+            <CountLabel target={3412} active={building} delay={1.7} duration={1.1} />
+          </b>{" "}
+          leads this week
+        </BuildLine>
+        <BuildLine as="span" className="mini-tag done-tag" building={building} delay={2.0}>
+          {Icon.mail} Personalized email queued → Sarah, TechCorp
+        </BuildLine>
       </div>
     </div>
   );
 }
 
 /* ---------- P3 · Business Analyzer: audit generating ---------- */
-function AnalyzerScene() {
+function AnalyzerScene({ building }) {
   return (
     <div className="scene scene-analyzer">
       <div className="url-bar">
         {Icon.link}
-        <span className="url-text">https://acme-robotics.com</span>
-        <span className="mini-tag analyze-tag">Analyze</span>
+        <span className="url-text">
+          <TypeLine text="https://acme-robotics.com" active={building} delay={0.1} charsPerSecond={24} />
+        </span>
+        <BuildLine as="span" className="mini-tag analyze-tag" building={building} delay={1.15}>
+          Analyze
+        </BuildLine>
       </div>
       <div className="scene-row analyzer-body">
         <div className="gauge-wrap">
           <svg viewBox="0 0 120 120" aria-hidden="true">
             <circle className="gauge-track" cx="60" cy="60" r="50" />
-            <circle className="gauge-fill" cx="60" cy="60" r="50" />
+            <GaugeFill target={82} active={building} delay={1.5} duration={1.2} />
           </svg>
           <div className="gauge-num">
-            <b>82</b>
+            <b>
+              <CountLabel target={82} active={building} delay={1.5} duration={1.2} />
+            </b>
             <small>opportunity score</small>
           </div>
         </div>
         <div className="findings">
-          <span className="finding anim-1">{Icon.check} 7 quick SEO wins found</span>
-          <span className="finding anim-2">{Icon.check} Fix first: homepage speed</span>
-          <span className="finding anim-3">{Icon.check} Competitor gap: pricing page</span>
+          <BuildLine as="span" className="finding" building={building} delay={2.8}>
+            {Icon.check} 7 quick SEO wins found
+          </BuildLine>
+          <BuildLine as="span" className="finding" building={building} delay={3.1}>
+            {Icon.check} Fix first: homepage speed
+          </BuildLine>
+          <BuildLine as="span" className="finding" building={building} delay={3.4}>
+            {Icon.check} Competitor gap: pricing page
+          </BuildLine>
         </div>
       </div>
       <div className="scene-row">
-        <span className="mini-tag done-tag anim-4">{Icon.doc} Plain-English report ready</span>
-        <span className="mini-tag done-tag anim-5">{Icon.spark} Ad copy + video script included</span>
+        <BuildLine as="span" className="mini-tag done-tag" building={building} delay={4.1}>
+          {Icon.doc} Plain-English report ready
+        </BuildLine>
+        <BuildLine as="span" className="mini-tag done-tag" building={building} delay={4.4}>
+          {Icon.spark} Ad copy + video script included
+        </BuildLine>
       </div>
     </div>
   );
 }
 
 /* ---------- P4 · n8n + Synthflow Suite: sheet drives calls ---------- */
-function SuiteScene() {
+function SuiteScene({ building }) {
+  const phase = useStatusPhase(building, { toCalling: 900, toDone: 1900 });
+
   return (
     <div className="scene scene-suite">
       <div className="mini-card sheet-card">
@@ -189,10 +222,10 @@ function SuiteScene() {
         <div className="sheet-row is-active">
           <span>M. Alvarez</span>
           <span>+1 312 ···</span>
-          <span className="sheet-status status-cycle">
-            <em className="st-1">Pending</em>
-            <em className="st-2">Calling…</em>
-            <em className="st-3">{Icon.check} Done</em>
+          <span className={`sheet-status${phase === "done" ? " is-done" : ""}`}>
+            {phase === "pending" ? "Pending" : null}
+            {phase === "calling" ? "Calling…" : null}
+            {phase === "done" ? <>{Icon.check} Done</> : null}
           </span>
         </div>
         <div className="sheet-row">
@@ -203,13 +236,23 @@ function SuiteScene() {
       </div>
 
       <div className="scene-col route-col">
-        <span className="mini-tag call-tag anim-1">{Icon.phone} AI places the call</span>
+        <BuildLine as="span" className="mini-tag call-tag" building={building} delay={0.2}>
+          {Icon.phone} AI places the call
+        </BuildLine>
         <div className="route-branches">
-          <span className="mini-tag done-tag anim-2">{Icon.check} Answered → result logged</span>
-          <span className="mini-tag retry-tag anim-3">Busy → retry in 2h</span>
-          <span className="mini-tag retry-tag anim-4">Callback → scheduled</span>
+          <BuildLine as="span" className="mini-tag done-tag" building={building} delay={1.6}>
+            {Icon.check} Answered → result logged
+          </BuildLine>
+          <BuildLine as="span" className="mini-tag retry-tag" building={building} delay={1.95}>
+            Busy → retry in 2h
+          </BuildLine>
+          <BuildLine as="span" className="mini-tag retry-tag" building={building} delay={2.3}>
+            Callback → scheduled
+          </BuildLine>
         </div>
-        <span className="mini-tag stat-tag anim-5">Sheet updates itself · full call history kept</span>
+        <BuildLine as="span" className="mini-tag stat-tag" building={building} delay={2.9}>
+          Sheet updates itself · full call history kept
+        </BuildLine>
       </div>
     </div>
   );
@@ -222,12 +265,12 @@ const SCENES = {
   "voice-suite": SuiteScene,
 };
 
-export default function ProjectWorkflowDiagram({ project }) {
+export default function ProjectWorkflowDiagram({ project, building = false }) {
   const Scene = SCENES[project.diagramId] ?? FreightScene;
   const story = project.story;
 
   return (
-    <div className="pvis" role="img" aria-label={`${project.title} — how it works`}>
+    <div className={`pvis${building ? " is-building" : ""}`} role="img" aria-label={`${project.title} — how it works`}>
       <div className="story-flow">
         <div className="story-head">
           <span className="story-label">{story?.label ?? "How it works"}</span>
@@ -237,16 +280,16 @@ export default function ProjectWorkflowDiagram({ project }) {
           </span>
         </div>
 
-        <Scene />
+        <Scene building={building} />
 
         {story?.result ? (
-          <div className="story-result">
+          <BuildLine as="div" className="story-result" building={building} delay={4.9}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="9" />
               <path d="m8 12 3 3 5-6" />
             </svg>
-            <span>{story.result}</span>
-          </div>
+            <TypeLine text={story.result} active={building} delay={5.1} charsPerSecond={44} />
+          </BuildLine>
         ) : null}
       </div>
     </div>

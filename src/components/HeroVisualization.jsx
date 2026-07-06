@@ -33,8 +33,8 @@ export default function HeroVisualization() {
     const OGr = "34,211,238";
     const GD = "#3b82f6"; // secondary accent (blue)
     const GDr = "59,130,246";
-    const GN = "#34d399"; // status green
-    const GNr = "52,211,153";
+    const GN = "#fbbf24"; // status amber
+    const GNr = "251,191,36";
     const INK = "#e9edf5";
     const DIM = "#9aa3b8";
     const SOFT = "#6b7590";

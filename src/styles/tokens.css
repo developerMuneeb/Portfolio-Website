@@ -23,7 +23,7 @@
   --blue: #3b82f6;
   --teal: #2dd4bf;
   --violet: #818cf8;
-  --green: #34d399;
+  --amber: #fbbf24;
 
   --grad: linear-gradient(120deg, #38bdf8 0%, #22d3ee 45%, #2dd4bf 100%);
   --grad-soft: linear-gradient(
@@ -60,6 +60,15 @@
 html {
   overflow-x: clip;
   scroll-behavior: smooth;
+}
+
+/* Lenis drives scrolling when active — native smooth would fight it */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
 }
 
 html,

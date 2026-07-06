@@ -1,0 +1,11 @@
+Lead,Phone,Status,Attempt,Next Action,Last Updated
+D. Carter,+1 415 555 2231,Done,1,-,2026-07-01 09:14
+M. Alvarez,+1 312 555 8890,Calling,1,-,2026-07-01 09:20
+K. Osei,+1 646 555 0417,Queued,0,-,2026-07-01 09:21
+R. Bianchi,+1 212 555 5502,Retry scheduled,2,Busy - retry in 2h,2026-07-01 10:02
+S. Whitfield,+1 917 555 7734,Callback scheduled,1,No answer - callback tomorrow 9am,2026-07-01 10:15
+L. Ferreira,+1 305 555 3391,Done,1,-,2026-07-01 10:31
+P. Nakamura,+1 206 555 6620,Done,2,-,2026-07-01 10:47
+J. Okafor,+1 713 555 4408,Retry scheduled,1,Busy - retry in 2h,2026-07-01 11:03
+A. Delgado,+1 480 555 9927,Done,1,-,2026-07-01 11:19
+C. Whitmore,+1 615 555 1180,Callback scheduled,2,No answer - callback tomorrow 9am,2026-07-01 11:34

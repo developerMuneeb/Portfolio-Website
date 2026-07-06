@@ -69,7 +69,7 @@
 }
 
 .ambience-green {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.4), rgba(14, 116, 144, 0.4) 55%, transparent 85%);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(14, 116, 144, 0.4) 55%, transparent 85%);
 }
 
 html[data-section="top"] .ambience-cyan,
@@ -95,6 +95,38 @@ html[data-section="contact"] .ambience-green {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+}
+
+/* ---------- Kinetic ghost titles (scroll-scrubbed section names) ---------- */
+.ghost-title {
+  position: absolute;
+  top: clamp(28px, 5vh, 64px);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ghost-title span {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(96px, 15vw, 210px);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(148, 197, 255, 0.11);
+  will-change: transform;
+}
+
+@media (max-width: 720px) {
+  .ghost-title span {
+    -webkit-text-stroke-color: rgba(148, 197, 255, 0.08);
+  }
 }
 
 /* ---------- Edge light beams (frame the content margins) ---------- */
@@ -143,11 +175,48 @@ html[data-section="contact"] .ambience-green {
 
 .noise {
   position: fixed;
-  inset: 0;
+  inset: -12%;
   pointer-events: none;
   z-index: 1;
   opacity: 0.028;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.8'/></svg>");
+  /* Living film grain: discrete jumps, transform-only */
+  animation: grain 7s steps(8) infinite;
+  will-change: transform;
+}
+
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  12.5% {
+    transform: translate(-2.5%, 1.5%);
+  }
+  25% {
+    transform: translate(1.8%, -2.2%);
+  }
+  37.5% {
+    transform: translate(-1.2%, -2.8%);
+  }
+  50% {
+    transform: translate(2.4%, 1.1%);
+  }
+  62.5% {
+    transform: translate(-2.8%, 2.4%);
+  }
+  75% {
+    transform: translate(1.4%, 2.7%);
+  }
+  87.5% {
+    transform: translate(2.1%, -1.6%);
+  }
+}
+
+@media (pointer: coarse), (max-width: 720px) {
+  .noise {
+    animation: none;
+  }
 }
 
 /* ---------- Custom cursor (dot + trailing ring) ---------- */
@@ -291,8 +360,8 @@ section:nth-of-type(even) {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 10px var(--green);
+  background: var(--amber);
+  box-shadow: 0 0 10px var(--amber);
   animation: pulse 2s infinite;
 }
 

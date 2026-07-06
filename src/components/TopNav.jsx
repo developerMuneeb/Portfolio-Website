@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useScrollLock } from "../hooks/useScrollLock";
 
 const NAV_LINKS = [
   { href: "#about", label: "About" },
@@ -45,7 +46,7 @@ function MobileMenu({ onClose }) {
       exit={{ opacity: 0 }}
       transition={{ duration: reduce ? 0.15 : 0.28, ease: "easeOut" }}
     >
-      <nav className="mobile-menu-links" aria-label="Mobile navigation">
+      <nav className="mobile-menu-links" aria-label="Mobile navigation" data-lenis-prevent>
         {NAV_LINKS.map((link, index) => (
           <motion.a
             key={link.href}
@@ -96,23 +97,9 @@ export default function TopNav() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // Lock body scroll + close on Escape while the mobile menu is open.
-  // useLayoutEffect so the lock is released synchronously on close —
-  // anchor smooth-scroll (deferred to the next frame) must find the
-  // page scrollable again.
-  useLayoutEffect(() => {
-    if (!menuOpen) return undefined;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") closeMenu();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [menuOpen, closeMenu]);
+  // Lock body scroll + pause Lenis + close on Escape while the mobile
+  // menu is open (see useScrollLock for why Lenis needs an explicit stop).
+  useScrollLock(menuOpen, closeMenu);
 
   // Close the menu automatically if the viewport grows past the breakpoint.
   useEffect(() => {

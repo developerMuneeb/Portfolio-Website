@@ -1,3 +1,4 @@
+import GhostTitle from "./motion/GhostTitle";
 import Reveal from "./motion/Reveal";
 import SectionDivider from "./motion/SectionDivider";
 import TiltCard from "./motion/TiltCard";
@@ -61,6 +62,7 @@ export default function SkillsSection() {
   return (
     <section id="skills" className="skills-section">
       <SectionDivider />
+      <GhostTitle text="Stack" />
       <Reveal className="section-head">
         <div>
           <div className="section-num">/ 04 &mdash; toolkit</div>
