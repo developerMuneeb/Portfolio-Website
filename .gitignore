@@ -20,5 +20,14 @@ hero-cnn-hd-check.png
 hero-svg-wave-check.png
 skills-icons-only-check.png
 
-# Local reference recordings
+# Local pictures and demo recordings
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.avif
+*.gif
 *.mp4
+*.webm
+*.mov
+*.mkv

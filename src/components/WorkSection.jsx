@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useRef, useState } from "react";
+﻿import { lazy, Suspense, useCallback, useRef, useState } from "react";
 import GhostTitle from "./motion/GhostTitle";
 import Reveal from "./motion/Reveal";
 import SectionDivider from "./motion/SectionDivider";
@@ -11,7 +11,7 @@ const ProjectWorkflowDiagram = lazy(() => import("./ProjectWorkflowDiagram"));
 const SAMPLE_OUTPUT = {
   "freight-voice": {
     kicker: "Sample deliverable",
-    title: "Call transcript & CRM summary",
+    title: "Call transcript and CRM summary",
     label: "call transcript",
     downloadHref: "/demo/freight-call-summary-sample.txt",
     downloadLabel: "Download summary (.txt)",
@@ -19,7 +19,7 @@ const SAMPLE_OUTPUT = {
   },
   "lead-scraper": {
     kicker: "Sample deliverable",
-    title: "Lead export & outreach sample",
+    title: "Lead export and outreach sample",
     label: "lead export",
     downloadHref: "/demo/lead-scraper-sample-export.csv",
     downloadLabel: "Download leads (.csv)",
@@ -27,7 +27,7 @@ const SAMPLE_OUTPUT = {
   },
   "business-analyzer": {
     kicker: "Sample deliverable",
-    title: "Acme Robotics — competitor & SEO report",
+    title: "Acme Robotics - competitor and SEO report",
     label: "full report",
     downloadHref: "/demo/acme-robotics-seo-competitor-analysis.docx",
     downloadLabel: "Download full report (.docx)",
@@ -35,7 +35,7 @@ const SAMPLE_OUTPUT = {
   },
   "voice-suite": {
     kicker: "Sample deliverable",
-    title: "Call log & routing sheet",
+    title: "Call log and routing sheet",
     label: "call log",
     downloadHref: "/demo/call-log-sample-export.csv",
     downloadLabel: "Download call log (.csv)",
@@ -65,11 +65,14 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
   }, [start, stop]);
 
   const sample = SAMPLE_OUTPUT[project.diagramId];
+  const className = `pcard${project.featured ? " pcard-featured" : ""}`;
 
   return (
     <Reveal
       as="article"
-      className="pcard"
+      className={className}
+      id={`project-${project.diagramId}`}
+      aria-labelledby={`project-title-${project.diagramId}`}
       y={32}
       onMouseEnter={start}
       onMouseLeave={stop}
@@ -85,11 +88,11 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
         <div className="pnum">
           <span className="pnb">P/{String(index + 1).padStart(2, "0")}</span>
           <span className="pnum-meta">
-            {project.badge} <span className="pnum-sep" aria-hidden="true">·</span> {project.category}
+            {project.badge} <span className="pnum-sep" aria-hidden="true">&middot;</span> {project.category}
           </span>
         </div>
 
-        <h3 className="pt">
+        <h3 className="pt" id={`project-title-${project.diagramId}`}>
           <span className="ac">{project.title.split(" ")[0]}</span>{" "}
           {project.title.split(" ").slice(1).join(" ")}
         </h3>
@@ -110,39 +113,31 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
           </div>
 
           <div className="pstack">
-            {project.tools.map((tool) => (
-              <span key={tool}>{tool}</span>
-            ))}
+            {project.tools.map((tool) => <span key={tool}>{tool}</span>)}
           </div>
         </div>
+
+        {project.highlights ? (
+          <div className="project-highlights" aria-label="Project highlights">
+            {project.highlights.map((highlight) => (
+              <span key={highlight}><i aria-hidden="true"></i>{highlight}</span>
+            ))}
+          </div>
+        ) : null}
 
         <details className="pdetail">
           <summary>View case notes</summary>
           <dl className="pdetail-grid">
-            <div>
-              <dt>Problem</dt>
-              <dd>{project.details.problem}</dd>
-            </div>
-            <div>
-              <dt>Solution</dt>
-              <dd>{project.details.solution}</dd>
-            </div>
-            <div>
-              <dt>My role</dt>
-              <dd>{project.details.role}</dd>
-            </div>
-            <div>
-              <dt>Business value</dt>
-              <dd>{project.details.value}</dd>
-            </div>
+            <div><dt>Problem</dt><dd>{project.details.problem}</dd></div>
+            <div><dt>Solution</dt><dd>{project.details.solution}</dd></div>
+            <div><dt>My role</dt><dd>{project.details.role}</dd></div>
+            <div><dt>Business value</dt><dd>{project.details.value}</dd></div>
           </dl>
         </details>
 
         <div className="pnote">
           <span className="pnote-dot" aria-hidden="true"></span>
-          <span>
-            <b>Production · Live</b> &middot; {project.outcome}
-          </span>
+          <span><b>Production / Live</b> &middot; {project.outcome}</span>
         </div>
 
         {sample ? (
@@ -154,7 +149,7 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
               <path d="M9 17h4" />
             </svg>
             View sample {sample.label}
-            <span className="psample-arrow" aria-hidden="true">→</span>
+            <span className="psample-arrow" aria-hidden="true">&rarr;</span>
           </button>
         ) : null}
       </div>
@@ -172,13 +167,10 @@ export default function WorkSection() {
       <GhostTitle text="Projects" />
       <Reveal className="ref-work-head">
         <div className="sn">06</div>
-        <div className="sk">Selected Projects</div>
-        <h2 className="st">
-          Confidential <span className="it">workflow</span> case studies
-        </h2>
+        <div className="sk">Selected Systems</div>
+        <h2 className="st">AI systems built for <span className="it">real operations</span></h2>
         <p className="sd">
-          Real client and company work shown as clean system stories: what entered the workflow,
-          what the automation decided, and what business value came out.
+          Five production case studies showing the architecture, decisions, execution flow, and measurable business value behind each system.
         </p>
       </Reveal>
 
@@ -188,9 +180,9 @@ export default function WorkSection() {
       </Reveal>
 
       <Reveal className="work-proof" delay={0.1}>
-        <span><b>4</b> detailed systems</span>
-        <span><b>5-step</b> workflow stories</span>
-        <span><b>100%</b> confidential-safe visuals</span>
+        <span><b>5</b> production systems</span>
+        <span><b>3</b> agent tool routes</span>
+        <span><b>38</b> automated tests on featured commerce AI</span>
       </Reveal>
 
       <div className="projects">

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">ShopMesh AI logo</title>
+  <defs>
+    <linearGradient id="shopmesh-mark" x1="14" y1="12" x2="50" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#2DD4BF"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="#071119" stroke="#1D5360" stroke-width="1.5"/>
+  <path d="M18 17.5h28a5 5 0 0 1 5 5v18a5 5 0 0 1-5 5H31l-9 7v-7h-4a5 5 0 0 1-5-5v-18a5 5 0 0 1 5-5Z" fill="#0B1D26" stroke="url(#shopmesh-mark)" stroke-width="2"/>
+  <path d="M21 26h4l2.4 10.2h13.4l3-7.4H26.2" fill="none" stroke="url(#shopmesh-mark)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="30" cy="40.5" r="1.8" fill="#22D3EE"/>
+  <circle cx="39.5" cy="40.5" r="1.8" fill="#2DD4BF"/>
+  <path d="m31 31 3 3 6-7" fill="none" stroke="#EAFDFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

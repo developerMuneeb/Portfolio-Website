@@ -1,5 +1,5 @@
-/* Portfolio stylesheet — Electric dark theme.
-   Import order matters: tokens → base → nav → sections → work → reports. */
+﻿/* Portfolio stylesheet - Electric dark theme.
+   Import order matters: tokens -> base -> nav -> sections -> work -> reports. */
 @import "./tokens.css";
 @import "./base.css";
 @import "./nav.css";

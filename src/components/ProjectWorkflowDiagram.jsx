@@ -1,16 +1,17 @@
+import ShopMeshDemo from "./ShopMeshDemo";
 import { BuildLine, CountLabel, GaugeFill, TypeLine, useStatusPhase } from "./motion/SceneReveal";
 
 /**
- * Bespoke "real product" scenes — one per project, each designed to
+ * Bespoke "real product" scenes - one per project, each designed to
  * look like the actual application in use so a non-technical client
  * immediately recognises what was built:
  *
- *  freight-voice     → a live AI phone call with transcript + CRM update
- *  lead-scraper      → a lead list filling itself + outreach queue
- *  business-analyzer → a website audit generating a score + report
- *  voice-suite       → a spreadsheet row driving a call + writeback
+ *  freight-voice     &rarr; a live AI phone call with transcript + CRM update
+ *  lead-scraper      &rarr; a lead list filling itself + outreach queue
+ *  business-analyzer &rarr; a website audit generating a score + report
+ *  voice-suite       &rarr; a spreadsheet row driving a call + writeback
  *
- * Small ambient loops (waveform, scan ring, live/pulse dots) run always —
+ * Small ambient loops (waveform, scan ring, live/pulse dots) run always -
  * they're cheap "this system is alive" cues. The bigger reveal moments
  * (chat bubbles typing, rows filling in, the gauge sweeping, findings
  * appearing) are saved for hover/tap via the `building` flag, so the
@@ -57,7 +58,7 @@ const Icon = {
   ),
 };
 
-/* ---------- P1 · Freight AI Voice Agent: live call scene ---------- */
+/* ---------- P1 / Freight AI Voice Agent: live call scene ---------- */
 function FreightScene({ building }) {
   return (
     <div className="scene scene-freight">
@@ -65,8 +66,8 @@ function FreightScene({ building }) {
         <div className="mini-card-head">
           <span className="mini-avatar">{Icon.phone}</span>
           <span>
-            <b>AI agent — outbound call</b>
-            <small>New freight lead · Chicago</small>
+            <b>AI agent - outbound call</b>
+            <small>New freight lead / Chicago</small>
           </span>
           <span className="mini-tag live-tag">
             <i></i>00:42
@@ -77,7 +78,7 @@ function FreightScene({ building }) {
             <span key={i} style={{ animationDelay: `${(i % 7) * -0.14}s` }}></span>
           ))}
         </div>
-        <div className="call-foot">Natural conversation · handles objections</div>
+        <div className="call-foot">Natural conversation / handles objections</div>
       </div>
 
       <div className="scene-col">
@@ -86,7 +87,7 @@ function FreightScene({ building }) {
             <TypeLine text="What are you shipping, and where is it headed?" active={building} delay={0.2} />
           </BuildLine>
           <BuildLine as="span" className="bubble lead" building={building} delay={1.6}>
-            <TypeLine text="45,000 lbs, dry van — Chicago to Los Angeles." active={building} delay={1.75} />
+            <TypeLine text="45,000 lbs, dry van - Chicago to Los Angeles." active={building} delay={1.75} />
           </BuildLine>
           <BuildLine as="span" className="bubble ai" building={building} delay={3.15}>
             <TypeLine text="Got it. When do you need pickup?" active={building} delay={3.3} />
@@ -94,7 +95,7 @@ function FreightScene({ building }) {
         </div>
         <div className="scene-row">
           <BuildLine as="span" className="mini-tag done-tag" building={building} delay={4.3}>
-            {Icon.check} CRM → Qualified
+            {Icon.check} CRM &rarr; Qualified
           </BuildLine>
           <BuildLine as="span" className="mini-tag done-tag" building={building} delay={4.6}>
             {Icon.mail} Summary emailed to sales
@@ -105,12 +106,12 @@ function FreightScene({ building }) {
   );
 }
 
-/* ---------- P2 · Lead Scraper: lead list filling itself ---------- */
+/* ---------- P2 / Lead Scraper: lead list filling itself ---------- */
 const LEAD_ROWS = [
-  ["TechCorp Inc.", "Sarah M. · Head of Ops"],
-  ["Nova Logistics", "James R. · Founder"],
-  ["BrightHire Co.", "Alina K. · VP Sales"],
-  ["Vertex Retail", "Omar S. · COO"],
+  ["TechCorp Inc.", "Sarah M. / Head of Ops"],
+  ["Nova Logistics", "James R. / Founder"],
+  ["BrightHire Co.", "Alina K. / VP Sales"],
+  ["Vertex Retail", "Omar S. / COO"],
 ];
 
 function ScraperScene({ building }) {
@@ -118,7 +119,7 @@ function ScraperScene({ building }) {
     <div className="scene scene-scraper">
       <div className="scan-bar">
         <span className="scan-ring" aria-hidden="true"></span>
-        Scanning job boards — day &amp; night
+        Scanning job boards - day &amp; night
         <span className="mini-tag live-tag">
           <i></i>live
         </span>
@@ -145,14 +146,14 @@ function ScraperScene({ building }) {
           leads this week
         </BuildLine>
         <BuildLine as="span" className="mini-tag done-tag" building={building} delay={2.0}>
-          {Icon.mail} Personalized email queued → Sarah, TechCorp
+          {Icon.mail} Personalized email queued &rarr; Sarah, TechCorp
         </BuildLine>
       </div>
     </div>
   );
 }
 
-/* ---------- P3 · Business Analyzer: audit generating ---------- */
+/* ---------- P3 / Business Analyzer: audit generating ---------- */
 function AnalyzerScene({ building }) {
   return (
     <div className="scene scene-analyzer">
@@ -202,7 +203,7 @@ function AnalyzerScene({ building }) {
   );
 }
 
-/* ---------- P4 · n8n + Synthflow Suite: sheet drives calls ---------- */
+/* ---------- P4 / n8n + Synthflow Suite: sheet drives calls ---------- */
 function SuiteScene({ building }) {
   const phase = useStatusPhase(building, { toCalling: 900, toDone: 1900 });
 
@@ -216,21 +217,21 @@ function SuiteScene({ building }) {
         </div>
         <div className="sheet-row">
           <span>D. Carter</span>
-          <span>+1 415 ···</span>
+          <span>+1 415 ///</span>
           <span className="sheet-status is-done">{Icon.check} Done</span>
         </div>
         <div className="sheet-row is-active">
           <span>M. Alvarez</span>
-          <span>+1 312 ···</span>
+          <span>+1 312 ///</span>
           <span className={`sheet-status${phase === "done" ? " is-done" : ""}`}>
             {phase === "pending" ? "Pending" : null}
-            {phase === "calling" ? "Calling…" : null}
+            {phase === "calling" ? "Calling..." : null}
             {phase === "done" ? <>{Icon.check} Done</> : null}
           </span>
         </div>
         <div className="sheet-row">
           <span>K. Osei</span>
-          <span>+1 646 ···</span>
+          <span>+1 646 ///</span>
           <span className="sheet-status">Queued</span>
         </div>
       </div>
@@ -241,17 +242,17 @@ function SuiteScene({ building }) {
         </BuildLine>
         <div className="route-branches">
           <BuildLine as="span" className="mini-tag done-tag" building={building} delay={1.6}>
-            {Icon.check} Answered → result logged
+            {Icon.check} Answered &rarr; result logged
           </BuildLine>
           <BuildLine as="span" className="mini-tag retry-tag" building={building} delay={1.95}>
-            Busy → retry in 2h
+            Busy &rarr; retry in 2h
           </BuildLine>
           <BuildLine as="span" className="mini-tag retry-tag" building={building} delay={2.3}>
-            Callback → scheduled
+            Callback &rarr; scheduled
           </BuildLine>
         </div>
         <BuildLine as="span" className="mini-tag stat-tag" building={building} delay={2.9}>
-          Sheet updates itself · full call history kept
+          Sheet updates itself / full call history kept
         </BuildLine>
       </div>
     </div>
@@ -270,17 +271,17 @@ export default function ProjectWorkflowDiagram({ project, building = false }) {
   const story = project.story;
 
   return (
-    <div className={`pvis${building ? " is-building" : ""}`} role="img" aria-label={`${project.title} — how it works`}>
+    <div className={`pvis${building ? " is-building" : ""}`} role={project.diagramId === "shopmesh-ai" ? "group" : "img"} aria-label={`${project.title} - how it works`}>
       <div className="story-flow">
         <div className="story-head">
           <span className="story-label">{story?.label ?? "How it works"}</span>
           <span className="story-live">
             <span className="story-live-dot" aria-hidden="true"></span>
-            Live system
+            {project.demo ? "Real product" : "Live system"}
           </span>
         </div>
 
-        <Scene building={building} />
+        {project.demo ? <ShopMeshDemo demo={project.demo} /> : <Scene building={building} />}
 
         {story?.result ? (
           <BuildLine as="div" className="story-result" building={building} delay={4.9}>
