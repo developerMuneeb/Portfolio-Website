@@ -31,3 +31,8 @@ skills-icons-only-check.png
 *.webm
 *.mov
 *.mkv
+
+# ShopMesh portfolio demo required by the deployed site
+!public/demo/shopmesh-ai/poster-full-cart-v3.webp
+!public/demo/shopmesh-ai/shopmesh-demo-full-cart-v3.mp4
+!public/demo/shopmesh-ai/shopmesh-demo-full-cart-v3.webm
