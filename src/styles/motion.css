@@ -1,0 +1,511 @@
+/* =============================================================
+   Motion layer - preloader, custom cursor, 3D hero frame,
+   and the stacked Work deck.
+   ============================================================= */
+
+/* ---------- Intro preloader ---------- */
+html.is-intro {
+  overflow: hidden;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(60% 50% at 50% 60%, rgba(var(--cyan-rgb), 0.08), transparent 70%),
+    rgb(var(--deep-rgb));
+  will-change: clip-path;
+}
+
+.preloader-inner {
+  width: min(680px, calc(100vw - 48px));
+}
+
+.preloader-name {
+  display: flex;
+  flex-wrap: wrap;
+  font-weight: 600;
+  font-size: clamp(34px, 6.4vw, 76px);
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.preloader-name {
+  column-gap: 0.28em;
+}
+
+.preloader-word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.preloader-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.preloader-mask > span {
+  display: inline-block;
+}
+
+.preloader-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 26px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+
+.preloader-count {
+  font-size: 13px;
+  color: var(--cyan);
+  font-variant-numeric: tabular-nums;
+}
+
+.preloader-bar {
+  position: relative;
+  height: 1px;
+  margin-top: 14px;
+  background: rgba(var(--fill-rgb), calc(0.08 * var(--fill-k)));
+  overflow: hidden;
+}
+
+.preloader-bar > span {
+  position: absolute;
+  inset: 0;
+  background: var(--grad);
+  transform-origin: 0 50%;
+  box-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.6);
+}
+
+/* ---------- Custom cursor ---------- */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor [contenteditable="true"] {
+  cursor: text !important;
+}
+
+/* Dot and ring are direct children of the page (no fixed wrapper) so
+   mix-blend-mode: difference blends against the real page and inverts on
+   both dark and light surfaces, including the dark island screens. */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  translate: -50% -50%;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: #fff; /* white + difference = inverts in both themes */
+  mix-blend-mode: difference;
+}
+
+.cursor-ring {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  mix-blend-mode: difference;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.cursor-ring.is-link {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Labelled pill: solid brand fill, no blending, so the text stays legible */
+.cursor-ring.is-label {
+  mix-blend-mode: normal;
+  border-color: transparent;
+  background: var(--grad);
+  box-shadow: 0 10px 30px rgba(var(--cyan-rgb), 0.3);
+}
+
+.cursor-ring span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-accent);
+  white-space: nowrap;
+}
+
+/* Orbiting satellite labels (drei <Html>) */
+.h3d-label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 112px;
+  padding: 8px 10px 7px 20px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 6px;
+  background: rgba(var(--surface-rgb), 0.9);
+  box-shadow: inset 0 1px 0 rgba(var(--tint-rgb), 0.04), 0 10px 24px rgba(var(--shadow-rgb), calc(0.3 * var(--shadow-k)));
+  color: var(--ink);
+  white-space: nowrap;
+  pointer-events: auto;
+  translate: 16px -50%;
+  transition: translate 0.45s var(--ease-out), opacity 0.35s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.h3d-label[data-side="left"] {
+  translate: calc(-100% - 16px) -50%;
+}
+
+.h3d-label.is-back {
+  opacity: 0.32;
+}
+
+.h3d-label.is-active {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--node-color) 60%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--node-color) 25%, transparent), 0 12px 30px rgba(var(--shadow-rgb), calc(0.36 * var(--shadow-k)));
+}
+
+.h3d-label i {
+  position: absolute;
+  left: 9px;
+  top: 12px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--node-color);
+  box-shadow: 0 0 9px var(--node-color);
+}
+
+.h3d-label strong {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+}
+
+.h3d-label small {
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+/* ---------- Stacked Work deck ---------- */
+.work-deck {
+  position: relative;
+}
+
+.work-chapter {
+  position: sticky;
+  top: 76px;
+  z-index: 6;
+  width: 100%;
+  max-width: var(--project-card-width);
+  margin: 0 auto 22px;
+  pointer-events: none;
+}
+
+.work-chapter-inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, auto) minmax(80px, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 11px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(var(--surface-rgb), 0.94);
+  box-shadow: 0 14px 40px rgba(var(--shadow-rgb), calc(0.32 * var(--shadow-k))), var(--inset-top);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+
+.work-chapter-num {
+  display: inline-flex;
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.work-chapter-roll,
+.work-chapter-title {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  height: 1.4em;
+  align-items: center;
+}
+
+.work-chapter-roll > span,
+.work-chapter-title > span {
+  display: inline-block;
+}
+
+.work-chapter-title {
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.work-chapter-track {
+  position: relative;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(var(--fill-rgb), calc(0.07 * var(--fill-k)));
+  overflow: hidden;
+}
+
+.work-chapter-track > span {
+  position: absolute;
+  inset: 0;
+  background: var(--grad);
+  transform-origin: 0 50%;
+  box-shadow: 0 0 10px rgba(var(--cyan-rgb), 0.5);
+}
+
+/* The pin wrapper is the grid item now - min-width:0 keeps it from
+   growing to its content's intrinsic width on narrow screens */
+.pcard-pin {
+  min-width: 0;
+}
+
+.work-deck.is-stacked .pcard-pin {
+  position: sticky;
+}
+
+.pcard-recede {
+  position: relative;
+  min-width: 0;
+  border-radius: 8px;
+  will-change: transform;
+}
+
+.pcard-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: 8px;
+  background: rgb(var(--deep-rgb));
+  pointer-events: none;
+}
+
+/* Stacked cards overlap, so each needs an opaque base under its glass
+   gradient. content-visibility skips off-screen paint, which fights sticky
+   + transforms, so it's turned off in deck mode. */
+.reference-work .work-deck.is-stacked .pcard {
+  background-color: rgb(var(--surface-rgb));
+  content-visibility: visible;
+}
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(var(--fill-rgb), calc(0.03 * var(--fill-k)));
+  box-shadow: var(--inset-top);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.22s ease, border-color 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 24px rgba(var(--cyan-rgb), 0.18), var(--inset-top);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.theme-toggle svg {
+  width: 19px;
+  height: 19px;
+  overflow: visible;
+}
+
+.mobile-menu-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-toggle-menu {
+  width: 38px;
+  height: 38px;
+}
+
+/* Circular reveal (theme.js). The default cross-fade is disabled so the
+   new theme is revealed only by the growing clip-path circle. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* The custom cursor would be frozen into the snapshot mid-reveal */
+html.theme-switching .cursor-dot,
+html.theme-switching .cursor-ring {
+  opacity: 0;
+}
+
+/* ---------- Light theme: details tokens can't express ---------- */
+/* Primary buttons sit on the deeper light gradient - use white text */
+:root[data-theme="light"] .btn-primary {
+  box-shadow:
+    0 10px 26px rgba(8, 145, 178, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* Grain and grid read as dirt on paper - soften them */
+:root[data-theme="light"] .noise {
+  opacity: 0.018;
+}
+
+:root[data-theme="light"] .grid-bg {
+  opacity: 0.5;
+}
+
+/* Preloader on paper */
+:root[data-theme="light"] .preloader {
+  background:
+    radial-gradient(60% 50% at 50% 60%, rgba(8, 145, 178, 0.08), transparent 70%),
+    var(--bg);
+}
+
+/* Dark islands (hero 3D card, project screens) get a crisp frame on paper */
+:root[data-theme="light"] .hero-signal-visual,
+:root[data-theme="light"] .reference-work .pvis {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 22px 50px rgba(15, 23, 42, 0.16);
+}
+
+/* Island screens sit on white cards in light mode - give their translucent
+   dark gradients an opaque navy base so they read as true screens */
+:root[data-theme="light"] .theme-dark-island {
+  background-color: #0e1420;
+}
+
+/* ---------- Signal particles (Igloo Inc-style link morph) ---------- */
+.signal-panel {
+  position: relative;
+  margin-top: 18px;
+  border: 1px solid rgba(var(--cyan-rgb), 0.18);
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 70% at 50% 55%, rgba(var(--cyan-rgb), 0.08), transparent 70%),
+    rgb(var(--deep-rgb));
+  box-shadow: var(--inset-top);
+}
+
+.signal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.signal-head > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-dim);
+}
+
+.signal-head i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(var(--cyan-rgb), 0.8);
+}
+
+.signal-head > span:last-child {
+  color: var(--cyan);
+}
+
+.signal-stage {
+  position: relative;
+  height: 230px;
+}
+
+.signal-canvas,
+.signal-fallback {
+  position: absolute;
+  inset: 0;
+}
+
+.signal-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.signal-fallback {
+  background: radial-gradient(circle at 50% 50%, rgba(var(--cyan-rgb), 0.18), transparent 45%);
+}
+
+/* ---------- Kinetic type ---------- */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* room for descenders and italic/outlined overhang */
+  padding: 0 0.08em 0.14em 0.14em;
+  margin: 0 -0.08em -0.14em -0.14em;
+}
+
+/* No will-change: words animate once; permanent layers would cost more */
+.word {
+  display: inline-block;
+  transform-origin: 0% 100%;
+}
+
+/* JS velocity marquee replaces the CSS loop */
+.marquee-track.is-js {
+  animation: none;
+  will-change: transform;
+}
+
+/* The contact card grew (signal panel); its fading glass gradient would let
+   the backdrop show through near the bottom on paper - keep it solid */
+:root[data-theme="light"] .contact-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.78));
+}

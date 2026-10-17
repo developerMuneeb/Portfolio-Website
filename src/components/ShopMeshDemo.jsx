@@ -53,6 +53,7 @@ export default function ShopMeshDemo({ demo }) {
                 <div className="master-demo-play">
                   <button
                     type="button"
+                    data-cursor="Play"
                     onClick={() => {
                       setVideoFailed(false);
                       setVideoRequested(true);

@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useScrollLock } from "../hooks/useScrollLock";
+import ThemeToggle from "./ThemeToggle";
+import { useScramble } from "./motion/ScrambleText";
 
 const NAV_LINKS = [
   { href: "#about", label: "About" },
@@ -13,6 +15,17 @@ const NAV_LINKS = [
 ];
 
 const EASE = [0.2, 0.8, 0.2, 1];
+
+/** Desktop nav link that decodes its label (Igloo Inc-style) on hover. */
+function NavLink({ href, label }) {
+  const textRef = useRef(null);
+  const scramble = useScramble(textRef, label, { duration: 380 });
+  return (
+    <a href={href} onMouseEnter={scramble} onFocus={scramble}>
+      <span ref={textRef}>{label}</span>
+    </a>
+  );
+}
 
 function BrandLogo() {
   return (
@@ -85,7 +98,10 @@ function MobileMenu({ onClose }) {
         </a>
         <div className="mobile-menu-meta">
           <span>Karachi &middot; GMT+5</span>
-          <span>Available for hire</span>
+          <span className="mobile-menu-theme">
+            Theme
+            <ThemeToggle className="theme-toggle-menu" />
+          </span>
         </div>
       </motion.div>
     </motion.div>
@@ -118,13 +134,12 @@ export default function TopNav() {
 
         <div className="nav-links">
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href}>
-              {link.label}
-            </a>
+            <NavLink key={link.href} href={link.href} label={link.label} />
           ))}
         </div>
 
         <div className="nav-actions">
+          <ThemeToggle />
           <a
             className="nav-resume"
             href="/resume/Muhammad-Muneeb-Resume.pdf"

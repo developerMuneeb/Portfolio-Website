@@ -8,7 +8,24 @@
       name="description"
       content="Muhammad Muneeb &mdash; AI Engineer building AI agents, workflow automation, voice AI agents, AI chatbots, LangGraph systems, CRM automation, and full-stack AI applications for real business automation."
     />
-    <meta name="theme-color" content="#05060a" />
+    <meta name="theme-color" content="#0b0b15" />
+    <script>
+      // Stamp the theme before first paint (no flash): saved choice, else OS preference.
+      (function () {
+        var theme;
+        try { theme = localStorage.getItem("mm-theme"); } catch (e) {}
+        if (theme !== "light" && theme !== "dark") {
+          theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        }
+        document.documentElement.dataset.theme = theme;
+        if (theme === "light") document.querySelector('meta[name="theme-color"]').setAttribute("content", "#f3f0e8");
+        // Reserve the 3D-world layout before first paint; WorldLoader removes
+        // the class again if the world can't run.
+        if (window.matchMedia("(min-width: 981px)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("world-on");
+        }
+      })();
+    </script>
     <link rel="canonical" href="https://portfolio-website-rho-one-74.vercel.app/" />
     <link
       rel="icon"
@@ -35,7 +52,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
       rel="stylesheet"
     />
     <script type="application/ld+json">

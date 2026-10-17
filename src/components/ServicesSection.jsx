@@ -1,7 +1,5 @@
-import GhostTitle from "./motion/GhostTitle";
 import Reveal from "./motion/Reveal";
-import SectionDivider from "./motion/SectionDivider";
-import TiltCard from "./motion/TiltCard";
+import ChapterHead from "./chapter/ChapterHead";
 
 const services = [
   {
@@ -54,60 +52,41 @@ const services = [
   },
 ];
 
-const viewport = { once: true, margin: "0px 0px -8% 0px" };
-const EASE = [0.2, 0.8, 0.2, 1];
-
-/* Bento layout: card 01 is the wide featured tile, card 06 spans the
-   bottom row as a consulting banner. */
-const BENTO_CLASS = { 0: " featured", 5: " wide" };
-
-function ServiceCard({ service, index }) {
-  return (
-    <TiltCard
-      as="article"
-      className={`service-card${BENTO_CLASS[index] ?? ""}`}
-      maxTilt={4}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={viewport}
-      transition={{ duration: 0.6, delay: Math.min(index * 0.06, 0.24), ease: EASE }}
-    >
-      <div className="service-index">{String(index + 1).padStart(2, "0")}</div>
-      <h3>{service.title}</h3>
-      <p>{service.outcome}</p>
-      <div className="service-fit">{service.bestFor}</div>
-      <div className="service-tools">
-        {service.tools.map((tool) => (
-          <span key={tool}>{tool}</span>
-        ))}
-      </div>
-      <div className="service-deliverable">{service.deliverable}</div>
-    </TiltCard>
-  );
-}
-
+/**
+ * Station "services". Six services as numbered editorial rows; the 3D
+ * turntable beside them turns so the service being read comes forward.
+ */
 export default function ServicesSection() {
   return (
-    <section id="services" className="services">
-      <SectionDivider />
-      <GhostTitle text="Services" direction={-1} />
-      <Reveal className="section-head">
-        <div>
-          <div className="section-num">/ 05 &mdash; services</div>
-          <h2 className="section-title">
-            What I can <span className="outline">build for you</span>
-          </h2>
-        </div>
-        <p className="section-desc">
-          Clear, business-first AI automation services for teams that need systems that work,
-          not experiments that stop at a demo.
-        </p>
-      </Reveal>
+    <section id="services" className="ch ch-flip" data-station="services">
+      <div className="ch-stage" data-anchor aria-hidden="true" />
 
-      <div className="services-grid">
-        {services.map((service, index) => (
-          <ServiceCard key={service.title} service={service} index={index} />
-        ))}
+      <div className="ch-copy">
+        <ChapterHead
+          index="05"
+          label="Services"
+          lede="Business-first AI automation for teams that need systems that work, not experiments that stop at a demo."
+        >
+          What I can <em>build for you</em>
+        </ChapterHead>
+
+        <ol className="sv-list">
+          {services.map((service, index) => (
+            <Reveal as="li" className="sv-item" key={service.title} y={18} delay={Math.min(index * 0.04, 0.16)}>
+              <span className="sv-num">{String(index + 1).padStart(2, "0")}</span>
+              <div className="sv-body">
+                <h3>{service.title}</h3>
+                <p>{service.outcome}</p>
+                <p className="sv-fit">{service.bestFor}</p>
+                <div className="ch-tags">
+                  {service.tools.map((tool) => (
+                    <span key={tool}>{tool}</span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </ol>
       </div>
     </section>
   );

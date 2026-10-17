@@ -1,3 +1,7 @@
+import { useRef } from "react";
+import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
+import { useScrollVelocity } from "../hooks/useScrollVelocity";
+
 const ROW_A = [
   "Agentic AI",
   "Workflow Automation",
@@ -28,26 +32,67 @@ function GhostItem({ label, isClone = false }) {
   );
 }
 
+const wrap = (min, max, v) => {
+  const range = max - min;
+  return ((((v - min) % range) + range) % range) + min;
+};
+
+/**
+ * Velocity marquee (Mat Voyce-style kinetic type): drifts at a base speed,
+ * accelerates with scroll speed, and flips direction with scroll direction.
+ * Transform-only via a motion value — no React re-renders per frame. Pauses
+ * on hover; reduced motion keeps the static CSS layout.
+ */
+function VelocityTrack({ baseSpeed, reverse = false, children }) {
+  const reduce = useReducedMotion();
+  const velocity = useScrollVelocity();
+  const boost = useTransform(velocity, [-3000, 0, 3000], [6, 0, 6], { clamp: true });
+  const baseX = useMotionValue(0);
+  const x = useTransform(baseX, (v) => `${wrap(-50, 0, v)}%`);
+  const direction = useRef(reverse ? 1 : -1);
+  const paused = useRef(false);
+
+  useAnimationFrame((_, delta) => {
+    if (reduce || paused.current) return;
+    const v = velocity.get();
+    if (v < -5) direction.current = reverse ? -1 : 1;
+    else if (v > 5) direction.current = reverse ? 1 : -1;
+    const move = direction.current * baseSpeed * (delta / 1000) * (1 + boost.get());
+    baseX.set(baseX.get() + move);
+  });
+
+  return (
+    <motion.div
+      className={`marquee-track is-js${reverse ? " is-reverse" : ""}`}
+      style={reduce ? undefined : { x }}
+      onMouseEnter={() => (paused.current = true)}
+      onMouseLeave={() => (paused.current = false)}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 /** Dual-direction marquee: focus areas one way, tool names (outlined) the other. */
 export default function MarqueeSection() {
   return (
     <div className="marquee" aria-label="Focus areas and tools">
-      <div className="marquee-track">
+      <VelocityTrack baseSpeed={1.25}>
         {ROW_A.map((label, index) => (
           <MarqueeItem key={label} label={label} index={index} />
         ))}
         {ROW_A.map((label, index) => (
           <MarqueeItem key={`${label}-clone`} label={label} index={index} isClone />
         ))}
-      </div>
-      <div className="marquee-track is-reverse">
+      </VelocityTrack>
+      <VelocityTrack baseSpeed={0.96} reverse>
         {ROW_B.map((label) => (
           <GhostItem key={label} label={label} />
         ))}
         {ROW_B.map((label) => (
           <GhostItem key={`${label}-clone`} label={label} isClone />
         ))}
-      </div>
+      </VelocityTrack>
     </div>
   );
 }

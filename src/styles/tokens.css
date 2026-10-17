@@ -1,53 +1,151 @@
 /* =============================================================
-   Design tokens — "Electric" dark theme
-   Deep navy/space black surfaces, electric cyan/blue accents.
+   Design tokens — "Nocturne" identity (dark) + "Paper" (light).
    Single source of truth for the whole site.
+
+   Dark is a deep indigo ink rather than pure black: near-#000 backgrounds
+   make bright text halate (glow/smear) for many readers, so the base
+   sits at ~#0b0b15 with surfaces stepping lighter for elevation.
+
+   Colors that sit inside rgba() are exposed as bare "r, g, b" triplets
+   (--tint-rgb, --surface-rgb, ...) so component CSS can keep its own
+   alpha values while the hue flips per theme.
    ============================================================= */
-:root {
+:root,
+:root .theme-dark-island {
+  color-scheme: dark;
+
   /* Surfaces */
-  --bg: #05060a;
-  --bg-soft: #090b12;
-  --panel: rgba(255, 255, 255, 0.03);
-  --panel-strong: rgba(255, 255, 255, 0.055);
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(148, 197, 255, 0.24);
+  --bg: #0b0b15;
+  --bg-soft: #10101c;
+  --deep-rgb: 11, 11, 21;
+  --surface-rgb: 20, 19, 36;
+  --tint-rgb: 255, 255, 255;
+  /* Fills: faint white glass on dark, near-opaque white cards on paper */
+  --fill-rgb: 255, 255, 255;
+  --fill-k: 1;
+  --panel: rgba(var(--tint-rgb), 0.03);
+  --panel-strong: rgba(var(--tint-rgb), 0.055);
+  --line: rgba(var(--tint-rgb), 0.08);
+  --line-strong: rgba(167, 139, 250, 0.28);
 
   /* Ink */
-  --ink: #e9edf5;
-  --ink-dim: #9aa3b8;
-  --ink-soft: #6b7590;
+  --ink: #eeedf7;
+  --ink-dim: #a7a5bd;
+  --ink-soft: #7d7b96;
+  --ink-strong: #fff;
+  --ink-rgb: 238, 237, 247;
+  --stroke-rgb: 196, 181, 253;
+  --on-accent: #0b0b15;
 
   /* Accents */
-  --cyan: #22d3ee;
-  --sky: #38bdf8;
-  --blue: #3b82f6;
-  --teal: #2dd4bf;
-  --violet: #818cf8;
+  --cyan: #5eead4;
+  --sky: #a78bfa;
+  --blue: #818cf8;
+  --teal: #34d399;
+  --violet: #c4b5fd;
   --amber: #fbbf24;
+  --coral: #ff7a59;
+  --cyan-soft: #99f6e4;
+  --sky-soft: #c4b5fd;
+  --amber-soft: #fcd34d;
+  --cyan-rgb: 94, 234, 212;
+  --sky-rgb: 167, 139, 250;
+  --teal-rgb: 52, 211, 153;
+  --violet-rgb: 196, 181, 253;
+  --amber-rgb: 251, 191, 36;
+  --coral-rgb: 255, 122, 89;
 
-  --grad: linear-gradient(120deg, #38bdf8 0%, #22d3ee 45%, #2dd4bf 100%);
+  --grad: linear-gradient(110deg, #5eead4 0%, #a78bfa 52%, #ff7a59 100%);
   --grad-soft: linear-gradient(
     135deg,
-    rgba(56, 189, 248, 0.16),
-    rgba(34, 211, 238, 0.1) 48%,
-    rgba(45, 212, 191, 0.12)
+    rgba(94, 234, 212, 0.14),
+    rgba(167, 139, 250, 0.12) 50%,
+    rgba(255, 122, 89, 0.1)
   );
 
   /* Effects */
-  --glow-cyan: 0 0 40px rgba(34, 211, 238, 0.22);
+  --shadow-rgb: 0, 0, 0;
+  --shadow-k: 1;
+  --glow-cyan: 0 0 40px rgba(94, 234, 212, 0.2);
   --shadow-card: 0 22px 60px rgba(0, 0, 0, 0.28);
-  --shadow-card-hover: 0 30px 80px rgba(0, 0, 0, 0.38), 0 0 34px rgba(34, 211, 238, 0.1);
+  --shadow-card-hover: 0 30px 80px rgba(0, 0, 0, 0.38), 0 0 34px rgba(167, 139, 250, 0.12);
   --inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
   /* Type */
-  --font-display: "Space Grotesk", sans-serif;
+  --font-display: "Syne", "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
 
   /* Rhythm */
   --radius-card: 20px;
   --radius-panel: 26px;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Light — "Paper": warm paper surfaces, deeper accents so colored
+   text keeps WCAG contrast on white. The product "screens" (hero 3D card,
+   project visual panes) carry .theme-dark-island styling and stay dark,
+   reading as device screenshots on a light page. */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #f3f0e8;
+  --bg-soft: #ece8de;
+  --deep-rgb: 243, 240, 232;
+  --surface-rgb: 255, 253, 248;
+  --tint-rgb: 22, 20, 31;
+  --fill-rgb: 255, 255, 255;
+  --fill-k: 14;
+  --panel: rgba(255, 255, 255, 0.72);
+  --panel-strong: rgba(255, 255, 255, 0.9);
+  --line: rgba(22, 20, 31, 0.1);
+  --line-strong: rgba(109, 40, 217, 0.24);
+
+  --ink: #16141f;
+  --ink-dim: #4f4b5e;
+  --ink-soft: #6b6679;
+  --ink-strong: #0b0a12;
+  --ink-rgb: 22, 20, 31;
+  --stroke-rgb: 109, 40, 217;
+  --on-accent: #ffffff;
+
+  --cyan: #0f766e;
+  --sky: #6d28d9;
+  --blue: #4f46e5;
+  --teal: #047857;
+  --violet: #7c3aed;
+  --amber: #b45309;
+  --coral: #c2410c;
+  --cyan-soft: #115e59;
+  --sky-soft: #5b21b6;
+  --amber-soft: #92400e;
+  --cyan-rgb: 15, 118, 110;
+  --sky-rgb: 109, 40, 217;
+  --teal-rgb: 4, 120, 87;
+  --violet-rgb: 124, 58, 237;
+  --amber-rgb: 180, 83, 9;
+  --coral-rgb: 194, 65, 12;
+
+  --grad: linear-gradient(110deg, #0f766e 0%, #6d28d9 55%, #c2410c 100%);
+  --grad-soft: linear-gradient(
+    135deg,
+    rgba(15, 118, 110, 0.1),
+    rgba(109, 40, 217, 0.08) 50%,
+    rgba(194, 65, 12, 0.08)
+  );
+
+  --shadow-rgb: 15, 23, 42;
+  --shadow-k: 0.35;
+  --glow-cyan: 0 0 40px rgba(15, 118, 110, 0.14);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05), 0 18px 44px rgba(15, 23, 42, 0.08);
+  --shadow-card-hover: 0 1px 2px rgba(15, 23, 42, 0.06), 0 26px 60px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(8, 145, 178, 0.12);
+  --inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Dark islands keep their own text color when nested in a light page */
+:root[data-theme="light"] .theme-dark-island {
+  color: var(--ink);
 }
 
 /* ---------- Reset + base ---------- */
@@ -106,8 +204,8 @@ canvas {
 }
 
 ::selection {
-  background: rgba(34, 211, 238, 0.28);
-  color: #fff;
+  background: rgba(var(--cyan-rgb), 0.28);
+  color: var(--ink-strong);
 }
 
 .mono {

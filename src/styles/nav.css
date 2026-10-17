@@ -13,7 +13,7 @@ nav.top {
   justify-content: space-between;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(5, 6, 10, 0.82), rgba(5, 6, 10, 0.52) 70%, rgba(5, 6, 10, 0));
+  background: linear-gradient(180deg, rgba(var(--deep-rgb), 0.82), rgba(var(--deep-rgb), 0.52) 70%, rgba(var(--deep-rgb), 0));
   border-bottom: 1px solid transparent;
   transition: border-color 0.3s, background 0.3s, padding 0.3s;
 }
@@ -25,7 +25,7 @@ nav.top::before {
   right: 24px;
   top: 10px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.45), rgba(129, 140, 248, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--sky-rgb), 0.45), rgba(var(--violet-rgb), 0.3), transparent);
   opacity: 0.55;
   pointer-events: none;
 }
@@ -34,7 +34,7 @@ nav.top.scrolled {
   padding-top: 12px;
   padding-bottom: 12px;
   border-bottom-color: var(--line);
-  background: rgba(5, 6, 10, 0.8);
+  background: rgba(var(--deep-rgb), 0.8);
 }
 
 /* ---------- Brand ---------- */
@@ -56,7 +56,7 @@ nav.top.scrolled {
   background: linear-gradient(135deg, var(--sky), var(--blue));
   display: grid;
   place-items: center;
-  box-shadow: 0 0 26px rgba(56, 189, 248, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 26px rgba(var(--sky-rgb), 0.3), inset 0 1px 0 rgba(var(--tint-rgb), 0.45);
   overflow: hidden;
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
 }
@@ -66,27 +66,27 @@ nav.top.scrolled {
   position: absolute;
   inset: 1px;
   border-radius: 12px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), transparent 42%, rgba(255, 255, 255, 0.08));
+  background: linear-gradient(145deg, rgba(var(--fill-rgb), calc(0.28 * var(--fill-k))), transparent 42%, rgba(var(--fill-rgb), calc(0.08 * var(--fill-k))));
   pointer-events: none;
 }
 
 .brand:hover .brand-mark {
   transform: translateY(-2px) rotate(-4deg);
-  box-shadow: 0 14px 34px rgba(56, 189, 248, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 14px 34px rgba(var(--sky-rgb), 0.28), inset 0 1px 0 rgba(var(--tint-rgb), 0.5);
 }
 
 .brand-mark svg {
   position: relative;
   width: 21px;
   height: 21px;
-  color: #05060a;
+  color: rgb(var(--deep-rgb));
   z-index: 2;
 }
 
 .brand-orbit {
   position: absolute;
   inset: 5px;
-  border: 1px solid rgba(5, 6, 10, 0.35);
+  border: 1px solid rgba(var(--deep-rgb), 0.35);
   border-radius: 50%;
   animation: brand-spin 7s linear infinite;
 }
@@ -99,7 +99,7 @@ nav.top.scrolled {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #05060a;
+  background: rgb(var(--deep-rgb));
 }
 
 .brand-word {
@@ -115,7 +115,7 @@ nav.top.scrolled {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, #fff 0%, var(--cyan) 46%, #fff 72%);
+  background: linear-gradient(90deg, var(--ink-strong) 0%, var(--cyan) 46%, var(--ink-strong) 72%);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -130,9 +130,9 @@ nav.top.scrolled {
   color: var(--cyan);
   letter-spacing: 0.16em;
   padding: 5px 7px;
-  border: 1px solid rgba(34, 211, 238, 0.28);
+  border: 1px solid rgba(var(--cyan-rgb), 0.28);
   border-radius: 999px;
-  background: rgba(34, 211, 238, 0.08);
+  background: rgba(var(--cyan-rgb), 0.08);
   box-shadow: var(--inset-top);
 }
 
@@ -172,7 +172,7 @@ nav.top.scrolled {
   padding: 6px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(var(--fill-rgb), calc(0.025 * var(--fill-k)));
   box-shadow: var(--inset-top);
   font-size: 12px;
   color: var(--ink-dim);
@@ -188,7 +188,7 @@ nav.top.scrolled {
 
 .nav-links a:hover {
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.055);
+  background: rgba(var(--fill-rgb), calc(0.055 * var(--fill-k)));
   transform: translateY(-1px);
 }
 
@@ -214,7 +214,7 @@ nav.top.scrolled {
 
 .nav-links a.active {
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(var(--fill-rgb), calc(0.05 * var(--fill-k)));
 }
 
 /* ---------- Actions ---------- */
@@ -241,17 +241,17 @@ nav.top.scrolled {
 }
 
 .nav-resume {
-  border: 1px solid rgba(34, 211, 238, 0.36);
+  border: 1px solid rgba(var(--cyan-rgb), 0.36);
   color: var(--cyan);
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.11), rgba(255, 255, 255, 0.03));
-  box-shadow: 0 0 22px rgba(34, 211, 238, 0.1), var(--inset-top);
+  background: linear-gradient(135deg, rgba(var(--cyan-rgb), 0.11), rgba(var(--fill-rgb), calc(0.03 * var(--fill-k))));
+  box-shadow: 0 0 22px rgba(var(--cyan-rgb), 0.1), var(--inset-top);
 }
 
 .nav-cta {
   padding: 12px 18px;
   border: 1px solid var(--line-strong);
   gap: 9px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--fill-rgb), calc(0.03 * var(--fill-k)));
   box-shadow: var(--inset-top);
 }
 
@@ -260,7 +260,7 @@ nav.top.scrolled {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+  background: linear-gradient(110deg, transparent, rgba(var(--fill-rgb), calc(0.14 * var(--fill-k))), transparent);
   transform: translateX(-110%);
   transition: transform 0.55s var(--ease-out);
 }
@@ -272,13 +272,13 @@ nav.top.scrolled {
 }
 
 .nav-resume:hover {
-  color: #fff;
-  box-shadow: 0 0 30px rgba(34, 211, 238, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: var(--ink-strong);
+  box-shadow: 0 0 30px rgba(var(--cyan-rgb), 0.24), inset 0 1px 0 rgba(var(--tint-rgb), 0.12);
 }
 
 .nav-cta:hover {
   color: var(--cyan);
-  box-shadow: 0 0 26px rgba(34, 211, 238, 0.16), var(--inset-top);
+  box-shadow: 0 0 26px rgba(var(--cyan-rgb), 0.16), var(--inset-top);
 }
 
 .nav-resume:hover::before,
@@ -317,7 +317,7 @@ nav.top.scrolled {
   height: 44px;
   border-radius: 12px;
   border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(var(--fill-rgb), calc(0.04 * var(--fill-k)));
   box-shadow: var(--inset-top);
   cursor: pointer;
   align-items: center;
@@ -364,7 +364,7 @@ nav.top.scrolled {
   display: flex;
   flex-direction: column;
   padding: 96px 26px 34px;
-  background: rgba(5, 6, 10, 0.9);
+  background: rgba(var(--deep-rgb), 0.9);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
@@ -375,8 +375,8 @@ nav.top.scrolled {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(60% 40% at 80% 0%, rgba(56, 189, 248, 0.12), transparent 65%),
-    radial-gradient(50% 40% at 10% 100%, rgba(45, 212, 191, 0.08), transparent 65%);
+    radial-gradient(60% 40% at 80% 0%, rgba(var(--sky-rgb), 0.12), transparent 65%),
+    radial-gradient(50% 40% at 10% 100%, rgba(var(--teal-rgb), 0.08), transparent 65%);
 }
 
 .mobile-menu-links {

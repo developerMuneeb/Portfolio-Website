@@ -14,6 +14,26 @@ const signals = [
   { points: { cx: [50, 33, 16], cy: [50, 62, 74] }, delay: 3.1, duration: 5 },
 ];
 
+/** Header/footer strips of the agent card. */
+export function SignalHead() {
+  return (
+    <div className="hero-signal-head">
+      <span><i />AGENT ORCHESTRATION</span>
+      <span>LIVE / 01</span>
+    </div>
+  );
+}
+
+export function SignalFoot() {
+  return (
+    <div className="hero-signal-foot">
+      <span><b>06</b> CONNECTED SYSTEMS</span>
+      <span><b>24/7</b> EVENT ROUTING</span>
+      <span><b>LIVE</b> STATE SYNC</span>
+    </div>
+  );
+}
+
 export default function ContainedAgentVisual() {
   const reduce = useReducedMotion();
   const rotateXTarget = useMotionValue(0);
@@ -37,15 +57,12 @@ export default function ContainedAgentVisual() {
 
   return (
     <motion.div
-      className="hero-signal-visual"
+      className="hero-signal-visual theme-dark-island"
       style={{ rotateX, rotateY, transformPerspective: 1000 }}
       onPointerMove={onPointerMove}
       onPointerLeave={resetTilt}
     >
-      <div className="hero-signal-head">
-        <span><i />AGENT ORCHESTRATION</span>
-        <span>LIVE / 01</span>
-      </div>
+      <SignalHead />
 
       <div className="hero-signal-stage">
         <svg className="hero-signal-routes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -102,11 +119,7 @@ export default function ContainedAgentVisual() {
         </motion.div>
       </div>
 
-      <div className="hero-signal-foot">
-        <span><b>06</b> CONNECTED SYSTEMS</span>
-        <span><b>24/7</b> EVENT ROUTING</span>
-        <span><b>LIVE</b> STATE SYNC</span>
-      </div>
+      <SignalFoot />
     </motion.div>
   );
 }

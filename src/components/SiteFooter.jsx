@@ -1,3 +1,5 @@
+import { useSignalHover } from "./signal/signalBus";
+
 function scrollToTop() {
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
@@ -17,6 +19,7 @@ const socials = [
   {
     href: "https://linkedin.com/in/muneeb-gulfam",
     label: "LinkedIn",
+    shape: "linkedin",
     handle: "in/muneeb-gulfam",
     external: true,
     icon: (
@@ -30,6 +33,7 @@ const socials = [
   {
     href: "https://github.com/developerMuneeb",
     label: "GitHub",
+    shape: "github",
     handle: "@developerMuneeb",
     external: true,
     icon: (
@@ -41,6 +45,7 @@ const socials = [
   {
     href: "mailto:muneebgulfam5@gmail.com",
     label: "Email",
+    shape: "email",
     handle: "muneebgulfam5@gmail.com",
     external: false,
     icon: (
@@ -53,6 +58,7 @@ const socials = [
   {
     href: "/resume/Muhammad-Muneeb-Resume.pdf",
     label: "Resume",
+    shape: "resume",
     handle: "PDF - 1 page",
     external: true,
     icon: (
@@ -65,6 +71,27 @@ const socials = [
     ),
   },
 ];
+
+/** Footer link that also drives the contact particle signal while hovered. */
+function FooterSocial({ social }) {
+  const signal = useSignalHover(social.shape);
+  return (
+    <li>
+      <a
+        href={social.href}
+        {...(social.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        aria-label={`${social.label} - ${social.handle}`}
+        {...signal}
+      >
+        <span className="footer-social-icon">{social.icon}</span>
+        <span className="footer-social-text">
+          <strong>{social.label}</strong>
+          <small>{social.handle}</small>
+        </span>
+      </a>
+    </li>
+  );
+}
 
 export default function SiteFooter() {
   return (
@@ -125,25 +152,10 @@ export default function SiteFooter() {
           <h3>Connect</h3>
           <ul>
             {socials.map((social) => (
-              <li key={social.label}>
-                <a
-                  href={social.href}
-                  {...(social.external
-                    ? { target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
-                  aria-label={`${social.label} - ${social.handle}`}
-                >
-                  <span className="footer-social-icon">{social.icon}</span>
-                  <span className="footer-social-text">
-                    <strong>{social.label}</strong>
-                    <small>{social.handle}</small>
-                  </span>
-                </a>
-              </li>
+              <FooterSocial key={social.label} social={social} />
             ))}
           </ul>
         </div>
-
         <div className="footer-col footer-col-status">
           <h3>Currently</h3>
           <ul>

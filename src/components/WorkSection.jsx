@@ -1,10 +1,13 @@
-﻿import { lazy, Suspense, useCallback, useRef, useState } from "react";
-import GhostTitle from "./motion/GhostTitle";
+﻿import { createRef, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring, useTransform } from "framer-motion";
 import Reveal from "./motion/Reveal";
-import SectionDivider from "./motion/SectionDivider";
+import ScrambleText from "./motion/ScrambleText";
+import SplitWords from "./motion/SplitWords";
 import ReportModal from "./ReportModal";
 import { AnalyzerSampleReport, FreightSampleReport, ScraperSampleReport, SuiteSampleReport } from "./SampleReports";
 import { confidentialityNote, projects } from "../data/projects";
+import { useDeckEnabled, useStickyTop } from "../hooks/useStackDeck";
+import { EASE } from "./motion/ease";
 
 const ProjectWorkflowDiagram = lazy(() => import("./ProjectWorkflowDiagram"));
 
@@ -43,12 +46,178 @@ const SAMPLE_OUTPUT = {
   },
 };
 
+// Cards pin below the sticky chapter bar (nav + bar + breathing room)
+const DECK_HEADROOM = 150;
+
+const pad = (n) => String(n).padStart(2, "0");
+
+/**
+ * Station "work": a pinned intro where the 3D carousel of project screens
+ * turns as you scroll; the index on the left tracks the project in front.
+ * Without the 3D world it collapses to a normal header + index.
+ */
+function WorkGallery() {
+  const ref = useRef(null);
+  // Same window as the 3D station hold (start at 30% / end at 70% of viewport)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.3", "end 0.7"] });
+  const [active, setActive] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    const next = Math.round(p * (projects.length - 1));
+    setActive((prev) => (prev === next ? prev : next));
+  });
+
+  const jump = (index) => {
+    document.getElementById(`project-${projects[index].diagramId}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <div className="wk-gallery" ref={ref} data-station="work">
+      <div className="wk-sticky">
+        <header className="wk-head">
+          <ScrambleText as="div" className="ch-kicker" text="(06) — Selected systems" />
+          <SplitWords className="ch-title">
+            AI systems for <em>real operations</em>
+          </SplitWords>
+          <p className="ch-lede">
+            Five production case studies — the architecture, decisions and measurable value behind each system.
+          </p>
+        </header>
+
+        <div className="wk-stage" data-anchor aria-hidden="true" />
+
+        <ol className="wk-index" aria-label="Case studies">
+          {projects.map((project, index) => (
+            <li key={project.diagramId} className={index === active ? "is-active" : undefined}>
+              <button type="button" onClick={() => jump(index)}>
+                <span className="wk-index-num">P/{pad(index + 1)}</span>
+                <span className="wk-index-title">{project.title}</span>
+                <span className="wk-index-cat">{project.category}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+
+        <div className="wk-meta">
+          <p>
+            <span>Confidentiality</span> {confidentialityNote}
+          </p>
+          <ul>
+            <li><b>5</b> production systems</li>
+            <li><b>3</b> agent tool routes</li>
+            <li><b>38</b> automated tests</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function DiagramFallback() {
   return <div className="pvis" aria-hidden="true"></div>;
 }
 
-function ProjectCaseCard({ project, index, onOpenSample }) {
+/**
+ * Covered-card effect: as the next card slides up over this one, this one
+ * recedes — scales back, tips away, and dims under a shade.
+ */
+function RecedeLayer({ nextRef, children }) {
+  const { scrollYProgress } = useScroll({ target: nextRef, offset: ["start end", "start start"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
+  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 5]);
+  const shade = useTransform(scrollYProgress, [0.15, 1], [0, 0.62]);
+
+  return (
+    <motion.div className="pcard-recede" style={{ scale, rotateX, transformPerspective: 1600, transformOrigin: "50% 0%" }}>
+      {children}
+      <motion.div className="pcard-shade" style={{ opacity: shade }} aria-hidden="true" />
+    </motion.div>
+  );
+}
+
+/**
+ * Which project is "on top" — from natural (un-stuck) layout positions, so
+ * it stays correct while cards are pinned. Also stamps html[data-project]
+ * so the shader backdrop shifts mood per project.
+ */
+function useActiveProject(listRef, pinRefs) {
+  const [active, setActive] = useState(0);
+  const { scrollY } = useScroll();
+
+  const compute = useCallback(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
+    let top = list.getBoundingClientRect().top + window.scrollY;
+    const line = window.scrollY + window.innerHeight * 0.55;
+    let next = 0;
+    pinRefs.forEach((ref, i) => {
+      if (ref.current && top <= line) next = i;
+      top += (ref.current?.offsetHeight ?? 0) + gap;
+    });
+    setActive((prev) => (prev === next ? prev : next));
+  }, [listRef, pinRefs]);
+
+  useMotionValueEvent(scrollY, "change", compute);
+  useEffect(compute, [compute]);
+
+  useEffect(() => {
+    document.documentElement.dataset.project = projects[active]?.diagramId ?? "";
+  }, [active]);
+  useEffect(() => () => delete document.documentElement.dataset.project, []);
+
+  return active;
+}
+
+/** Sticky progress bar for the deck: rolling P/0x, project name, progress. */
+function WorkChapter({ deckRef, active }) {
+  const { scrollYProgress } = useScroll({ target: deckRef, offset: ["start 40%", "end end"] });
+  const fill = useSpring(scrollYProgress, { stiffness: 180, damping: 30 });
+  const project = projects[active];
+
+  return (
+    <div className="work-chapter" aria-hidden="true">
+      <div className="work-chapter-inner">
+        <span className="work-chapter-num">
+          P/
+          <span className="work-chapter-roll">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={active}
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: "-100%", opacity: 0 }}
+                transition={{ duration: 0.45, ease: EASE }}
+              >
+                {pad(active + 1)}
+              </motion.span>
+            </AnimatePresence>
+          </span>
+        </span>
+        <span className="work-chapter-title">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={active}
+              initial={{ y: 14, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -14, opacity: 0 }}
+              transition={{ duration: 0.45, ease: EASE }}
+            >
+              {project?.title}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+        <span className="work-chapter-track">
+          <motion.span style={{ scaleX: fill }} />
+        </span>
+        <span className="work-chapter-total">{pad(projects.length)}</span>
+      </div>
+    </div>
+  );
+}
+
+function ProjectCaseCard({ project, index, onOpenSample, stacked, pinRef, nextRef }) {
   const [building, setBuilding] = useState(false);
+  const top = useStickyTop(pinRef, stacked, DECK_HEADROOM);
   const touchTimeout = useRef(null);
 
   const start = useCallback(() => {
@@ -67,7 +236,7 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
   const sample = SAMPLE_OUTPUT[project.diagramId];
   const className = `pcard${project.featured ? " pcard-featured" : ""}`;
 
-  return (
+  const card = (
     <Reveal
       as="article"
       className={className}
@@ -79,6 +248,7 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
       onFocus={start}
       onBlur={stop}
       onTouchStart={tap}
+      data-cursor="Explore"
     >
       <Suspense fallback={<DiagramFallback />}>
         <ProjectWorkflowDiagram project={project} building={building} />
@@ -141,7 +311,7 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
         </div>
 
         {sample ? (
-          <button type="button" className="psample" onClick={() => onOpenSample(project.diagramId)}>
+          <button type="button" className="psample" data-cursor="Open" onClick={() => onOpenSample(project.diagramId)}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z" />
               <path d="M14 2v5h5" />
@@ -155,40 +325,42 @@ function ProjectCaseCard({ project, index, onOpenSample }) {
       </div>
     </Reveal>
   );
+
+  return (
+    <div className="pcard-pin" ref={pinRef} style={stacked ? { top } : undefined}>
+      {stacked && nextRef ? <RecedeLayer nextRef={nextRef}>{card}</RecedeLayer> : card}
+    </div>
+  );
 }
 
 export default function WorkSection() {
   const [openId, setOpenId] = useState(null);
   const active = openId ? SAMPLE_OUTPUT[openId] : null;
+  const stacked = useDeckEnabled();
+  const deckRef = useRef(null);
+  const listRef = useRef(null);
+  const pinRefs = useMemo(() => projects.map(() => createRef()), []);
+  const activeProject = useActiveProject(listRef, pinRefs);
 
   return (
     <section id="work" className="work-section reference-work">
-      <SectionDivider />
-      <GhostTitle text="Projects" />
-      <Reveal className="ref-work-head">
-        <div className="sn">06</div>
-        <div className="sk">Selected Systems</div>
-        <h2 className="st">AI systems built for <span className="it">real operations</span></h2>
-        <p className="sd">
-          Five production case studies showing the architecture, decisions, execution flow, and measurable business value behind each system.
-        </p>
-      </Reveal>
+      <WorkGallery />
 
-      <Reveal className="confidentiality-note" delay={0.06}>
-        <span>Confidentiality notice</span>
-        <p>{confidentialityNote}</p>
-      </Reveal>
-
-      <Reveal className="work-proof" delay={0.1}>
-        <span><b>5</b> production systems</span>
-        <span><b>3</b> agent tool routes</span>
-        <span><b>38</b> automated tests on featured commerce AI</span>
-      </Reveal>
-
-      <div className="projects">
-        {projects.map((project, index) => (
-          <ProjectCaseCard key={project.title} project={project} index={index} onOpenSample={setOpenId} />
-        ))}
+      <div className={`work-deck${stacked ? " is-stacked" : ""}`} ref={deckRef} data-station="deck">
+        {stacked ? <WorkChapter deckRef={deckRef} active={activeProject} /> : null}
+        <div className="projects" ref={listRef}>
+          {projects.map((project, index) => (
+            <ProjectCaseCard
+              key={project.title}
+              project={project}
+              index={index}
+              onOpenSample={setOpenId}
+              stacked={stacked}
+              pinRef={pinRefs[index]}
+              nextRef={pinRefs[index + 1]}
+            />
+          ))}
+        </div>
       </div>
 
       <ReportModal

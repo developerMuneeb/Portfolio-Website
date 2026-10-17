@@ -1,5 +1,9 @@
 import BackgroundLayers from "./components/BackgroundLayers";
+import WorldLoader from "./world/WorldLoader";
 import ScrollProgress from "./components/motion/ScrollProgress";
+import Cursor from "./components/motion/Cursor";
+import Preloader from "./components/motion/Preloader";
+import { IntroProvider } from "./components/motion/IntroProvider";
 import TopNav from "./components/TopNav";
 import HeroSection from "./components/HeroSection";
 import MarqueeSection from "./components/MarqueeSection";
@@ -19,8 +23,11 @@ export default function App() {
   usePortfolioEffects();
 
   return (
-    <>
+    <IntroProvider>
+      <Preloader />
+      <Cursor />
       <BackgroundLayers />
+      <WorldLoader />
       <ScrollProgress />
       <TopNav />
       <HeroSection />
@@ -33,6 +40,6 @@ export default function App() {
       <WorkSection />
       <ContactSection />
       <SiteFooter />
-    </>
+    </IntroProvider>
   );
 }

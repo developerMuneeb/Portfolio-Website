@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { cancelFrame, frame } from "framer-motion";
 
 /**
  * Inertial smooth scrolling (Lenis). Desktop fine-pointer only — touch
@@ -20,13 +21,13 @@ export function useSmoothScroll() {
     });
     window.__lenis = lenis;
 
-    let raf = requestAnimationFrame(function tick(time) {
-      lenis.raf(time);
-      raf = requestAnimationFrame(tick);
-    });
+    // Drive Lenis from framer-motion's frame loop so scroll-linked motion
+    // (hero 3D morph, stacked Work deck) reads the same frame's scroll.
+    const update = ({ timestamp }) => lenis.raf(timestamp);
+    frame.update(update, true);
 
     return () => {
-      cancelAnimationFrame(raf);
+      cancelFrame(update);
       lenis.destroy();
       delete window.__lenis;
     };

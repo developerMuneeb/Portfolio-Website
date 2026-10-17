@@ -271,7 +271,7 @@ export default function ProjectWorkflowDiagram({ project, building = false }) {
   const story = project.story;
 
   return (
-    <div className={`pvis${building ? " is-building" : ""}`} role={project.diagramId === "shopmesh-ai" ? "group" : "img"} aria-label={`${project.title} - how it works`}>
+    <div className={`pvis theme-dark-island${building ? " is-building" : ""}`} role={project.diagramId === "shopmesh-ai" ? "group" : "img"} aria-label={`${project.title} - how it works`}>
       <div className="story-flow">
         <div className="story-head">
           <span className="story-label">{story?.label ?? "How it works"}</span>

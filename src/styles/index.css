@@ -1,8 +1,10 @@
-﻿/* Portfolio stylesheet - Electric dark theme.
-   Import order matters: tokens -> base -> nav -> sections -> work -> reports. */
+﻿/* Portfolio stylesheet - "Nocturne / Paper" identity.
+   Import order matters: tokens -> base -> nav -> sections -> work -> reports -> motion -> chapters. */
 @import "./tokens.css";
 @import "./base.css";
 @import "./nav.css";
 @import "./sections.css";
 @import "./work.css";
 @import "./reports.css";
+@import "./motion.css";
+@import "./chapters.css";
