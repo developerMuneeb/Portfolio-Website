@@ -438,6 +438,14 @@ nav.top.scrolled {
 }
 
 /* ---------- Breakpoints ---------- */
+/* The centred links collide with the right-hand actions below ~1320px:
+   drop the hire chip there (Contact is still in the links) */
+@media (max-width: 1320px) {
+  .nav-cta {
+    display: none;
+  }
+}
+
 @media (max-width: 1180px) {
   .nav-links a {
     padding: 8px 10px;

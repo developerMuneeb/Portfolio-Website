@@ -66,7 +66,7 @@ export default function ContactSection() {
 
         <Reveal as="aside" className="contact-card" aria-label="Project inquiry" delay={0.1}>
           <span className="contact-card-kicker">Quick query box</span>
-          <h3>Send your idea &mdash; get a clear next step</h3>
+          <h3>Send your idea, get a clear next step</h3>
           <p>
             One sharp paragraph: workflow, tools, problem, expected result.
             I&apos;ll reply with the best path forward.

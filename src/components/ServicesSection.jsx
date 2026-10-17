@@ -8,7 +8,7 @@ const services = [
       "Autonomous AI agents that handle multi-step workflows, decisions, and handoffs — built with LangGraph, LangChain, and OpenAI.",
     tools: ["LangGraph", "LangChain", "OpenAI", "Python"],
     deliverable: "Agent workflow, prompts, integrations, evals, and deployment notes.",
-    bestFor: "Best for teams that need repeatable decisions, intake handling, or internal copilots.",
+    bestFor: "Teams that need repeatable decisions, intake handling or internal copilots.",
   },
   {
     title: "Workflow & Business Automation",
@@ -16,7 +16,7 @@ const services = [
       "Reliable n8n and API-driven automations that remove repetitive manual work from daily operations.",
     tools: ["n8n", "Webhooks", "APIs"],
     deliverable: "Production-ready flows with retry logic, logging, and documentation.",
-    bestFor: "Best for CRM automation, handoffs, alerts, reporting, and multi-tool operations.",
+    bestFor: "CRM automation, handoffs, alerts, reporting and multi-tool operations.",
   },
   {
     title: "Voice AI Agents",
@@ -24,7 +24,7 @@ const services = [
       "Voice AI agents for lead qualification, follow-up, callbacks, and clean client handoffs.",
     tools: ["Synthflow", "CRM", "Email"],
     deliverable: "Call flow, CRM sync, result routing, and audit trail.",
-    bestFor: "Best for lead qualification, follow-up calls, appointment routing, and status updates.",
+    bestFor: "Lead qualification, follow-up calls, appointment routing and status updates.",
   },
   {
     title: "AI Chatbots & Assistants",
@@ -32,7 +32,7 @@ const services = [
       "AI chatbots that answer from your business knowledge, qualify leads, and route conversations to the right person.",
     tools: ["OpenAI", "RAG", "APIs"],
     deliverable: "Chatbot flow, knowledge base setup, integrations, and guardrails.",
-    bestFor: "Best for support intake, lead capture, internal Q&A, and website assistants.",
+    bestFor: "Support intake, lead capture, internal Q&A and website assistants.",
   },
   {
     title: "Dashboards & Predictive Analytics",
@@ -40,7 +40,7 @@ const services = [
       "Decision dashboards and predictive models that surface patterns leaders can act on.",
     tools: ["Power BI", "Python", "SQL"],
     deliverable: "KPIs, reporting views, model outputs, and business summaries.",
-    bestFor: "Best for teams that need clearer visibility into activity, performance, and risk.",
+    bestFor: "Teams that need clearer visibility into activity, performance and risk.",
   },
   {
     title: "AI Integration Consulting",
@@ -48,7 +48,7 @@ const services = [
       "A practical roadmap for adding AI automation to existing tools without adding chaos.",
     tools: ["Discovery", "Architecture", "Rollout"],
     deliverable: "Workflow audit, system blueprint, risk notes, and implementation plan.",
-    bestFor: "Best before a build when the workflow, tools, or risks are still unclear.",
+    bestFor: "The stage before a build, when the workflow, tools or risks are still unclear.",
   },
 ];
 
@@ -65,7 +65,7 @@ export default function ServicesSection() {
         <ChapterHead
           index="05"
           label="Services"
-          lede="Business-first AI automation for teams that need systems that work, not experiments that stop at a demo."
+          lede="Six kinds of systems I build for operations teams, from mapping the workflow to running it in production."
         >
           What I can <em>build for you</em>
         </ChapterHead>
@@ -77,7 +77,9 @@ export default function ServicesSection() {
               <div className="sv-body">
                 <h3>{service.title}</h3>
                 <p>{service.outcome}</p>
-                <p className="sv-fit">{service.bestFor}</p>
+                <p className="sv-fit">
+                  <span className="sv-fit-label">Best for</span> {service.bestFor}
+                </p>
                 <div className="ch-tags">
                   {service.tools.map((tool) => (
                     <span key={tool}>{tool}</span>

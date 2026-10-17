@@ -60,13 +60,24 @@ Gotchas learned the hard way:
   `index.html`): one fixed canvas (`src/world/World.jsx`) behind the page.
   Each `[data-station]` section gets a set piece aligned to its empty
   `[data-anchor]` stage column — never behind text:
-  top = glass Agent Core + orbiting labelled systems + two text bands wrapped around it (scroll-scrubbed: bands spin and stand up, core turns half a revolution as the hero scrolls away); about = exploded "system stack" of glass layers (workflow → data → AI systems → outcomes, particles rising, active layer follows reading);
-  experience = helix ribbon (active role node follows reading); credentials =
-  crystal cluster; skills = tech-logo sphere; services = crystal turntable
-  (active service comes forward); work = vertical wheel of project screens
-  (synced with the `.wk-index` list); deck/contact = dust only. Camera holds
-  per section and swoops between them. Phones / reduced motion / WebGL
-  failure: no world, `World-*.js` not requested, stages show 2D fallbacks
+  top = glass Agent Core + orbiting labelled systems + two text bands wrapped
+  around it (scroll-scrubbed: bands spin and stand up, core turns half a
+  revolution, then collapses as the camera leaves). Every other section is
+  one particle **swarm** (`src/world/swarm/`) that re-forms per station:
+  about = 4-layer system stack (labels; active layer follows reading; points
+  stream upward), experience = helix with one cluster per job (active job
+  turns to the front), credentials = certificate-card carousel turned by the scroll (row being read faces front), skills = globe
+  with real logos, services = the active service's icon (re-forms on each
+  row), work = particle laptop with the active project's icon + caption
+  (synced with `.wk-index`); deck/contact = swarm hidden. Between sections
+  the morph is scrubbed by scroll (reverses on scroll-up) and the swarm dims
+  while it slides across the text column. Each section has its own chapter colour
+  (`CHAPTERS` in Swarm.jsx: experience amber→mint along the helix, credentials
+  gold, skills sky blue, services coral, work lavender→pink; brand mint/violet
+  elsewhere), blended as the swarm re-forms. Camera holds per section and
+  swoops between them. Phones / reduced motion: no world, `World-*.js` not requested. No WebGL
+  (`--disable-3d-apis`): the chunk loads, the canvas fails, WorldLoader's error
+  boundary drops `world-on` (the logged context errors are expected). Either way stages show 2D fallbacks
   (agent card, logo grid) or collapse so copy centres.
 - Backdrop: soft aurora canvas (`html.has-shader`), dim behind the content
   column, palette shifting per section/project.

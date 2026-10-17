@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { getGlowTexture, makeFresnelMaterial } from "./materials";
+import { useTheme } from "../../theme";
 
 const { damp } = THREE.MathUtils;
 
@@ -37,6 +38,11 @@ function makeGlyphGeometry() {
 export default function Core({ input, quality }) {
   const shell = useRef(null);
   const glass = useRef(null);
+  // The glass refracts what's behind it. The canvas is transparent, which
+  // the refraction pass sees as black: fine on ink, a dark ball on paper.
+  // Give it the page colour so it reads as clear glass in both themes.
+  const theme = useTheme();
+  const glassBackdrop = useMemo(() => new THREE.Color(theme === "light" ? "#eef0ee" : "#0b0b15"), [theme]);
   const lattice = useRef(null);
   const glyph = useRef(null);
   const halo = useRef(null);
@@ -119,6 +125,7 @@ export default function Core({ input, quality }) {
             attenuationDistance={2.6}
             attenuationColor="#a5ecff"
             color="#eaf9ff"
+            background={glassBackdrop}
           />
         ) : (
           // Low tier: no transmission pass at all — a tinted, iridescent

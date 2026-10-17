@@ -4,14 +4,9 @@ import { AdaptiveDpr, PerformanceMonitor } from "@react-three/drei";
 import * as THREE from "three";
 import StudioEnvironment from "../components/hero3d/StudioEnvironment";
 import { makePointsMaterial } from "../components/hero3d/materials";
-import { CAMERA_DISTANCE, FOV, STATION_STEP, measureStations, solveStations, world } from "./worldState";
+import { CAMERA_DISTANCE, FOV, STATION_STEP, fitScale, measureStations, solveStations, world } from "./worldState";
 import HeroPiece from "./pieces/HeroPiece";
-import SystemStackPiece from "./pieces/SystemStackPiece";
-import TimelinePiece from "./pieces/TimelinePiece";
-import CrystalsPiece from "./pieces/CrystalsPiece";
-import TechSpherePiece from "./pieces/TechSpherePiece";
-import ServicesPiece from "./pieces/ServicesPiece";
-import GalleryPiece from "./pieces/GalleryPiece";
+import Swarm from "./swarm/Swarm";
 import { useTheme } from "../theme";
 
 const { damp } = THREE.MathUtils;
@@ -33,7 +28,7 @@ function Station({ id, children }) {
     if (!group.visible) return;
     const aspect = state.size.width / state.size.height;
     group.position.set((world.ndcX[id] ?? 0) * halfHeight * aspect, -index * STATION_STEP, 0);
-    const s = 0.82 + 0.18 * presence;
+    const s = (0.82 + 0.18 * presence) * fitScale(aspect);
     group.scale.setScalar(s);
   });
   return (
@@ -252,24 +247,8 @@ export default function World() {
         <Station id="top">
           <HeroPiece quality={quality} />
         </Station>
-        <Station id="about">
-          <SystemStackPiece />
-        </Station>
-        <Station id="experience">
-          <TimelinePiece />
-        </Station>
-        <Station id="credentials">
-          <CrystalsPiece />
-        </Station>
-        <Station id="skills">
-          <TechSpherePiece />
-        </Station>
-        <Station id="services">
-          <ServicesPiece />
-        </Station>
-        <Station id="work">
-          <GalleryPiece />
-        </Station>
+        {/* one protagonist for every other section: re-forms per station */}
+        <Swarm quality={quality} />
       </Canvas>
     </div>
   );

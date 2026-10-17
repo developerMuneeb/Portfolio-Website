@@ -5,15 +5,54 @@ export const socialProof = [
   { value: "BSCS", label: "Computer Science" },
 ];
 
-export const experience = [
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "2025-10" -> { y: 2025, m: 9 } (m is 0-based). */
+function parseMonth(value) {
+  const [y, m] = value.split("-").map(Number);
+  return { y, m: m - 1 };
+}
+
+/**
+ * LinkedIn-style length of a role, counting both the first and last month
+ * ("Oct 2025 - Oct 2026" is 1 yr 1 mo). A role with no end runs to the
+ * current month, so the figure keeps growing on its own.
+ */
+export function roleDuration(start, end, now = new Date()) {
+  const a = parseMonth(start);
+  const b = end ? parseMonth(end) : { y: now.getFullYear(), m: now.getMonth() };
+  const months = Math.max(1, (b.y - a.y) * 12 + (b.m - a.m) + 1);
+  const years = Math.floor(months / 12);
+  const rest = months % 12;
+  const parts = [];
+  if (years) parts.push(`${years} yr${years > 1 ? "s" : ""}`);
+  if (rest) parts.push(`${rest} mo${rest > 1 ? "s" : ""}`);
+  return parts.join(" ");
+}
+
+function monthLabel(value) {
+  const { y, m } = parseMonth(value);
+  return `${MONTHS[m]} ${y}`;
+}
+
+/** Adds the display `dates` and `duration` (computed at load) to a role. */
+function withTimeline(role) {
+  return {
+    ...role,
+    current: role.end == null,
+    dates: `${monthLabel(role.start)} - ${role.end ? monthLabel(role.end) : "Present"}`,
+    duration: roleDuration(role.start, role.end),
+  };
+}
+
+const roles = [
   {
     role: "Associate AI Engineer",
     organization: "JBS Americas & Europe",
     type: "Contract",
-    dates: "Oct 2025 - Present",
-    duration: "8 mos",
+    start: "2025-10",
+    end: null, // still there: dates and duration grow with time
     location: "United States - Hybrid",
-    current: true,
     summary:
       "Contributing to AI-driven systems that improve business efficiency, decision-making, and operational workflows across multiple projects.",
     highlights: [
@@ -27,8 +66,8 @@ export const experience = [
     role: "AI Engineer and Researcher",
     organization: "LA Consulting Corporation",
     type: "Full-time",
-    dates: "May 2025 - Oct 2025",
-    duration: "6 mos",
+    start: "2025-05",
+    end: "2025-10",
     location: "Karachi, Sindh, Pakistan - On-site",
     summary:
       "Designed, developed, and deployed intelligent solutions connecting applied AI research with real-world business applications.",
@@ -43,8 +82,8 @@ export const experience = [
     role: "Data Analyst",
     organization: "TABROS PHARMA (Pvt) Ltd.",
     type: "Full-time",
-    dates: "Dec 2024 - May 2025",
-    duration: "6 mos",
+    start: "2024-12",
+    end: "2025-05",
     location: "Sindh, Pakistan - On-site",
     summary:
       "Supported analytics, reporting, and decision workflows for business and operational teams in a pharma environment.",
@@ -59,8 +98,8 @@ export const experience = [
     role: "Artificial Intelligence Trainee",
     organization: "Samsung Innovation Campus",
     type: "Full-time training",
-    dates: "Oct 2024 - Feb 2025",
-    duration: "5 mos",
+    start: "2024-10",
+    end: "2025-02",
     location: "Karachi Division, Sindh, Pakistan - On-site",
     summary:
       "Completed applied AI training across data analysis, data science, model thinking, and problem-solving foundations.",
@@ -75,8 +114,8 @@ export const experience = [
     role: "Trainee Data Engineer",
     organization: "Virtuosoft",
     type: "Full-time",
-    dates: "Jul 2024 - Sep 2024",
-    duration: "3 mos",
+    start: "2024-07",
+    end: "2024-09",
     location: "Gulshan Town, Sindh, Pakistan - On-site",
     summary:
       "Assisted in building and maintaining ETL pipelines, database workflows, and data-quality processes.",
@@ -91,8 +130,8 @@ export const experience = [
     role: "Data Science Intern",
     organization: "InternnCraft",
     type: "Internship",
-    dates: "Apr 2024 - Jul 2024",
-    duration: "4 mos",
+    start: "2024-04",
+    end: "2024-07",
     location: "Karachi, Sindh, Pakistan - Remote",
     summary:
       "Practiced data science, programming, and training workflows while building early analytical project experience.",
@@ -104,6 +143,8 @@ export const experience = [
     tags: ["Data Science", "Programming", "Training", "Remote Delivery"],
   },
 ];
+
+export const experience = roles.map(withTimeline);
 
 export const credentials = {
   education: {

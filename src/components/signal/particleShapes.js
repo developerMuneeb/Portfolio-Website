@@ -32,26 +32,35 @@ export const SHAPE_LABELS = {
 
 const RES = 160; // sampling canvas size (24-unit icon space × ~6.7)
 
-function sampleIcon(paths, count, rand) {
+/**
+ * Stroke 24-unit SVG icon paths onto an offscreen canvas and return the lit
+ * pixels as a flat [x0, y0, x1, y1, ...] list in canvas pixel coordinates.
+ */
+export function rasterIcon(paths, res = RES, lineWidth = 1.9) {
   const canvas = document.createElement("canvas");
-  canvas.width = RES;
-  canvas.height = RES;
+  canvas.width = res;
+  canvas.height = res;
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  const scale = RES / 24;
-  ctx.setTransform(scale * 0.86, 0, 0, scale * 0.86, RES * 0.07, RES * 0.07);
-  ctx.lineWidth = 1.9;
+  const scale = res / 24;
+  ctx.setTransform(scale * 0.86, 0, 0, scale * 0.86, res * 0.07, res * 0.07);
+  ctx.lineWidth = lineWidth;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.strokeStyle = "#fff";
   paths.forEach((d) => ctx.stroke(new Path2D(d)));
 
-  const { data } = ctx.getImageData(0, 0, RES, RES);
+  const { data } = ctx.getImageData(0, 0, res, res);
   const lit = [];
-  for (let y = 0; y < RES; y += 1) {
-    for (let x = 0; x < RES; x += 1) {
-      if (data[(y * RES + x) * 4 + 3] > 140) lit.push(x, y);
+  for (let y = 0; y < res; y += 1) {
+    for (let x = 0; x < res; x += 1) {
+      if (data[(y * res + x) * 4 + 3] > 140) lit.push(x, y);
     }
   }
+  return lit;
+}
+
+function sampleIcon(paths, count, rand) {
+  const lit = rasterIcon(paths);
 
   const out = new Float32Array(count * 3);
   const pixels = lit.length / 2;
@@ -82,7 +91,7 @@ function sampleOrb(count, rand) {
 }
 
 /** Deterministic PRNG so shapes are stable between sessions. */
-function mulberry32(seed) {
+export function mulberry32(seed) {
   let a = seed;
   return () => {
     a |= 0;

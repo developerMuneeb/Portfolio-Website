@@ -20,9 +20,52 @@ export const world = {
   presence: {}, // id -> 0..1 how "on stage" each station is
   local: {}, // id -> 0..1 reading progress inside a station's section
   ndcX: {}, // id -> horizontal NDC of the section's stage column
+  subs: {}, // id -> page-space tops of the rows inside a station (services, jobs)
   pointer: { x: 0, y: 0 }, // -1..1 page pointer (for parallax)
   scrollVelocity: 0,
 };
+
+/**
+ * Set pieces are sized for a 16:10 desktop (1440×900). On narrower screens
+ * the stage column is narrower in world units too, so pieces shrink with
+ * the aspect ratio to stay inside it, never over the copy.
+ */
+export function fitScale(aspect) {
+  return Math.min(1, Math.max(0.5, aspect / 1.6));
+}
+
+// Rows whose on-screen position decides which part a station highlights
+const SUB_ITEMS = { services: ".sv-item", experience: ".xp-item", credentials: ".cr-edu, .cr-certs > li" };
+
+/**
+ * Continuous version of subIndex: 2.4 means 40% of the way from row 2 to
+ * row 3, so a set piece can turn smoothly with the scroll instead of
+ * stepping row by row.
+ */
+export function subFloat(id, fallback) {
+  const tops = world.subs[id];
+  if (!tops?.length) return fallback;
+  const line = window.scrollY + window.innerHeight * 0.5;
+  if (line <= tops[0]) return 0;
+  for (let i = 0; i < tops.length - 1; i += 1) {
+    if (line < tops[i + 1]) return i + (line - tops[i]) / Math.max(1, tops[i + 1] - tops[i]);
+  }
+  return tops.length - 1;
+}
+
+/**
+ * Index of the row being read in a station (the last row whose top has
+ * passed the middle of the viewport), or `fallback` if it has no rows.
+ * Uses positions cached by measureStations — no layout reads per frame.
+ */
+export function subIndex(id, fallback) {
+  const tops = world.subs[id];
+  if (!tops?.length) return fallback;
+  const line = window.scrollY + window.innerHeight * 0.5;
+  let index = 0;
+  for (let i = 0; i < tops.length; i += 1) if (tops[i] <= line) index = i;
+  return index;
+}
 
 /** Read every [data-station] section's scroll range and stage column. */
 export function measureStations() {
@@ -41,6 +84,8 @@ export function measureStations() {
     const holdStart = top - vh * 0.3;
     const holdEnd = Math.max(holdStart + 1, top + rect.height - vh * 0.7);
     world.ndcX[el.dataset.station] = ndcX;
+    const sub = SUB_ITEMS[el.dataset.station];
+    if (sub) world.subs[el.dataset.station] = [...el.querySelectorAll(sub)].map((item) => item.getBoundingClientRect().top + sy);
     return { id: el.dataset.station, holdStart, holdEnd, ndcX };
   });
 }

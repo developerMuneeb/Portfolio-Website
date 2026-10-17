@@ -71,7 +71,10 @@ export default function HeroPiece({ quality }) {
     if (lean.current) {
       lean.current.rotation.x = damp(lean.current.rotation.x, -world.pointer.y * 0.22, 3.5, dt);
       lean.current.rotation.y = damp(lean.current.rotation.y, world.pointer.x * 0.35, 3.5, dt);
-      lean.current.scale.setScalar(0.76 * (1 - e * 0.12));
+      // handoff: as the camera leaves, the core collapses while the swarm
+      // (which starts in the core's shape, at the core's spot) takes over
+      const collapse = smooth(clamp(((world.presence.top ?? 0) - 0.35) / 0.65, 0, 1));
+      lean.current.scale.setScalar(0.76 * (1 - e * 0.12) * Math.max(0.001, collapse));
     }
     if (scrub.current) {
       // the core itself turns with the page: half a revolution over the exit

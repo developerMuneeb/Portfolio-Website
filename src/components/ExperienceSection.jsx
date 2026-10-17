@@ -24,6 +24,7 @@ export default function ExperienceSection() {
             <Reveal as="li" className={`xp-item${item.current ? " is-current" : ""}`} key={`${item.organization}-${item.role}`} y={20}>
               <div className="xp-when">
                 <span>{item.dates}</span>
+                <span className="xp-dur">{item.duration}</span>
                 {item.current ? <span className="xp-now">Now</span> : null}
               </div>
               <h3 className="xp-role">{item.role}</h3>

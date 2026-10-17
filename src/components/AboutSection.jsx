@@ -46,7 +46,7 @@ export default function AboutSection() {
 
         <Reveal className="ch-prose" delay={0.1}>
           <p>
-            I&apos;m a <b>results-oriented AI engineer</b> focused on practical business
+            I&apos;m an <b>AI engineer</b> focused on practical business
             automation: AI agents, AI chatbots, voice AI workflows, CRM automation and predictive
             analytics dashboards that make operational teams measurably faster.
           </p>

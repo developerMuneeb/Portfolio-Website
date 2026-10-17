@@ -79,7 +79,7 @@ function WorkGallery() {
             AI systems for <em>real operations</em>
           </SplitWords>
           <p className="ch-lede">
-            Five production case studies — the architecture, decisions and measurable value behind each system.
+            Five production case studies, with the architecture, decisions and measurable value behind each system.
           </p>
         </header>
 

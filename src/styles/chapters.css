@@ -497,6 +497,16 @@ section.ct,
   color: var(--cyan);
 }
 
+/* computed from the role's start month, so it grows on its own */
+.xp-dur {
+  color: var(--ink-soft);
+}
+
+.xp-dur::before {
+  content: "\00b7";
+  margin-right: 12px;
+}
+
 .xp-now {
   padding: 3px 9px;
   border-radius: 999px;
@@ -702,6 +712,17 @@ section.ct,
   color: var(--ink-dim);
 }
 
+/* "Best for" is a label, so each line reads as a fact, not a repeated sentence opener */
+.sv-fit-label {
+  margin-right: 8px;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
 .sv-body .sv-fit {
   margin: 10px 0 14px;
   font-family: var(--font-serif);
@@ -835,6 +856,14 @@ section.ct,
 .ct {
   min-height: 100vh;
   padding: var(--chapter-pad) var(--gutter);
+  /* centre the content so the leftover height doesn't pile up above the footer */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ct > .contact-shell {
+  width: 100%;
 }
 
 .contact-shell {
