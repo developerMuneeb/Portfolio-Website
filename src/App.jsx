@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import BackgroundLayers from "./components/BackgroundLayers";
 import WorldLoader from "./world/WorldLoader";
 import ScrollProgress from "./components/motion/ScrollProgress";
@@ -42,6 +43,7 @@ export default function App() {
       <ContactSection />
       <SiteFooter />
       <Analytics />
+      <SpeedInsights />
     </IntroProvider>
   );
 }
