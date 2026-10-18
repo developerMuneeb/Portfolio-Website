@@ -143,22 +143,39 @@ function useActiveProject(listRef, pinRefs) {
   const [active, setActive] = useState(0);
   const { scrollY } = useScroll();
 
+  // Card tops in page space, measured on mount and resize only: measuring
+  // inside the scroll handler forced a layout on every scrolled frame.
+  const starts = useRef([]);
+
   const compute = useCallback(() => {
-    const list = listRef.current;
-    if (!list) return;
-    const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
-    let top = list.getBoundingClientRect().top + window.scrollY;
     const line = window.scrollY + window.innerHeight * 0.55;
     let next = 0;
-    pinRefs.forEach((ref, i) => {
-      if (ref.current && top <= line) next = i;
-      top += (ref.current?.offsetHeight ?? 0) + gap;
+    starts.current.forEach((top, i) => {
+      if (top <= line) next = i;
     });
     setActive((prev) => (prev === next ? prev : next));
-  }, [listRef, pinRefs]);
+  }, []);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return undefined;
+    const measure = () => {
+      const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
+      let top = list.getBoundingClientRect().top + window.scrollY;
+      starts.current = pinRefs.map((ref) => {
+        const start = ref.current ? top : Infinity;
+        top += (ref.current?.offsetHeight ?? 0) + gap;
+        return start;
+      });
+      compute();
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(document.body);
+    return () => ro.disconnect();
+  }, [listRef, pinRefs, compute]);
 
   useMotionValueEvent(scrollY, "change", compute);
-  useEffect(compute, [compute]);
 
   useEffect(() => {
     document.documentElement.dataset.project = projects[active]?.diagramId ?? "";

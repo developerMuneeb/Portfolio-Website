@@ -188,12 +188,37 @@ function Dust({ stations }) {
 }
 
 /**
+ * Starting quality, guessed before the first frame so weaker machines never
+ * sit through the lag that PerformanceMonitor would otherwise need to see
+ * before stepping down. Few cores / little memory, or an integrated or
+ * software GPU, start on "low" (no glass refraction pass, half the swarm,
+ * DPR 1). The monitor can still step a "high" start down later.
+ */
+function initialQuality() {
+  try {
+    const cores = navigator.hardwareConcurrency || 8;
+    const memory = navigator.deviceMemory || 8;
+    if (cores <= 4 || memory <= 4) return "low";
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl");
+    if (!gl) return "low";
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    if (/Intel|UHD|Iris|HD Graphics|Mali|Adreno|PowerVR|SwiftShader|llvmpipe|Basic Render/i.test(renderer)) return "low";
+  } catch {
+    return "low";
+  }
+  return "high";
+}
+
+/**
  * The persistent 3D world behind the whole page (desktop, motion OK,
  * WebGL). One transparent canvas over the aurora backdrop; pointer events
  * come from the page itself (eventSource) so the DOM stays fully usable.
  */
 export default function World() {
-  const [quality, setQuality] = useState("high");
+  const [quality, setQuality] = useState(initialQuality);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -227,7 +252,7 @@ export default function World() {
     <div className="world-canvas" aria-hidden="true">
       <Canvas
         frameloop="demand"
-        dpr={[1, 1.25]}
+        dpr={quality === "low" ? 1 : [1, 1.25]}
         camera={{ position: [0, 0, CAMERA_DISTANCE], fov: FOV, near: 0.1, far: 80 }}
         gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
         eventSource={document.getElementById("root")}

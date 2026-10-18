@@ -205,6 +205,11 @@ export default function ShaderBackdrop() {
     let running = true;
     const start = performance.now();
 
+    let worldOn = document.documentElement.classList.contains("world-on");
+    const classWatch = new MutationObserver(() => {
+      worldOn = document.documentElement.classList.contains("world-on");
+    });
+    classWatch.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     const resize = () => {
       const w = Math.max(1, Math.round(window.innerWidth * scale));
       const h = Math.max(1, Math.round(window.innerHeight * scale));
@@ -230,7 +235,9 @@ export default function ShaderBackdrop() {
 
     const tick = (now) => {
       raf = requestAnimationFrame(tick);
-      if (now - last < 33) return; // ~30fps is plenty for a slow aurora
+      // ~30fps is plenty for a slow aurora; ~20fps under the 3D world, which
+      // covers most of it and needs the GPU time more
+      if (now - last < (worldOn ? 50 : 33)) return;
       last = now;
       pointer[0] += (pointerTarget[0] - pointer[0]) * 0.06;
       pointer[1] += (pointerTarget[1] - pointer[1]) * 0.06;
@@ -305,6 +312,7 @@ export default function ShaderBackdrop() {
       stopLoop();
       observer.disconnect();
       window.removeEventListener("resize", onResize);
+      classWatch.disconnect();
       bodyObserver.disconnect();
       window.removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", onVisibility);

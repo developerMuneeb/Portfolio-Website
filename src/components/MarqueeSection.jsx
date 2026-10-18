@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import { useScrollVelocity } from "../hooks/useScrollVelocity";
 
@@ -51,9 +51,22 @@ function VelocityTrack({ baseSpeed, reverse = false, children }) {
   const x = useTransform(baseX, (v) => `${wrap(-50, 0, v)}%`);
   const direction = useRef(reverse ? 1 : -1);
   const paused = useRef(false);
+  const onScreen = useRef(true);
+  const track = useRef(null);
+
+  // the track only moves while it can be seen
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return undefined;
+    const io = new IntersectionObserver(([entry]) => {
+      onScreen.current = entry.isIntersecting;
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useAnimationFrame((_, delta) => {
-    if (reduce || paused.current) return;
+    if (reduce || paused.current || !onScreen.current) return;
     const v = velocity.get();
     if (v < -5) direction.current = reverse ? -1 : 1;
     else if (v > 5) direction.current = reverse ? 1 : -1;
@@ -63,6 +76,7 @@ function VelocityTrack({ baseSpeed, reverse = false, children }) {
 
   return (
     <motion.div
+      ref={track}
       className={`marquee-track is-js${reverse ? " is-reverse" : ""}`}
       style={reduce ? undefined : { x }}
       onMouseEnter={() => (paused.current = true)}

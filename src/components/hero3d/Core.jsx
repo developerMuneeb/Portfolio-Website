@@ -65,14 +65,6 @@ export default function Core({ input, quality }) {
     const t = state.clock.elapsedTime;
     const inp = input.current;
 
-    const near = Math.max(0, 1 - Math.hypot(inp.x, inp.y) / 0.85);
-    inp.prox = damp(inp.prox, inp.inside ? near : 0, 3.2, dt);
-
-    if (shell.current) {
-      shell.current.rotation.x = t * 0.09;
-      shell.current.rotation.y = t * 0.14;
-      shell.current.scale.setScalar(1 + Math.sin(t * 1.15) * 0.012 + inp.prox * 0.06);
-    }
     // Skip the transmission render pass entirely while the hero is off stage
     if (glass.current && "buffer" in glass.current) {
       const active = inp.active !== false;
@@ -82,6 +74,17 @@ export default function Core({ input, quality }) {
       } else if (active && glass.current.buffer === PARKED && liveBuffer.current) {
         glass.current.buffer = liveBuffer.current;
       }
+    }
+    // off stage nothing here is visible: skip the per-frame work entirely
+    if (inp.active === false) return;
+
+    const near = Math.max(0, 1 - Math.hypot(inp.x, inp.y) / 0.85);
+    inp.prox = damp(inp.prox, inp.inside ? near : 0, 3.2, dt);
+
+    if (shell.current) {
+      shell.current.rotation.x = t * 0.09;
+      shell.current.rotation.y = t * 0.14;
+      shell.current.scale.setScalar(1 + Math.sin(t * 1.15) * 0.012 + inp.prox * 0.06);
     }
     if (glass.current && "distortion" in glass.current) {
       glass.current.distortion = 0.3 + inp.prox * 0.85;
@@ -107,8 +110,8 @@ export default function Core({ input, quality }) {
         {quality === "high" ? (
           <MeshTransmissionMaterial
             ref={glass}
-            samples={4}
-            resolution={384}
+            samples={3}
+            resolution={320}
             thickness={0.5}
             roughness={0.05}
             ior={1.22}

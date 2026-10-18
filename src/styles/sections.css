@@ -10,9 +10,9 @@
   padding: 24px 0;
   overflow: hidden;
   /* a solid band: the 3D swarm passes behind it between hero and About,
-     and particles must never sit under the marquee's words */
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  backdrop-filter: blur(8px);
+     and particles must never sit under the marquee's words. No backdrop
+     blur: blurring a canvas that redraws every frame is costly. */
+  background: color-mix(in srgb, var(--bg) 96%, transparent);
   position: relative;
   z-index: 2;
   display: flex;

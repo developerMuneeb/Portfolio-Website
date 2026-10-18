@@ -126,6 +126,8 @@ export default function OrbitSystem({ progress }) {
     const t = state.clock.elapsedTime;
     const p = progress ? progress.get() : 0;
     const activeId = activeRef.current;
+    // Off stage (labels already hidden): nothing to update until the hero returns
+    if (p > 0.98 && labelState.current.every((s) => s.away)) return;
 
     if (spread.current) {
       const s = damp(spread.current.scale.x, 1 + p * 0.4, 5, dt);

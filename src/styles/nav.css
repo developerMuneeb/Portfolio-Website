@@ -11,9 +11,11 @@ nav.top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(var(--deep-rgb), 0.82), rgba(var(--deep-rgb), 0.52) 70%, rgba(var(--deep-rgb), 0));
+  /* light blur, denser tint: the nav sits over 3D that redraws every frame,
+     and a wide blur radius there is re-computed each frame */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, rgba(var(--deep-rgb), 0.9), rgba(var(--deep-rgb), 0.62) 70%, rgba(var(--deep-rgb), 0));
   border-bottom: 1px solid transparent;
   transition: border-color 0.3s, background 0.3s, padding 0.3s;
 }

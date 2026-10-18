@@ -8,14 +8,30 @@ export function usePortfolioEffects() {
     const sections = sectionIds.map((id) => document.getElementById(id));
     const links = [...document.querySelectorAll(".nav-links a")];
     let scrollRaf = 0;
+    // Section tops are measured on resize, never during scroll: reading
+    // offsetTop each frame forced a layout mid-scroll (jank).
+    let tops = [];
+    const measure = () => {
+      tops = sections.map((section) => (section ? section.offsetTop : Infinity));
+    };
+    let scrolled = null;
+    let current;
     const updateScrollState = () => {
       scrollRaf = 0;
-      if (nav) nav.classList.toggle("scrolled", window.scrollY > 20);
+      const isScrolled = window.scrollY > 20;
+      if (nav && isScrolled !== scrolled) {
+        nav.classList.toggle("scrolled", isScrolled);
+        scrolled = isScrolled;
+      }
       let active = null;
       const y = window.scrollY + 140;
-      sections.forEach((section) => {
-        if (section && section.offsetTop <= y) active = section.id;
+      tops.forEach((top, i) => {
+        if (top <= y) active = sectionIds[i];
       });
+      // Only touch the DOM when the section changes: rewriting the root's
+      // data-section every frame invalidated style for the whole page.
+      if (active === current) return;
+      current = active;
       links.forEach((link) => {
         link.classList.toggle("active", link.getAttribute("href") === `#${active}`);
       });
@@ -24,7 +40,13 @@ export function usePortfolioEffects() {
     const onScroll = () => {
       if (!scrollRaf) scrollRaf = window.requestAnimationFrame(updateScrollState);
     };
+    measure();
     updateScrollState();
+    const ro = new ResizeObserver(() => {
+      measure();
+      updateScrollState();
+    });
+    ro.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
     const onDocClick = (event) => {
       const anchor = event.target.closest?.('a[href^="#"]');
@@ -48,6 +70,7 @@ export function usePortfolioEffects() {
     document.addEventListener("click", onDocClick);
     return () => {
       window.removeEventListener("scroll", onScroll);
+      ro.disconnect();
       if (scrollRaf) window.cancelAnimationFrame(scrollRaf);
       document.removeEventListener("click", onDocClick);
     };
