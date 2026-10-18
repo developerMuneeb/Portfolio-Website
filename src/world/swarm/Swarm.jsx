@@ -3,13 +3,13 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useTheme } from "../../theme";
 import { CAMERA_DISTANCE, FOV, STATION_STEP, fitScale, subFloat, subIndex, world } from "../worldState";
-import { COUNT, CREDS, FLOW, HELIX, PROJECT_COUNT, ROLES, SERVICE_COUNT, STACK_LAYERS, getShape, prewarmShapes } from "./shapes";
-import { LogoOrbit, ProjectCaption, StackLabels } from "./accents";
+import { COUNT, CREDS, FLOW, HELIX, HELIX_FLOW, PROJECT_COUNT, ROLES, SERVICE_COUNT, STACK_LAYERS, getShape, prewarmShapes } from "./shapes";
+import { CredCaption, LogoOrbit, ProjectCaption, StackLabels } from "./accents";
 
 const { damp, clamp, lerp } = THREE.MathUtils;
 const halfHeight = Math.tan(THREE.MathUtils.degToRad(FOV / 2)) * CAMERA_DISTANCE;
 const STAGGER = 0.35;
-const RETARGET_SECONDS = 1.3;
+const RETARGET_SECONDS = 1.0;
 const TAU = Math.PI * 2;
 
 // Stations where the swarm stays out of sight: the hero shows the glass core
@@ -45,8 +45,25 @@ const PALETTES = {
   light: { a: "#0f766e", b: "#6d28d9", hot: "#c2410c", active: "#134e4a", layers: ["#0f766e", "#6d28d9", "#c2410c", "#ca8a04"], blending: THREE.NormalBlending, alpha: 1.25 },
 };
 
+/**
+ * Rows the swarm answers to on hover: pointing at a service, job,
+ * certificate or project makes the 3D show it at once, before scrolling.
+ */
+const HOVER_ROWS = [
+  ["services", ".sv-item"],
+  ["experience", ".xp-item"],
+  ["credentials", ".cr-edu, .cr-certs > li"],
+  ["work", ".wk-index li"],
+];
+
+/** The hovered row's index if it belongs to this station, else -1. */
+function hoverFor(id) {
+  return world.hover && world.hover.id === id ? world.hover.index : -1;
+}
+
 /** Which formation a station shows, given the reading progress inside it. */
 function keyFor(id, local = 0) {
+  const h = hoverFor(id);
   switch (id) {
     case "about":
       return "stack";
@@ -57,9 +74,9 @@ function keyFor(id, local = 0) {
     case "skills":
       return "globe";
     case "services":
-      return `svc${clamp(subIndex("services", Math.floor(local * SERVICE_COUNT)), 0, SERVICE_COUNT - 1)}`;
+      return `svc${clamp(h >= 0 ? h : subIndex("services", Math.floor(local * SERVICE_COUNT)), 0, SERVICE_COUNT - 1)}`;
     case "work":
-      return `prj${clamp(Math.round(local * (PROJECT_COUNT - 1)), 0, PROJECT_COUNT - 1)}`;
+      return `prj${clamp(h >= 0 ? h : Math.round(local * (PROJECT_COUNT - 1)), 0, PROJECT_COUNT - 1)}`;
     case "deck":
     case "contact":
       return "mark";
@@ -71,14 +88,24 @@ function keyFor(id, local = 0) {
 /** The group a station highlights (stack layer / job), or -10 for none. */
 function activeFor(id, local = 0) {
   if (id === "about") return clamp(Math.floor(local * STACK_LAYERS), 0, STACK_LAYERS - 1);
-  if (id === "experience") return clamp(subIndex("experience", Math.floor(local * ROLES)), 0, ROLES - 1);
+  if (id === "experience") {
+    const h = hoverFor(id);
+    return clamp(h >= 0 ? h : subIndex("experience", Math.floor(local * ROLES)), 0, ROLES - 1);
+  }
   if (id === "credentials") return clamp(Math.round(credPos(local)), 0, CREDS.count - 1);
   return -10;
 }
 
 /** Where the credentials carousel stands: 0 = education card, 5 = last certificate (fractional between rows). */
 function credPos(local) {
-  return clamp(subFloat("credentials", local * (CREDS.count - 1)), 0, CREDS.count - 1);
+  const h = hoverFor("credentials");
+  if (h >= 0) return clamp(h, 0, CREDS.count - 1);
+  // rest on the row being read, then turn briskly as the next row arrives,
+  // so one card is clearly in front (and named by the caption) most of the time
+  const p = clamp(subFloat("credentials", local * (CREDS.count - 1)), 0, CREDS.count - 1);
+  const i = Math.floor(p);
+  const s = clamp((p - i - 0.68) / 0.3, 0, 1);
+  return i + s * s * (3 - 2 * s);
 }
 
 /** Resting rotation per station (x, y), before pointer sway. */
@@ -128,12 +155,24 @@ const VERT = /* glsl */ `
   uniform float uDepthFade;
   uniform float uCenterZ;
   uniform float uDepthRange;
+  uniform float uIdle;    // 0..1: settled and the visitor has stopped scrolling
+  uniform float uArriveT; // time the current shape finished forming
+  uniform float uBurstT;  // time of the last click shockwave
   varying vec3 vColor;
   varying float vAlpha;
 
-  vec3 flowed(vec4 p) {
+  vec3 helixAt(float u) {
+    float a = u * 6.28318 * ${HELIX.turns.toFixed(3)};
+    return vec3(cos(a) * ${HELIX.radius.toFixed(3)}, ${(HELIX.height / 2).toFixed(3)} - u * ${HELIX.height.toFixed(3)}, sin(a) * ${HELIX.radius.toFixed(3)});
+  }
+
+  vec3 flowed(vec4 p, float seed) {
     vec3 q = p.xyz;
-    if (p.w > ${(FLOW - 0.5).toFixed(1)}) {
+    if (p.w > ${(HELIX_FLOW - 0.5).toFixed(1)}) {
+      // data streaming along the career helix, from the first job up to now
+      float u = fract(p.w - ${HELIX_FLOW.toFixed(1)} - uTime * 0.05);
+      q = helixAt(u) + (vec3(fract(seed * 13.17), fract(seed * 7.71), fract(seed * 3.33)) - 0.5) * 0.08;
+    } else if (p.w > ${(FLOW - 0.5).toFixed(1)}) {
       float span = uFlow.y - uFlow.x;
       q.y = uFlow.x + mod(q.y - uFlow.x + uTime * 0.28, span);
     }
@@ -143,7 +182,7 @@ const VERT = /* glsl */ `
   void main() {
     float t = clamp((uProgress - aRand.x * ${STAGGER.toFixed(2)}) / ${(1 - STAGGER).toFixed(2)}, 0.0, 1.0);
     float e = t * t * (3.0 - 2.0 * t);
-    vec3 pos = mix(flowed(aFrom), flowed(aTo), e);
+    vec3 pos = mix(flowed(aFrom, aRand.z), flowed(aTo, aRand.z), e);
 
     // swirl peaks mid-flight; a faint breath keeps settled shapes alive
     float flight = sin(3.14159 * t);
@@ -160,12 +199,25 @@ const VERT = /* glsl */ `
     float falloff = exp(-dot(d.xy, d.xy) * 5.0) * uPointerForce;
     pos.xy += normalize(d.xy + 0.0001) * falloff * 0.18;
 
+    // click shockwave: points fly outward, then settle back
+    float bt = uTime - uBurstT;
+    float burst = (bt > 0.0 && bt < 1.6) ? sin(3.14159 * bt / 1.6) * exp(-bt * 1.4) : 0.0;
+    pos += normalize(pos + 0.0001) * burst * (0.45 + aRand.x * 1.2);
+
     float group = e < 0.5 ? aFrom.w : aTo.w;
     float on = 1.0 - step(0.5, abs(group - uActive));
 
+    // a ring of light sweeps out as a shape finishes forming; at rest a slow
+    // band of light travels through it so it never looks frozen
+    float rr = length(pos);
+    float at = uTime - uArriveT;
+    float ring = (at > 0.0 && at < 1.4) ? exp(-pow((rr - at * 2.2) * 5.0, 2.0)) * (1.0 - at / 1.4) : 0.0;
+    float wave = uIdle * pow(max(0.0, sin(pos.y * 2.6 + pos.x * 1.1 - uTime * 2.0)), 14.0);
+    float glow = clamp(ring + wave * 0.85 + burst * 0.7, 0.0, 1.0);
+
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = uSize * aRand.y * uDpr * (1.0 + flight * 0.8 + on * 0.22) * (8.0 / -mv.z);
+    gl_PointSize = uSize * aRand.y * uDpr * (1.0 + flight * 0.8 + on * 0.22 + glow * 0.55) * (8.0 / -mv.z);
 
     float gy = clamp(0.5 - pos.y / ${HELIX.height.toFixed(2)}, 0.0, 1.0);
     vec3 base = mix(uColorA, uColorB, mix(aRand.w, gy, uGradY));
@@ -176,10 +228,11 @@ const VERT = /* glsl */ `
     }
     base = mix(base, uColorActive, on * mix(0.55, 0.22, uLayerMix));
     vColor = mix(base, uColorHot, clamp(flight * 0.75 + falloff * 0.35, 0.0, 1.0));
-    vAlpha = uAlpha * (0.4 + 0.3 * flight + 0.2 * aRand.y + on * 0.16);
+    vColor = mix(vColor, uColorActive, glow * 0.65);
+    vAlpha = uAlpha * (0.4 + 0.3 * flight + 0.2 * aRand.y + on * 0.16 + glow * 0.4);
     float front = clamp((mv.z - uCenterZ) / uDepthRange * 0.5 + 0.5, 0.0, 1.0);
     vAlpha *= mix(1.0, 0.12 + 0.88 * front * front, uDepthFade);
-    if (group > ${(FLOW - 0.5).toFixed(1)}) {
+    if (group > ${(FLOW - 0.5).toFixed(1)} && group < ${(FLOW + 0.5).toFixed(1)}) {
       float f = (pos.y - uFlow.x) / (uFlow.y - uFlow.x);
       vAlpha *= smoothstep(0.0, 0.18, f) * smoothstep(1.0, 0.8, f);
     }
@@ -239,6 +292,9 @@ function makeSwarm() {
       uDepthFade: { value: 0 },
       uCenterZ: { value: -8 },
       uDepthRange: { value: 1.5 },
+      uIdle: { value: 0 },
+      uArriveT: { value: -10 },
+      uBurstT: { value: -10 },
     },
     transparent: true,
     depthWrite: false,
@@ -276,9 +332,46 @@ export default function Swarm({ quality }) {
     const ids = ['top', 'about', 'experience', 'credentials', 'skills', 'services', 'work', 'deck', 'contact'];
     return { dark: Object.fromEntries(ids.map((id) => [id, pick('dark', id)])), light: Object.fromEntries(ids.map((id) => [id, pick('light', id)])), brand };
   }, []);
-  const ray = useMemo(() => ({ v: new THREE.Vector3(), dir: new THREE.Vector3(), hit: new THREE.Vector3() }), []);
+  const ray = useMemo(() => ({ v: new THREE.Vector3(), dir: new THREE.Vector3(), hit: new THREE.Vector3(), c: new THREE.Vector3(), e: new THREE.Vector3() }), []);
 
   useEffect(() => prewarmShapes(), []);
+
+  // Hover: pointing at a row makes the swarm answer at once (keyFor/hoverFor).
+  // Click: a click on the shape itself (not on a link or button) fires a
+  // shockwave through it.
+  const burstPending = useRef(false);
+  useEffect(() => {
+    const onOver = (event) => {
+      // rows sliding under a still pointer mid-scroll aren't a choice: ignore them
+      if (document.documentElement.classList.contains("lenis-scrolling")) return;
+      for (const [id, selector] of HOVER_ROWS) {
+        const item = event.target.closest?.(selector);
+        if (item) {
+          world.hover = { id, index: [...document.querySelectorAll(selector)].indexOf(item) };
+          return;
+        }
+      }
+    };
+    const onOut = (event) => {
+      if (!world.hover) return;
+      const selector = HOVER_ROWS.find(([id]) => id === world.hover.id)?.[1];
+      if (!selector || !event.relatedTarget?.closest?.(selector)) world.hover = null;
+    };
+    const onDown = (event) => {
+      const area = world.swarmScreen;
+      if (!area?.on || event.target.closest?.("a, button, input, textarea, select, summary, label, [role=button]")) return;
+      if (Math.hypot(event.clientX - area.x, event.clientY - area.y) <= area.r) burstPending.current = true;
+    };
+    document.addEventListener("pointerover", onOver, { passive: true });
+    document.addEventListener("pointerout", onOut, { passive: true });
+    document.addEventListener("pointerdown", onDown, { passive: true });
+    return () => {
+      document.removeEventListener("pointerover", onOver);
+      document.removeEventListener("pointerout", onOut);
+      document.removeEventListener("pointerdown", onDown);
+      world.hover = null;
+    };
+  }, []);
 
   useEffect(() => {
     const palette = PALETTES[themeName];
@@ -322,6 +415,8 @@ export default function Swarm({ quality }) {
     const t = world.t;
     const moving = world.next !== world.current && t > 0;
     const localCur = world.local[cur.id] ?? 0;
+    if (world.hover && (moving || world.hover.id !== cur.id)) world.hover = null;
+    const before = st.p;
 
     // ---- formation (scroll-scrubbed between stations, timed within one)
     if (moving) {
@@ -342,6 +437,7 @@ export default function Swarm({ quality }) {
         upload("aFrom", data);
         upload("aTo", data);
         Object.assign(st, { mode: "hold", from: shown, to: shown, fromData: data, p: 1 });
+        u.uArriveT.value = time; // the shape just finished forming: ring of light
       }
       if (st.to !== k) {
         // re-form mid-section: snapshot where points are now, fly to the new shape
@@ -362,6 +458,13 @@ export default function Swarm({ quality }) {
       }
       // real elapsed time (not the per-frame clamp) so slow devices don't lag behind
       st.p = Math.min(1, st.p + Math.min(delta, 0.25) / RETARGET_SECONDS);
+      if (before < 1 && st.p >= 1) u.uArriveT.value = time;
+    }
+    // idle wave once settled and the visitor has stopped scrolling
+    u.uIdle.value = damp(u.uIdle.value, !moving && st.p >= 1 && Math.abs(world.scrollVelocity) < 40 ? 1 : 0, 1.6, dt);
+    if (burstPending.current) {
+      u.uBurstT.value = time;
+      burstPending.current = false;
     }
     u.uProgress.value = st.p;
     u.uTime.value = time;
@@ -414,6 +517,19 @@ export default function Swarm({ quality }) {
     g.worldToLocal(u.uPointer.value.copy(ray.hit));
     u.uPointerForce.value = damp(u.uPointerForce.value, moving ? 0 : 1, 4, dt);
 
+    // where the shape sits on screen, so a click on it can fire the shockwave
+    g.updateMatrixWorld();
+    ray.c.setFromMatrixPosition(g.matrixWorld).project(frame.camera);
+    ray.e.set(1.7, 0, 0).applyMatrix4(g.matrixWorld).project(frame.camera);
+    const W = frame.size.width, H = frame.size.height;
+    const cxp = (ray.c.x * 0.5 + 0.5) * W, cyp = (0.5 - ray.c.y * 0.5) * H;
+    world.swarmScreen = {
+      x: cxp,
+      y: cyp,
+      r: Math.max(120, Math.hypot((ray.e.x * 0.5 + 0.5) * W - cxp, (0.5 - ray.e.y * 0.5) * H - cyp)),
+      on: !moving && alpha > 0.5,
+    };
+
     const sh = shared.current;
     sh.settled = !moving && st.p >= 1 ? st.to : null;
     sh.target = st.to;
@@ -428,6 +544,7 @@ export default function Swarm({ quality }) {
         <StackLabels shared={shared} theme={themeName} />
         <LogoOrbit shared={shared} />
         <ProjectCaption shared={shared} theme={themeName} />
+        <CredCaption shared={shared} theme={themeName} />
       </group>
     </group>
   );

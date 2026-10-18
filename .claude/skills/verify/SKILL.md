@@ -66,7 +66,9 @@ Gotchas learned the hard way:
   one particle **swarm** (`src/world/swarm/`) that re-forms per station:
   about = 4-layer system stack (labels; active layer follows reading; points
   stream upward), experience = helix with one cluster per job (active job
-  turns to the front), credentials = certificate-card carousel turned by the scroll (row being read faces front), skills = globe
+  turns to the front), credentials = certificate-card carousel turned by the scroll (rests on the row being read, turns
+  briskly between rows; each card has its own topic glyph — cap, agent hub, cloud, bars, braces, bot —
+  and a crisp caption under the front card matches the list's label/number), skills = globe
   with real logos, services = the active service's icon (re-forms on each
   row), work = particle laptop with the active project's icon + caption
   (synced with `.wk-index`); deck/contact = swarm hidden. Between sections
@@ -74,7 +76,12 @@ Gotchas learned the hard way:
   while it slides across the text column. Each section has its own chapter colour
   (`CHAPTERS` in Swarm.jsx: experience amber→mint along the helix, credentials
   gold, skills sky blue, services coral, work lavender→pink; brand mint/violet
-  elsewhere), blended as the swarm re-forms. Camera holds per section and
+  elsewhere), blended as the swarm re-forms. Interactions: hovering a
+  service / job / certificate / project row makes the swarm show it at once
+  (ignored mid-scroll); clicking the shape (not a link) fires a shockwave that
+  re-forms; a ring of light sweeps out when a shape finishes forming; at rest
+  a slow band of light travels through it; data particles stream along the
+  Experience helix. Camera holds per section and
   swoops between them. Phones / reduced motion: no world, `World-*.js` not requested. No WebGL
   (`--disable-3d-apis`): the chunk loads, the canvas fails, WorldLoader's error
   boundary drops `world-on` (the logged context errors are expected). Either way stages show 2D fallbacks

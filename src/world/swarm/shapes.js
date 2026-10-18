@@ -16,6 +16,8 @@ import { experience } from "../../data/profile";
 
 export const COUNT = 24000;
 export const FLOW = 9;
+// Helix data-flow points: group = HELIX_FLOW + u (u in 0..1 along the helix); the shader moves them
+export const HELIX_FLOW = 10;
 export const ROLES = experience.length;
 export const STACK = { size: 1.34, gap: 0.86, rotation: new THREE.Euler(0.76, -0.62, 0, "YXZ"), offsetX: 0.5 };
 export const STACK_LAYERS = 4;
@@ -58,6 +60,36 @@ const GRAD_CAP = [
   "M6 12.5V16a6 3 0 0 0 12 0v-3.5",
 ];
 const MARK = ["M4 20V4l8 9 8-9v16"];
+
+// One topic glyph per credentials card, in the order of the Credentials list
+// (education, then the featured certificates). Topics, not issuer logos.
+const CRED_ICONS = [
+  GRAD_CAP,
+  // Building Agentic AI Systems — a hub agent with four sub-agents
+  [
+    "M9 12a3 3 0 1 0 6 0a3 3 0 1 0-6 0",
+    "M2 4a2 2 0 1 0 4 0a2 2 0 1 0-4 0",
+    "M18 4a2 2 0 1 0 4 0a2 2 0 1 0-4 0",
+    "M2 20a2 2 0 1 0 4 0a2 2 0 1 0-4 0",
+    "M18 20a2 2 0 1 0 4 0a2 2 0 1 0-4 0",
+    "M5.5 5.5l4.4 4.4",
+    "M18.5 5.5l-4.4 4.4",
+    "M5.5 18.5l4.4-4.4",
+    "M18.5 18.5l-4.4-4.4",
+  ],
+  // Azure AI Fundamentals — a cloud with a spark
+  ["M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z", "M12 11.5v4", "M10 13.5h4"],
+  // Google Data Analytics — rising bars
+  ["M3 3v18h18", "M8 17v-4", "M13 17V9", "M18 17V5"],
+  // Python for Machine Learning — code braces around a model node
+  [
+    "M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1",
+    "M16 21h1a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1",
+    "M10 12a2 2 0 1 0 4 0a2 2 0 1 0-4 0",
+  ],
+  // AI Agents for Beginners — an agent
+  SERVICE_ICONS[0],
+];
 
 // ---------------------------------------------------------------- helpers
 
@@ -347,7 +379,7 @@ function helixShape() {
   return compose(303, [
     {
       // the ribbon: a flat band following the helix
-      weight: 0.66,
+      weight: 0.58,
       point: (rand, v) => {
         helixPoint(rand(), p);
         v[0] = p.x + (rand() - 0.5) * 0.04;
@@ -370,8 +402,21 @@ function helixShape() {
       },
     },
     {
-      // loose sparks around the ribbon
+      // data flowing along the ribbon, first job up to now (animated in the shader)
       weight: 0.1,
+      point: (rand, v) => {
+        const u = rand() * 0.999;
+        helixPoint(u, p);
+        v[0] = p.x;
+        v[1] = p.y;
+        v[2] = p.z;
+        v[3] = HELIX_FLOW + u;
+        return v;
+      },
+    },
+    {
+      // loose sparks around the ribbon
+      weight: 0.08,
       point: (rand, v) => {
         helixPoint(rand(), p);
         onSphere(rand, 0.15 + rand() * 0.3, v);
@@ -399,8 +444,8 @@ function cardPoint(i, u, v, out) {
 
 function credsShape() {
   const { w, h, count } = CREDS;
-  const cap = iconSampler(GRAD_CAP, 0.5, { depth: 0.012 });
-  const lines = [[0.08, 0.7], [-0.05, 0.52], [-0.18, 0.6]];
+  // each card carries its own topic glyph, so the six read apart at a glance
+  const glyphs = CRED_ICONS.slice(0, count).map((paths) => iconSampler(paths, 0.5, { depth: 0.012 }));
   const card = (rand) => Math.floor(rand() * count);
   const put = (rand, v, i, u, y) => {
     cardPoint(i, u, y, v);
@@ -427,18 +472,17 @@ function credsShape() {
       },
     },
     {
-      // title bar + three lines of text (the education card shows a cap instead)
+      // the card's topic glyph on the left, a title and a line of text beside it
       weight: 0.3,
       point: (rand, v) => {
         const i = card(rand);
-        if (i === 0) {
-          cap(rand, v);
-          return put(rand, v, i, v[0] - 0.18, v[1] + 0.02);
+        if (rand() < 0.74) {
+          glyphs[i](rand, v);
+          return put(rand, v, i, v[0] - 0.29, v[1] + 0.04);
         }
-        const k = Math.floor(rand() * 4);
-        const [y, len] = k === 0 ? [0.24, 0.5] : lines[k - 1];
-        const u = -w / 2 + 0.12 + rand() * len * (w - 0.24) * (k === 0 ? 1.1 : 1);
-        return put(rand, v, i, u, y + (rand() - 0.5) * (k === 0 ? 0.035 : 0.018));
+        const title = rand() < 0.6;
+        const u = 0.02 + rand() * (title ? 0.5 : 0.36);
+        return put(rand, v, i, u, (title ? 0.22 : 0.1) + (rand() - 0.5) * (title ? 0.035 : 0.018));
       },
     },
     {

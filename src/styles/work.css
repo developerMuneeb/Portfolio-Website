@@ -1676,3 +1676,20 @@
     transition: none;
   }
 }
+
+/* Invisible full-card box the "play the demo once in view" observer watches */
+.reference-work .pcard-watch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* While a scroll is in progress, cards slide under a still pointer and keep
+   toggling :hover (a big shadow + lift on large cards), each toggle a
+   costly repaint. Ignore the pointer in the Work section until scrolling
+   stops (Lenis sets .lenis-scrolling on <html>); hover returns at once. */
+html.lenis-scrolling .reference-work .work-deck,
+html.lenis-scrolling .reference-work .wk-gallery {
+  pointer-events: none;
+}

@@ -88,7 +88,7 @@ function WorkGallery() {
         <ol className="wk-index" aria-label="Case studies">
           {projects.map((project, index) => (
             <li key={project.diagramId} className={index === active ? "is-active" : undefined}>
-              <button type="button" onClick={() => jump(index)}>
+              <button type="button" onClick={() => jump(index)} title={project.title}>
                 <span className="wk-index-num">P/{pad(index + 1)}</span>
                 <span className="wk-index-title">{project.title}</span>
                 <span className="wk-index-cat">{project.category}</span>
@@ -118,16 +118,17 @@ function DiagramFallback() {
 
 /**
  * Covered-card effect: as the next card slides up over this one, this one
- * recedes — scales back, tips away, and dims under a shade.
+ * recedes — scales back and dims under a shade. (It used to tip away in 3D
+ * too; a perspective rotation on a card this large cost ~20% of a frame
+ * while scrolling the deck, for a barely visible tilt.)
  */
 function RecedeLayer({ nextRef, children }) {
   const { scrollYProgress } = useScroll({ target: nextRef, offset: ["start end", "start start"] });
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 5]);
   const shade = useTransform(scrollYProgress, [0.15, 1], [0, 0.62]);
 
   return (
-    <motion.div className="pcard-recede" style={{ scale, rotateX, transformPerspective: 1600, transformOrigin: "50% 0%" }}>
+    <motion.div className="pcard-recede" style={{ scale, transformOrigin: "50% 0%" }}>
       {children}
       <motion.div className="pcard-shade" style={{ opacity: shade }} aria-hidden="true" />
     </motion.div>
@@ -235,20 +236,26 @@ function WorkChapter({ deckRef, active }) {
 function ProjectCaseCard({ project, index, onOpenSample, stacked, pinRef, nextRef }) {
   const [building, setBuilding] = useState(false);
   const top = useStickyTop(pinRef, stacked, DECK_HEADROOM);
-  const touchTimeout = useRef(null);
+  const watch = useRef(null);
 
-  const start = useCallback(() => {
-    if (touchTimeout.current) {
-      clearTimeout(touchTimeout.current);
-      touchTimeout.current = null;
-    }
-    setBuilding(true);
-  }, []);
-  const stop = useCallback(() => setBuilding(false), []);
-  const tap = useCallback(() => {
-    start();
-    touchTimeout.current = setTimeout(stop, 6000);
-  }, [start, stop]);
+  // The demo plays once, when the card is mostly in view. It used to start
+  // on mouseenter and reset on mouseleave, but while scrolling the cards
+  // slide under a still pointer, so the demos kept restarting mid-scroll:
+  // every restart re-rendered and re-laid-out a large card, which was the
+  // Work section's lag. Playing on view also works for touch and keyboard.
+  useEffect(() => {
+    const el = watch.current;
+    if (!el || building) return undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setBuilding(true);
+      },
+      { threshold: 0.45 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [building]);
+  const start = useCallback(() => setBuilding(true), []);
 
   const sample = SAMPLE_OUTPUT[project.diagramId];
   const className = `pcard${project.featured ? " pcard-featured" : ""}`;
@@ -260,13 +267,10 @@ function ProjectCaseCard({ project, index, onOpenSample, stacked, pinRef, nextRe
       id={`project-${project.diagramId}`}
       aria-labelledby={`project-title-${project.diagramId}`}
       y={32}
-      onMouseEnter={start}
-      onMouseLeave={stop}
       onFocus={start}
-      onBlur={stop}
-      onTouchStart={tap}
       data-cursor="Explore"
     >
+      <span ref={watch} className="pcard-watch" aria-hidden="true" />
       <Suspense fallback={<DiagramFallback />}>
         <ProjectWorkflowDiagram project={project} building={building} />
       </Suspense>

@@ -21,7 +21,9 @@ export default function RotatingText({ phrases, interval = 2800, className }) {
 
   return (
     <span className={`rotating-text ${className ?? ""}`}>
-      <AnimatePresence mode="popLayout" initial={false}>
+      {/* Both words share one grid cell while they swap; popLayout pulled the
+          outgoing word out to an ancestor and it drifted over the lede. */}
+      <AnimatePresence initial={false}>
         <motion.span
           key={index}
           className="rotating-text-word"

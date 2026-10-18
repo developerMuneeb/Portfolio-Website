@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { credentials } from "../../data/profile";
 import { projects } from "../../data/projects";
 import { skillGroups } from "../../data/skills";
 import { iconTexture } from "../pieces/iconTexture";
-import { GLOBE_RADIUS, SCREEN, STACK, STACK_LAYERS, stackLayerY } from "./shapes";
+import { CREDS, GLOBE_RADIUS, SCREEN, STACK, STACK_LAYERS, stackLayerY } from "./shapes";
 
 /*
  * Crisp accents layered on the swarm where particles can't carry the detail
@@ -150,6 +151,86 @@ export function LogoOrbit({ shared }) {
       <spriteMaterial map={textures[i]} transparent opacity={0} depthWrite={false} toneMapped={false} />
     </sprite>
   ));
+}
+
+// ---------------------------------------------------------------- Credentials
+
+const year = (text) => text.match(/(\d{4})\D*$/)?.[1] ?? "";
+
+/** One line per carousel card, in the Credentials list's order (and with its labels). */
+const CRED_CARDS = [
+  {
+    title: credentials.education.title,
+    meta: `Education  ·  ${credentials.education.institution} · ${year(credentials.education.dates)}`,
+  },
+  ...credentials.featured.map((cert, i) => ({
+    // short names: the list beside the carousel carries the full titles
+    title: cert.title.replace(/^Microsoft Certified:\s*/, "").replace(/\s+Specialization$/, ""),
+    meta: `${String(i + 1).padStart(2, "0")}  ·  ${cert.issuer} · ${year(cert.date)}`,
+  })),
+].slice(0, CREDS.count);
+
+const CRED_W = 1024;
+const CRED_H = 168;
+
+function drawCredCaption(canvas, index, light) {
+  const card = CRED_CARDS[index];
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, CRED_W, CRED_H);
+  ctx.textAlign = "center";
+  ctx.fillStyle = light ? "#a16207" : "#fbbf24";
+  ctx.font = "600 28px 'JetBrains Mono', monospace";
+  ctx.fillText(card.meta.toUpperCase(), CRED_W / 2, 42, CRED_W - 40);
+  ctx.fillStyle = light ? "#14131f" : "#eeedf7";
+  ctx.font = "700 56px Syne, 'Space Grotesk', sans-serif";
+  ctx.fillText(card.title, CRED_W / 2, 118, CRED_W - 40);
+}
+
+/** The front card's name under the credentials carousel; swaps with a fade as the carousel turns. */
+export function CredCaption({ shared, theme }) {
+  const ref = useRef(null);
+  const texture = useMemo(() => canvasTexture(CRED_W, CRED_H), []);
+  const shown = useRef(-1);
+  const light = theme === "light";
+
+  usePaint(() => {
+    if (shown.current < 0) return;
+    drawCredCaption(texture.image, shown.current, light);
+    texture.needsUpdate = true;
+  }, [texture, light]);
+  useEffect(() => () => texture.dispose(), [texture]);
+
+  useFrame((state, delta) => {
+    const dt = Math.min(delta, 0.25);
+    const m = ref.current;
+    if (!m) return;
+    const { settled, alpha, active } = shared.current;
+    const on = settled === "creds";
+    const index = on ? Math.max(0, Math.min(CRED_CARDS.length - 1, Math.round(active))) : -1;
+    const mat = m.material;
+    // fade out, swap the text while invisible, fade back in
+    if (index >= 0 && index !== shown.current && (shown.current < 0 || mat.opacity < 0.04)) {
+      shown.current = index;
+      drawCredCaption(texture.image, index, light);
+      texture.needsUpdate = true;
+    }
+    const target = on && index === shown.current ? Math.min(1, alpha) : 0;
+    mat.opacity = Math.min(alpha, damp(mat.opacity, target, target > mat.opacity ? 5 : 9, dt));
+    m.visible = mat.opacity > 0.01;
+    // stay in front of the camera while the carousel (our parent) turns
+    const turn = (m.parent?.rotation.y ?? 0) + (m.parent?.parent?.rotation.y ?? 0);
+    const d = CREDS.radius + 0.32;
+    m.position.set(-d * Math.sin(turn), -CREDS.h / 2 - 0.6, d * Math.cos(turn));
+    m.rotation.y = -turn;
+  });
+
+  const width = 2.5;
+  return (
+    <mesh ref={ref}>
+      <planeGeometry args={[width, (width * CRED_H) / CRED_W]} />
+      <meshBasicMaterial map={texture} transparent opacity={0} depthWrite={false} toneMapped={false} />
+    </mesh>
+  );
 }
 
 // ---------------------------------------------------------------- Work
