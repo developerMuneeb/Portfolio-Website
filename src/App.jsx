@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import BackgroundLayers from "./components/BackgroundLayers";
 import WorldLoader from "./world/WorldLoader";
 import ScrollProgress from "./components/motion/ScrollProgress";
@@ -40,6 +41,7 @@ export default function App() {
       <WorkSection />
       <ContactSection />
       <SiteFooter />
+      <Analytics />
     </IntroProvider>
   );
 }
